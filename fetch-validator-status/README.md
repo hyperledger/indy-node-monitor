@@ -1,6 +1,6 @@
 # Fetch Validator Status
 
-This folder contains a simple Python script that uses [indy-vdr](https://github.com/hyperledger/indy-vdr) to execute a "validator-info" call to an Indy network. The validator info transaction script returns a great deal of information about the accessed ledger. On example of the JSON data returned by the call for an individual node is provided [below](#example-validator-info).
+This folder contains a simple Python script that uses [indy-vdr](https://github.com/hyperledger/indy-vdr) to execute a "validator-info" call to an Indy network. The validator info transaction script returns a great deal of information about the accessed ledger. An example of the JSON data returned by the call for an individual node is provided [below](#example-validator-info).
 
 The call can only be made by an entity with a suitably authorized DID on the ledger. For example, on the Sovrin MainNet, only Stewards and some within the Sovrin Foundation has that access.
 
@@ -38,12 +38,14 @@ The build step will take a while as 1/3 of the Internet is downloaded. Eventuall
 
 Note the last command above puts you back up to the folder in which you started. If you want to explore `von-network` you'll have to change back into the `von-network` folder.
 
-When you are finished your running the commands below and want to stop your local indy-network, change to the von-network folder and run:
+When you are finished your running the validator tool (covered in the steps below) and want to stop your local indy-network, change to the von-network folder and run:
 
 ```bash
 ./manage down
 
 ```
+
+We'll remind you of that later in these instructions.
 
 ### Clone the indy-node-monitor repo
 
@@ -94,7 +96,16 @@ When you repeat the run, you'll see that:
 - the entry from the terminate node is empty (but still present)
 - the entries of the other nodes indicate that the terminated node is not accessible
 
-Use `diff` to see all the differences, or better a visual diff tool.
+Try redirecting the output to `>bad.json` and then use `diff good.json bad.json` to see all the differences. Better yet a visual diff tool.
+
+If you are finished trying this out with a local Indy network, don't forget to go back and shutdown the instance of von-network, using the commands:
+
+``` bash
+cd ../..
+cd von-network
+./manage down
+
+```
 
 ### Extracting Useful Information
 
