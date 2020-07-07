@@ -38,6 +38,13 @@ The build step will take a while as 1/3 of the Internet is downloaded. Eventuall
 
 Note the last command above puts you back up to the folder in which you started. If you want to explore `von-network` you'll have to change back into the `von-network` folder.
 
+When you are finished your running the commands below and want to stop your local indy-network, change to the von-network folder and run:
+
+```bash
+./manage down
+
+```
+
 ### Clone the indy-node-monitor repo
 
 Run these commands to clone this repo so that you can run the fetch validator info command.
@@ -53,19 +60,21 @@ cd indy-node-monitor/fetch-validator-status
 To run the validator script, run the following command in your bash terminal from the `fetch-validator-status` folder in the `indy-node-monitor` clone:
 
 ``` bash
-GENESIS_URL=<URL> SEED=000000000000000000000000Trustee1 ./run.sh
+GENESIS_URL=<URL> SEED=<SEED> ./run.sh
 ```
 
-For the first test run:
+For the first test run using von-network:
 
-- the `<SEED>` is the Seed of the DID you [created earlier](#create-a-did).
-- the URL you can get by clicking on the `Genesis Transaction` link in the VON-Network web interface.
+- the `<SEED>` is the Indy test network Trustee seed: `000000000000000000000000Trustee1`.
+- the URL is retrieved by clicking on the `Genesis Transaction` link in the VON-Network web interface and copying the URL from the browser address bar.
 
-If you are running locally and used the same Seed that is shown above, the command is:
+If you are running locally, the full command is:
 
 ``` bash
 GENESIS_URL=http://localhost:9000/genesis SEED=000000000000000000000000Trustee1 ./run.sh
 ```
+
+If running in the browser, you will have to get the URL for the Genesis file (as described above) and replace the `localhost` URL above.
 
 You should see a very long JSON structure printed to the terminal. You can redirect the output to a file by adding something like `> good.json` at the end of the command.
 
@@ -86,6 +95,23 @@ When you repeat the run, you'll see that:
 - the entries of the other nodes indicate that the terminated node is not accessible
 
 Use `diff` to see all the differences, or better a visual diff tool.
+
+### Extracting Useful Information
+
+Once you have the script running, you can write a program that takes the JSON input and produces a more useful monitoring output file&mdash;probably still in JSON. Here is some information that would be useful to extract from the JSON output:
+
+- Detect when a node is inaccessible (as with Node 1 above) and produce standard output for that situation.
+- Detect any nodes that are accessible (populated JSON data) but that are "unreachable" to some or all of the other Indy nodes.
+  - That indicates that the internal port to the node is not accessible, even though the public port is accessible.
+- The number of transaction per Indy ledger, especially the domain ledger.
+- The average read and write times for the node.
+- The average throughput time for the node.
+- The uptime of the node (time is last restart).
+- The time since last freshness check (should be less than 5 minutes).
+
+The suggestions above are only ideas. Precise meanings of the values should be investigated, particularly for "ledger" type data (e.g. number of transactions) but that are generated on a per node basis.
+
+Note that there are three different formats for the timestamps in the data structure, and all appear to be UTC. Make sure to convert times into a single format during collection.
 
 ### Running against other Indy Networks
 
