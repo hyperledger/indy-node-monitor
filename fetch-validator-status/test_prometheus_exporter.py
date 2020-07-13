@@ -11,8 +11,27 @@ class TestPrometheusExporter(unittest.TestCase):
             self.prom.update(json.load(json_file))
         
     def test_uptime(self):
-        uptime = self.prom.registry.get_sample_value('uptime', {'node': "Node1"})
+        uptime = self.prom.registry.get_sample_value('uptime', {'node': 'Node1'})
         self.assertEqual(uptime, 576.0)
+
+    def test_transaction_ledger_count(self):
+        ledger = self.prom.registry.get_sample_value('transaction_count',{'node': 'Node1', 'ledger': 'ledger'})
+        self.assertEqual(ledger, 5)
+    
+    def test_transaction_pool_count(self):
+        pool = self.prom.registry.get_sample_value('transaction_count',{'node':'Node1', 'ledger':'pool'})
+        self.assertEqual(pool, 4)
+
+    def test_transaction_config_count(self):
+        config = self.prom.registry.get_sample_value('transaction_count', {'node':'Node1','ledger':'config'})
+        self.assertEqual(config, 0)
+
+    def test_transaction_audit_count(self):
+        audit = self.prom.registry.get_sample_value('transaction_count', {'node':'Node1','ledger':'audit'})
+        self.assertEqual(audit, 3)
+        
+
+
 
 if __name__ == '__main__':
     unittest.main()

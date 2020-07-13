@@ -1,11 +1,16 @@
 from prometheus_client import start_http_server
 from prometheus_client import CollectorRegistry, Gauge
 
+
 class PrometheusExporter():
     def __init__(self, port):
         self.port = port
         self.registry = CollectorRegistry()
-        self.g_uptime = Gauge('uptime', 'Uptime of node in seconds', ['node'], registry=self.registry)
+        self.g_uptime = Gauge('uptime', 'Uptime of node in seconds',
+                              ['node'], registry=self.registry)
+        self.g_transaction_count = Gauge('transaction_count',
+                                         'Number of transactions in each ledger',
+                                         ['node', 'ledger'], registry=self.registry)
 
     def start(self):
         start_http_server(self.port)
@@ -21,4 +26,8 @@ class PrometheusExporter():
         uptime = node_info['Metrics']['uptime']
         self.g_uptime.labels(name).set(uptime)
 
-
+        transaction_count = node_info['Metrics']['transaction-count']
+        self.g_transaction_count.labels(name, 'ledger').set(transaction_count['ledger'])
+        self.g_transaction_count.labels(name, 'pool').set(transaction_count['pool'])
+        self.g_transaction_count.labels(name, 'config').set(transaction_count['config'])
+        self.g_transaction_count.labels(name, 'audit').set(transaction_count['audit'])
