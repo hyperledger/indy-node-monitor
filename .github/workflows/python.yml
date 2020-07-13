@@ -1,12 +1,12 @@
 # This workflow will install Python dependencies and run tests
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python tests
+name: Python Tests
 
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
 
     runs-on: ubuntu-latest
 
@@ -21,4 +21,4 @@ jobs:
       run: pipenv install
     - name: Test with unittest
       working-directory: fetch-validator-status
-      run: python -m unittest test_promehteus_exporter
+      run: python -m unittest test_prometheus_exporter
