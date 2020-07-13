@@ -15,11 +15,11 @@ class TestPrometheusExporter(unittest.TestCase):
         self.assertEqual(uptime, 576.0)
 
     def test_transaction_ledger_count(self):
-        ledger = self.prom.registry.get_sample_value('transaction_count',{'node': 'Node1', 'ledger': 'ledger'})
+        ledger = self.prom.registry.get_sample_value('transaction_count', {'node': 'Node1', 'ledger': 'ledger'})
         self.assertEqual(ledger, 5)
     
     def test_transaction_pool_count(self):
-        pool = self.prom.registry.get_sample_value('transaction_count',{'node':'Node1', 'ledger':'pool'})
+        pool = self.prom.registry.get_sample_value('transaction_count', {'node':'Node1', 'ledger':'pool'})
         self.assertEqual(pool, 4)
 
     def test_transaction_config_count(self):
@@ -29,6 +29,14 @@ class TestPrometheusExporter(unittest.TestCase):
     def test_transaction_audit_count(self):
         audit = self.prom.registry.get_sample_value('transaction_count', {'node':'Node1','ledger':'audit'})
         self.assertEqual(audit, 3)
+
+    def test_read_transactions(self):
+        read_transaction = self.prom.registry.get_sample_value('transaction_rate', {'node': 'Node1', 'mode': 'read'})
+        self.assertEqual(read_transaction, 0.0606915686)
+
+    def test_write_transactions(self):
+        write_transaction = self.prom.registry.get_sample_value('transaction_rate', {'node': 'Node1', 'mode': 'write'})
+        self.assertEqual(write_transaction, 0.0)
         
 
 

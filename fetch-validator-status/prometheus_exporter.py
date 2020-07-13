@@ -11,9 +11,12 @@ class PrometheusExporter():
         self.g_transaction_count = Gauge('transaction_count',
                                          'Number of transactions in each ledger',
                                          ['node', 'ledger'], registry=self.registry)
+        self.g_transaction_rate = Gauge('transaction_rate',
+                                        'Rate of transactions in seconds',
+                                        ['node', 'mode'], registry=self.registry)
 
     def start(self):
-        start_http_server(self.port)
+        start_http_server(self.port, registry=self.registry)
 
     def update(self, metrics):
         for node_name, data in metrics.items():
@@ -31,3 +34,7 @@ class PrometheusExporter():
         self.g_transaction_count.labels(name, 'pool').set(transaction_count['pool'])
         self.g_transaction_count.labels(name, 'config').set(transaction_count['config'])
         self.g_transaction_count.labels(name, 'audit').set(transaction_count['audit'])
+
+        transaction_rate_avg = node_info['Metrics']['average-per-second']
+        self.g_transaction_rate.labels(name, 'read').set(transaction_rate_avg['read-transactions'])
+        self.g_transaction_rate.labels(name, 'write').set(transaction_rate_avg['write-transactions'])
