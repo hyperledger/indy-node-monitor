@@ -8,6 +8,9 @@ import urllib.request
 
 import nacl.signing
 
+from prometheus_client import start_http_server
+from prometheus_client import Gauge
+
 import indy_vdr
 from indy_vdr.ledger import build_get_validator_info_request, Request
 from indy_vdr.pool import open_pool
@@ -49,8 +52,10 @@ async def fetch_status(genesis_path: str, ident: DidKey):
             jsval = json.loads(val)
             result[node] = jsval
         except json.JSONDecodeError:
-            pass
+            pass 
     print(json.dumps(result, indent=2))
+    g = Gauge('node_count', 'Number of active codes')
+    g.set(len(result.keys()))
 
 
 def get_script_dir():
@@ -79,3 +84,9 @@ if __name__ == "__main__":
     log("DID:", ident.did, " Verkey:", ident.verkey)
 
     asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident))
+
+    start_http_server(8000)
+
+    while True:
+        # TODO: do something
+        pass
