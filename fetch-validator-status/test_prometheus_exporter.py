@@ -1,13 +1,14 @@
 import unittest
 import json
+import pathlib
+
 from prometheus_exporter import PrometheusExporter
 
 class TestPrometheusExporter(unittest.TestCase):
 
     def setUp(self):
         self.prom = PrometheusExporter(4711)
-        # TODO: use relative path
-        with open('/home/kwittek/development/sovrin/indy-node-monitor/fetch-validator-status/example_output.json') as json_file:
+        with open(str(pathlib.Path(__file__).parent.absolute()) + '/example_output.json') as json_file:
             self.prom.update(json.load(json_file))
         
     def test_uptime(self):
