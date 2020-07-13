@@ -37,9 +37,10 @@ class TestPrometheusExporter(unittest.TestCase):
     def test_write_transactions(self):
         write_transaction = self.prom.registry.get_sample_value('transaction_rate', {'node': 'Node1', 'mode': 'write'})
         self.assertEqual(write_transaction, 0.0)
+
+    def test_master_throughput(self):
+        master_throughput = self.prom.registry.get_sample_value('throughput', {'node': 'Node1'})
+        self.assertEqual(master_throughput, 42.7)
         
-
-
-
 if __name__ == '__main__':
     unittest.main()

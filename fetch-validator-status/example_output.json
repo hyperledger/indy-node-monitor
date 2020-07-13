@@ -78,7 +78,7 @@
               "0": 0.0,
               "1": 0.0
             },
-            "master throughput": null,
+            "master throughput": 42.7,
             "total requests": 0,
             "avg backup throughput": 0.0,
             "master throughput ratio": null,

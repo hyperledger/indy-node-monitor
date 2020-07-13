@@ -14,6 +14,9 @@ class PrometheusExporter():
         self.g_transaction_rate = Gauge('transaction_rate',
                                         'Rate of transactions in seconds',
                                         ['node', 'mode'], registry=self.registry)
+        self.g_throughput = Gauge('throughput',
+                                        'Master throughput',
+                                        ['node'], registry=self.registry)
 
     def start(self):
         start_http_server(self.port, registry=self.registry)
@@ -38,3 +41,8 @@ class PrometheusExporter():
         transaction_rate_avg = node_info['Metrics']['average-per-second']
         self.g_transaction_rate.labels(name, 'read').set(transaction_rate_avg['read-transactions'])
         self.g_transaction_rate.labels(name, 'write').set(transaction_rate_avg['write-transactions'])
+
+        master_throughput = node_info['Metrics']['master throughput']
+        if master_throughput == None:
+            master_throughput = 0.0
+        self.g_throughput.labels(name).set(master_throughput)
