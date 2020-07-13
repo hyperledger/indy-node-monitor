@@ -10,9 +10,9 @@ class TestPrometheusExporter(unittest.TestCase):
         with open('/home/kwittek/development/sovrin/indy-node-monitor/fetch-validator-status/example_output.json') as json_file:
             self.prom.update(json.load(json_file))
         
-    def test_node_count(self):
-        node_count = self.prom.registry.get_sample_value('node_count')
-        self.assertEqual(node_count, 4.0)
+    def test_uptime(self):
+        uptime = self.prom.registry.get_sample_value('uptime', {'node': "Node1"})
+        self.assertEqual(uptime, 576.0)
 
 if __name__ == '__main__':
     unittest.main()
