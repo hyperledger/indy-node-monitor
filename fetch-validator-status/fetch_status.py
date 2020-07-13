@@ -5,16 +5,15 @@ import json
 import os
 import sys
 import urllib.request
+import time
 
 import nacl.signing
-
-from prometheus_client import start_http_server
-from prometheus_client import Gauge
 
 import indy_vdr
 from indy_vdr.ledger import build_get_validator_info_request, Request
 from indy_vdr.pool import open_pool
 
+from prometheus_exporter import PrometheusExporter
 
 def log(*args):
     print(*args, "\n", file=sys.stderr)
@@ -54,9 +53,7 @@ async def fetch_status(genesis_path: str, ident: DidKey):
         except json.JSONDecodeError:
             pass 
     print(json.dumps(result, indent=2))
-    g = Gauge('node_count', 'Number of active codes')
-    g.set(len(result.keys()))
-
+    return result
 
 def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
@@ -83,10 +80,10 @@ if __name__ == "__main__":
     ident = DidKey(did_seed)
     log("DID:", ident.did, " Verkey:", ident.verkey)
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident))
-
-    start_http_server(8000)
+    prom = PrometheusExporter(8000)
+    prom.start()
 
     while True:
-        # TODO: do something
-        pass
+        result = asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident))
+        prom.update(result)
+        time.sleep(5)

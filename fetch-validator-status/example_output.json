@@ -1,0 +1,1330 @@
+{
+  "Node1": {
+    "op": "REPLY",
+    "result": {
+      "type": "119",
+      "identifier": "V4SGRU86Z58d6TV7PBUe6f",
+      "reqId": 1594622115703491000,
+      "data": {
+        "response-version": "0.0.1",
+        "timestamp": 1594622115,
+        "Hardware": {
+          "HDD_used_by_node": "0 MBs"
+        },
+        "Pool_info": {
+          "Read_only": false,
+          "Total_nodes_count": 4,
+          "f_value": 1,
+          "Quorums": "{'n': 4, 'f': 1, 'weak': Quorum(2), 'strong': Quorum(3), 'propagate': Quorum(2), 'prepare': Quorum(2), 'commit': Quorum(3), 'reply': Quorum(2), 'view_change': Quorum(3), 'election': Quorum(3), 'view_change_ack': Quorum(2), 'view_change_done': Quorum(3), 'same_consistency_proof': Quorum(2), 'consistency_proof': Quorum(2), 'ledger_status': Quorum(2), 'ledger_status_last_3PC': Quorum(2), 'checkpoint': Quorum(2), 'timestamp': Quorum(2), 'bls_signatures': Quorum(3), 'observer_data': Quorum(2), 'backup_instance_faulty': Quorum(2)}",
+          "Reachable_nodes": [
+            [
+              "Node1",
+              0
+            ],
+            [
+              "Node2",
+              1
+            ],
+            [
+              "Node3",
+              null
+            ],
+            [
+              "Node4",
+              null
+            ]
+          ],
+          "Unreachable_nodes": [],
+          "Reachable_nodes_count": 4,
+          "Unreachable_nodes_count": 0,
+          "Blacklisted_nodes": [],
+          "Suspicious_nodes": ""
+        },
+        "Protocol": {},
+        "Node_info": {
+          "Name": "Node1",
+          "Mode": "participating",
+          "Client_port": 9702,
+          "Client_ip": "0.0.0.0",
+          "Client_protocol": "tcp",
+          "Node_port": 9701,
+          "Node_ip": "0.0.0.0",
+          "Node_protocol": "tcp",
+          "did": "Gw6pDLhcBcoQesN72qfotTgFa7cbuqZpkX3Xo6pLhPhv",
+          "verkey": "33nHHYKnqmtGAVfZZGoP8hpeExeH45Fo8cKmd5mcnKYk7XgWNBxkkKJ",
+          "BLS_key": "4N8aUNHSgjQVgkpm8nhNEfDf6txHznoYREg9kirmJrkivgL4oSEimFF6nsQ6M41QvhM2Z33nves5vfSn9n1UwNFJBYtWVnHYMATn76vLuL3zU88KyeAYcHfsih3He6UHcXDxcaecHVz6jhCYz1P2UZn2bDVruL5wXpehgBfBaLKm3Ba",
+          "Metrics": {
+            "Delta": 0.1,
+            "Lambda": 240,
+            "Omega": 20,
+            "instances started": {
+              "0": 39658.680210648,
+              "1": 39658.683093748
+            },
+            "ordered request counts": {
+              "0": 0,
+              "1": 0
+            },
+            "ordered request durations": {
+              "0": 0,
+              "1": 0
+            },
+            "max master request latencies": 0,
+            "client avg request latencies": {
+              "0": null,
+              "1": null
+            },
+            "throughput": {
+              "0": 0.0,
+              "1": 0.0
+            },
+            "master throughput": null,
+            "total requests": 0,
+            "avg backup throughput": 0.0,
+            "master throughput ratio": null,
+            "average-per-second": {
+              "read-transactions": 0.0606915686,
+              "write-transactions": 0.0
+            },
+            "transaction-count": {
+              "ledger": 5,
+              "pool": 4,
+              "config": 0,
+              "audit": 3
+            },
+            "uptime": 576
+          },
+          "Committed_ledger_root_hashes": {
+            "3": "b'GoE282BykcqZQv3C8R9LGES2uLjvmch57CPBaGCt3iwY'",
+            "0": "b'CWbmNc4UzKyiZAxzPnwQYt6WLoxe4Mc481aw1P5PwV51'",
+            "2": "b'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'",
+            "1": "b'DJLzEifT7n9DbiCHqQ5KWrWUPFBiZt349popapDfzo5p'"
+          },
+          "Committed_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "Uncommitted_ledger_root_hashes": {},
+          "Uncommitted_ledger_txns": {
+            "3": {
+              "Count": 0
+            },
+            "0": {
+              "Count": 0
+            },
+            "2": {
+              "Count": 0
+            },
+            "1": {
+              "Count": 0
+            }
+          },
+          "Uncommitted_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "View_change_status": {
+            "View_No": 0,
+            "VC_in_progress": false,
+            "Last_view_change_started_at": "1970-01-01 00:00:00",
+            "Last_complete_view_no": 0,
+            "IC_queue": {},
+            "VCDone_queue": {}
+          },
+          "Catchup_status": {
+            "Ledger_statuses": {
+              "3": "synced",
+              "0": "synced",
+              "2": "synced",
+              "1": "synced"
+            },
+            "Received_LedgerStatus": "",
+            "Waiting_consistency_proof_msgs": {
+              "3": null,
+              "0": null,
+              "2": null,
+              "1": null
+            },
+            "Number_txns_in_catchup": {
+              "3": 0,
+              "0": 0,
+              "2": 0,
+              "1": 0
+            },
+            "Last_txn_3PC_keys": {
+              "3": {
+                "Node3": [
+                  null,
+                  null
+                ],
+                "Node4": [
+                  null,
+                  null
+                ]
+              },
+              "0": {
+                "Node3": [
+                  null,
+                  null
+                ],
+                "Node4": [
+                  null,
+                  null
+                ]
+              },
+              "2": {
+                "Node3": [
+                  null,
+                  null
+                ],
+                "Node2": [
+                  null,
+                  null
+                ]
+              },
+              "1": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node3": [
+                  null,
+                  null
+                ]
+              }
+            }
+          },
+          "Freshness_status": {
+            "0": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "1": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "2": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            }
+          },
+          "Requests_timeouts": {
+            "Propagates_phase_req_timeouts": 0,
+            "Ordering_phase_req_timeouts": 0
+          },
+          "Count_of_replicas": 2,
+          "Replicas_status": {
+            "Node1:0": {
+              "Primary": "Node1:0",
+              "Watermarks": "0:300",
+              "Last_ordered_3PC": [
+                0,
+                3
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            },
+            "Node1:1": {
+              "Primary": "Node2:1",
+              "Watermarks": "0:9223372036854775807",
+              "Last_ordered_3PC": [
+                0,
+                0
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            }
+          }
+        },
+        "Software": {
+          "OS_version": "Linux-4.19.104-microsoft-standard-x86_64-with-debian-buster-sid",
+          "Installed_packages": [
+            "zipp 3.1.0",
+            "yarl 1.4.2",
+            "wcwidth 0.2.5",
+            "ujson 1.33",
+            "typing 3.7.4.1",
+            "typing-extensions 3.7.4.2",
+            "timeout-decorator 0.4.0",
+            "supervisor 4.0.4",
+            "sortedcontainers 1.5.7",
+            "six 1.11.0",
+            "sha3 0.2.1",
+            "setuptools 40.6.2",
+            "semver 2.7.9",
+            "rlp 0.6.0",
+            "pyzmq 18.1.0",
+            "PyYAML 5.1.2",
+            "python3-indy 1.15.0",
+            "python-ursa 0.1.0",
+            "python-rocksdb 0.6.9",
+            "python-dateutil 2.6.1",
+            "pytest 5.4.3",
+            "pyparsing 2.4.7",
+            "Pympler 0.8",
+            "Pygments 2.2.0",
+            "pycparser 2.20",
+            "pycares 3.1.1",
+            "py 1.8.2",
+            "psutil 5.4.3",
+            "prompt-toolkit 0.57",
+            "portalocker 0.5.7",
+            "pluggy 0.13.1",
+            "pip 9.0.3",
+            "packaging 19.0",
+            "orderedset 2.0.3",
+            "multidict 4.7.6",
+            "msgpack-python 0.4.6",
+            "more-itertools 8.4.0",
+            "meld3 2.0.1",
+            "MarkupSafe 1.1.1",
+            "libnacl 1.6.1",
+            "leveldb 0.201",
+            "jsonpickle 0.9.6",
+            "Jinja2 2.11.2",
+            "ioflo 1.5.4",
+            "intervaltree 2.1.0",
+            "indy-plenum 1.13.0.dev0",
+            "indy-node 1.12.3",
+            "importlib-metadata 1.6.1",
+            "idna 2.9",
+            "idna-ssl 1.1.0",
+            "distro 1.3.0",
+            "chardet 3.0.4",
+            "cffi 1.14.0",
+            "cchardet 2.1.6",
+            "base58 1.0.3",
+            "attrs 19.3.0",
+            "async-timeout 3.0.1",
+            "aiosqlite 0.10.0",
+            "aiohttp 3.5.4",
+            "aiohttp-jinja2 1.1.2",
+            "aiodns 2.0.0"
+          ],
+          "Indy_packages": [
+            ""
+          ],
+          "indy-node": "1.12.3",
+          "sovrin": "unknown"
+        },
+        "Update_time": "Monday, July 13, 2020 6:35:15 AM +0000",
+        "Memory_profiler": [],
+        "Extractions": {
+          "journalctl_exceptions": [
+            ""
+          ],
+          "indy-node_status": [
+            ""
+          ],
+          "node-control status": [
+            ""
+          ],
+          "upgrade_log": "",
+          "stops_stat": null
+        }
+      }
+    }
+  },
+  "Node2": {
+    "op": "REPLY",
+    "result": {
+      "type": "119",
+      "identifier": "V4SGRU86Z58d6TV7PBUe6f",
+      "reqId": 1594622115703491000,
+      "data": {
+        "response-version": "0.0.1",
+        "timestamp": 1594622115,
+        "Hardware": {
+          "HDD_used_by_node": "0 MBs"
+        },
+        "Pool_info": {
+          "Read_only": false,
+          "Total_nodes_count": 4,
+          "f_value": 1,
+          "Quorums": "{'n': 4, 'f': 1, 'weak': Quorum(2), 'strong': Quorum(3), 'propagate': Quorum(2), 'prepare': Quorum(2), 'commit': Quorum(3), 'reply': Quorum(2), 'view_change': Quorum(3), 'election': Quorum(3), 'view_change_ack': Quorum(2), 'view_change_done': Quorum(3), 'same_consistency_proof': Quorum(2), 'consistency_proof': Quorum(2), 'ledger_status': Quorum(2), 'ledger_status_last_3PC': Quorum(2), 'checkpoint': Quorum(2), 'timestamp': Quorum(2), 'bls_signatures': Quorum(3), 'observer_data': Quorum(2), 'backup_instance_faulty': Quorum(2)}",
+          "Reachable_nodes": [
+            [
+              "Node1",
+              0
+            ],
+            [
+              "Node2",
+              1
+            ],
+            [
+              "Node3",
+              null
+            ],
+            [
+              "Node4",
+              null
+            ]
+          ],
+          "Unreachable_nodes": [],
+          "Reachable_nodes_count": 4,
+          "Unreachable_nodes_count": 0,
+          "Blacklisted_nodes": [],
+          "Suspicious_nodes": ""
+        },
+        "Protocol": {},
+        "Node_info": {
+          "Name": "Node2",
+          "Mode": "participating",
+          "Client_port": 9704,
+          "Client_ip": "0.0.0.0",
+          "Client_protocol": "tcp",
+          "Node_port": 9703,
+          "Node_ip": "0.0.0.0",
+          "Node_protocol": "tcp",
+          "did": "8ECVSk179mjsjKRLWiQtssMLgp6EPhWXtaYyStWPSGAb",
+          "verkey": "72XEVLaj3htbTYyNXeJWXJCj3ffeJHTuYLtV4PdU1n72YsCzo65aBZ6",
+          "BLS_key": "37rAPpXVoxzKhz7d9gkUe52XuXryuLXoM6P6LbWDB7LSbG62Lsb33sfG7zqS8TK1MXwuCHj1FKNzVpsnafmqLG1vXN88rt38mNFs9TENzm4QHdBzsvCuoBnPH7rpYYDo9DZNJePaDvRvqJKByCabubJz3XXKbEeshzpz4Ma5QYpJqjk",
+          "Metrics": {
+            "Delta": 0.1,
+            "Lambda": 240,
+            "Omega": 20,
+            "instances started": {
+              "0": 39658.364149648,
+              "1": 39658.368147048
+            },
+            "ordered request counts": {
+              "0": 0,
+              "1": 0
+            },
+            "ordered request durations": {
+              "0": 0,
+              "1": 0
+            },
+            "max master request latencies": 0,
+            "client avg request latencies": {
+              "0": null,
+              "1": null
+            },
+            "throughput": {
+              "0": 0.0,
+              "1": 0.0
+            },
+            "master throughput": null,
+            "total requests": 0,
+            "avg backup throughput": 0.0,
+            "master throughput ratio": null,
+            "average-per-second": {
+              "read-transactions": 0.0641360615,
+              "write-transactions": 0.0
+            },
+            "transaction-count": {
+              "ledger": 5,
+              "pool": 4,
+              "config": 0,
+              "audit": 3
+            },
+            "uptime": 576
+          },
+          "Committed_ledger_root_hashes": {
+            "3": "b'GoE282BykcqZQv3C8R9LGES2uLjvmch57CPBaGCt3iwY'",
+            "0": "b'CWbmNc4UzKyiZAxzPnwQYt6WLoxe4Mc481aw1P5PwV51'",
+            "2": "b'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'",
+            "1": "b'DJLzEifT7n9DbiCHqQ5KWrWUPFBiZt349popapDfzo5p'"
+          },
+          "Committed_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "Uncommitted_ledger_root_hashes": {},
+          "Uncommitted_ledger_txns": {
+            "3": {
+              "Count": 0
+            },
+            "0": {
+              "Count": 0
+            },
+            "2": {
+              "Count": 0
+            },
+            "1": {
+              "Count": 0
+            }
+          },
+          "Uncommitted_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "View_change_status": {
+            "View_No": 0,
+            "VC_in_progress": false,
+            "Last_view_change_started_at": "1970-01-01 00:00:00",
+            "Last_complete_view_no": 0,
+            "IC_queue": {},
+            "VCDone_queue": {}
+          },
+          "Catchup_status": {
+            "Ledger_statuses": {
+              "3": "synced",
+              "0": "synced",
+              "2": "synced",
+              "1": "synced"
+            },
+            "Received_LedgerStatus": "",
+            "Waiting_consistency_proof_msgs": {
+              "3": null,
+              "0": null,
+              "2": null,
+              "1": null
+            },
+            "Number_txns_in_catchup": {
+              "3": 0,
+              "0": 0,
+              "2": 0,
+              "1": 0
+            },
+            "Last_txn_3PC_keys": {
+              "3": {
+                "Node4": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "0": {
+                "Node4": [
+                  null,
+                  null
+                ],
+                "Node3": [
+                  null,
+                  null
+                ]
+              },
+              "2": {
+                "Node4": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "1": {
+                "Node3": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              }
+            }
+          },
+          "Freshness_status": {
+            "0": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "1": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "2": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            }
+          },
+          "Requests_timeouts": {
+            "Propagates_phase_req_timeouts": 0,
+            "Ordering_phase_req_timeouts": 0
+          },
+          "Count_of_replicas": 2,
+          "Replicas_status": {
+            "Node2:0": {
+              "Primary": "Node1:0",
+              "Watermarks": "0:300",
+              "Last_ordered_3PC": [
+                0,
+                3
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            },
+            "Node2:1": {
+              "Primary": "Node2:1",
+              "Watermarks": "0:300",
+              "Last_ordered_3PC": [
+                0,
+                0
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            }
+          }
+        },
+        "Software": {
+          "OS_version": "Linux-4.19.104-microsoft-standard-x86_64-with-debian-buster-sid",
+          "Installed_packages": [
+            "zipp 3.1.0",
+            "yarl 1.4.2",
+            "wcwidth 0.2.5",
+            "ujson 1.33",
+            "typing 3.7.4.1",
+            "typing-extensions 3.7.4.2",
+            "timeout-decorator 0.4.0",
+            "supervisor 4.0.4",
+            "sortedcontainers 1.5.7",
+            "six 1.11.0",
+            "sha3 0.2.1",
+            "setuptools 40.6.2",
+            "semver 2.7.9",
+            "rlp 0.6.0",
+            "pyzmq 18.1.0",
+            "PyYAML 5.1.2",
+            "python3-indy 1.15.0",
+            "python-ursa 0.1.0",
+            "python-rocksdb 0.6.9",
+            "python-dateutil 2.6.1",
+            "pytest 5.4.3",
+            "pyparsing 2.4.7",
+            "Pympler 0.8",
+            "Pygments 2.2.0",
+            "pycparser 2.20",
+            "pycares 3.1.1",
+            "py 1.8.2",
+            "psutil 5.4.3",
+            "prompt-toolkit 0.57",
+            "portalocker 0.5.7",
+            "pluggy 0.13.1",
+            "pip 9.0.3",
+            "packaging 19.0",
+            "orderedset 2.0.3",
+            "multidict 4.7.6",
+            "msgpack-python 0.4.6",
+            "more-itertools 8.4.0",
+            "meld3 2.0.1",
+            "MarkupSafe 1.1.1",
+            "libnacl 1.6.1",
+            "leveldb 0.201",
+            "jsonpickle 0.9.6",
+            "Jinja2 2.11.2",
+            "ioflo 1.5.4",
+            "intervaltree 2.1.0",
+            "indy-plenum 1.13.0.dev0",
+            "indy-node 1.12.3",
+            "importlib-metadata 1.6.1",
+            "idna 2.9",
+            "idna-ssl 1.1.0",
+            "distro 1.3.0",
+            "chardet 3.0.4",
+            "cffi 1.14.0",
+            "cchardet 2.1.6",
+            "base58 1.0.3",
+            "attrs 19.3.0",
+            "async-timeout 3.0.1",
+            "aiosqlite 0.10.0",
+            "aiohttp 3.5.4",
+            "aiohttp-jinja2 1.1.2",
+            "aiodns 2.0.0"
+          ],
+          "Indy_packages": [
+            ""
+          ],
+          "indy-node": "1.12.3",
+          "sovrin": "unknown"
+        },
+        "Update_time": "Monday, July 13, 2020 6:35:15 AM +0000",
+        "Memory_profiler": [],
+        "Extractions": {
+          "journalctl_exceptions": [
+            ""
+          ],
+          "indy-node_status": [
+            ""
+          ],
+          "node-control status": [
+            ""
+          ],
+          "upgrade_log": "",
+          "stops_stat": null
+        }
+      }
+    }
+  },
+  "Node3": {
+    "op": "REPLY",
+    "result": {
+      "type": "119",
+      "identifier": "V4SGRU86Z58d6TV7PBUe6f",
+      "reqId": 1594622115703491000,
+      "data": {
+        "response-version": "0.0.1",
+        "timestamp": 1594622115,
+        "Hardware": {
+          "HDD_used_by_node": "0 MBs"
+        },
+        "Pool_info": {
+          "Read_only": false,
+          "Total_nodes_count": 4,
+          "f_value": 1,
+          "Quorums": "{'n': 4, 'f': 1, 'weak': Quorum(2), 'strong': Quorum(3), 'propagate': Quorum(2), 'prepare': Quorum(2), 'commit': Quorum(3), 'reply': Quorum(2), 'view_change': Quorum(3), 'election': Quorum(3), 'view_change_ack': Quorum(2), 'view_change_done': Quorum(3), 'same_consistency_proof': Quorum(2), 'consistency_proof': Quorum(2), 'ledger_status': Quorum(2), 'ledger_status_last_3PC': Quorum(2), 'checkpoint': Quorum(2), 'timestamp': Quorum(2), 'bls_signatures': Quorum(3), 'observer_data': Quorum(2), 'backup_instance_faulty': Quorum(2)}",
+          "Reachable_nodes": [
+            [
+              "Node1",
+              0
+            ],
+            [
+              "Node2",
+              1
+            ],
+            [
+              "Node3",
+              null
+            ],
+            [
+              "Node4",
+              null
+            ]
+          ],
+          "Unreachable_nodes": [],
+          "Reachable_nodes_count": 4,
+          "Unreachable_nodes_count": 0,
+          "Blacklisted_nodes": [],
+          "Suspicious_nodes": ""
+        },
+        "Protocol": {},
+        "Node_info": {
+          "Name": "Node3",
+          "Mode": "participating",
+          "Client_port": 9706,
+          "Client_ip": "0.0.0.0",
+          "Client_protocol": "tcp",
+          "Node_port": 9705,
+          "Node_ip": "0.0.0.0",
+          "Node_protocol": "tcp",
+          "did": "DKVxG2fXXTU8yT5N7hGEbXB3dfdAnYv1JczDUHpmDxya",
+          "verkey": "5LCf9oRXkDBNG61PpSsBnWDLhyCZWzYYoHAJSwusoSLZCsAre9a5BGL",
+          "BLS_key": "3WFpdbg7C5cnLYZwFZevJqhubkFALBfCBBok15GdrKMUhUjGsk3jV6QKj6MZgEubF7oqCafxNdkm7eswgA4sdKTRc82tLGzZBd6vNqU8dupzup6uYUf32KTHTPQbuUM8Yk4QFXjEf2Usu2TJcNkdgpyeUSX42u5LqdDDpNSWUK5deC5",
+          "Metrics": {
+            "Delta": 0.1,
+            "Lambda": 240,
+            "Omega": 20,
+            "instances started": {
+              "0": 39658.690182648,
+              "1": 39658.693642448
+            },
+            "ordered request counts": {
+              "0": 0,
+              "1": 0
+            },
+            "ordered request durations": {
+              "0": 0,
+              "1": 0
+            },
+            "max master request latencies": 0,
+            "client avg request latencies": {
+              "0": null,
+              "1": null
+            },
+            "throughput": {
+              "0": 0.0,
+              "1": 0.0
+            },
+            "master throughput": null,
+            "total requests": 0,
+            "avg backup throughput": 0.0,
+            "master throughput ratio": null,
+            "average-per-second": {
+              "read-transactions": 0.0676266229,
+              "write-transactions": 0.0
+            },
+            "transaction-count": {
+              "ledger": 5,
+              "pool": 4,
+              "config": 0,
+              "audit": 3
+            },
+            "uptime": 576
+          },
+          "Committed_ledger_root_hashes": {
+            "3": "b'GoE282BykcqZQv3C8R9LGES2uLjvmch57CPBaGCt3iwY'",
+            "0": "b'CWbmNc4UzKyiZAxzPnwQYt6WLoxe4Mc481aw1P5PwV51'",
+            "2": "b'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'",
+            "1": "b'DJLzEifT7n9DbiCHqQ5KWrWUPFBiZt349popapDfzo5p'"
+          },
+          "Committed_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "Uncommitted_ledger_root_hashes": {},
+          "Uncommitted_ledger_txns": {
+            "3": {
+              "Count": 0
+            },
+            "0": {
+              "Count": 0
+            },
+            "2": {
+              "Count": 0
+            },
+            "1": {
+              "Count": 0
+            }
+          },
+          "Uncommitted_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "View_change_status": {
+            "View_No": 0,
+            "VC_in_progress": false,
+            "Last_view_change_started_at": "1970-01-01 00:00:00",
+            "Last_complete_view_no": 0,
+            "IC_queue": {},
+            "VCDone_queue": {}
+          },
+          "Catchup_status": {
+            "Ledger_statuses": {
+              "3": "synced",
+              "0": "synced",
+              "2": "synced",
+              "1": "synced"
+            },
+            "Received_LedgerStatus": "",
+            "Waiting_consistency_proof_msgs": {
+              "3": null,
+              "0": null,
+              "2": null,
+              "1": null
+            },
+            "Number_txns_in_catchup": {
+              "3": 0,
+              "0": 0,
+              "2": 0,
+              "1": 0
+            },
+            "Last_txn_3PC_keys": {
+              "3": {
+                "Node1": [
+                  null,
+                  null
+                ],
+                "Node2": [
+                  null,
+                  null
+                ]
+              },
+              "0": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "2": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node4": [
+                  null,
+                  null
+                ]
+              },
+              "1": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              }
+            }
+          },
+          "Freshness_status": {
+            "0": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "1": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "2": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            }
+          },
+          "Requests_timeouts": {
+            "Propagates_phase_req_timeouts": 0,
+            "Ordering_phase_req_timeouts": 0
+          },
+          "Count_of_replicas": 2,
+          "Replicas_status": {
+            "Node3:0": {
+              "Primary": "Node1:0",
+              "Watermarks": "0:300",
+              "Last_ordered_3PC": [
+                0,
+                3
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            },
+            "Node3:1": {
+              "Primary": "Node2:1",
+              "Watermarks": "0:9223372036854775807",
+              "Last_ordered_3PC": [
+                0,
+                0
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            }
+          }
+        },
+        "Software": {
+          "OS_version": "Linux-4.19.104-microsoft-standard-x86_64-with-debian-buster-sid",
+          "Installed_packages": [
+            "zipp 3.1.0",
+            "yarl 1.4.2",
+            "wcwidth 0.2.5",
+            "ujson 1.33",
+            "typing 3.7.4.1",
+            "typing-extensions 3.7.4.2",
+            "timeout-decorator 0.4.0",
+            "supervisor 4.0.4",
+            "sortedcontainers 1.5.7",
+            "six 1.11.0",
+            "sha3 0.2.1",
+            "setuptools 40.6.2",
+            "semver 2.7.9",
+            "rlp 0.6.0",
+            "pyzmq 18.1.0",
+            "PyYAML 5.1.2",
+            "python3-indy 1.15.0",
+            "python-ursa 0.1.0",
+            "python-rocksdb 0.6.9",
+            "python-dateutil 2.6.1",
+            "pytest 5.4.3",
+            "pyparsing 2.4.7",
+            "Pympler 0.8",
+            "Pygments 2.2.0",
+            "pycparser 2.20",
+            "pycares 3.1.1",
+            "py 1.8.2",
+            "psutil 5.4.3",
+            "prompt-toolkit 0.57",
+            "portalocker 0.5.7",
+            "pluggy 0.13.1",
+            "pip 9.0.3",
+            "packaging 19.0",
+            "orderedset 2.0.3",
+            "multidict 4.7.6",
+            "msgpack-python 0.4.6",
+            "more-itertools 8.4.0",
+            "meld3 2.0.1",
+            "MarkupSafe 1.1.1",
+            "libnacl 1.6.1",
+            "leveldb 0.201",
+            "jsonpickle 0.9.6",
+            "Jinja2 2.11.2",
+            "ioflo 1.5.4",
+            "intervaltree 2.1.0",
+            "indy-plenum 1.13.0.dev0",
+            "indy-node 1.12.3",
+            "importlib-metadata 1.6.1",
+            "idna 2.9",
+            "idna-ssl 1.1.0",
+            "distro 1.3.0",
+            "chardet 3.0.4",
+            "cffi 1.14.0",
+            "cchardet 2.1.6",
+            "base58 1.0.3",
+            "attrs 19.3.0",
+            "async-timeout 3.0.1",
+            "aiosqlite 0.10.0",
+            "aiohttp 3.5.4",
+            "aiohttp-jinja2 1.1.2",
+            "aiodns 2.0.0"
+          ],
+          "Indy_packages": [
+            ""
+          ],
+          "indy-node": "1.12.3",
+          "sovrin": "unknown"
+        },
+        "Update_time": "Monday, July 13, 2020 6:35:15 AM +0000",
+        "Memory_profiler": [],
+        "Extractions": {
+          "journalctl_exceptions": [
+            ""
+          ],
+          "indy-node_status": [
+            ""
+          ],
+          "node-control status": [
+            ""
+          ],
+          "upgrade_log": "",
+          "stops_stat": null
+        }
+      }
+    }
+  },
+  "Node4": {
+    "op": "REPLY",
+    "result": {
+      "type": "119",
+      "identifier": "V4SGRU86Z58d6TV7PBUe6f",
+      "reqId": 1594622115703491000,
+      "data": {
+        "response-version": "0.0.1",
+        "timestamp": 1594622115,
+        "Hardware": {
+          "HDD_used_by_node": "0 MBs"
+        },
+        "Pool_info": {
+          "Read_only": false,
+          "Total_nodes_count": 4,
+          "f_value": 1,
+          "Quorums": "{'n': 4, 'f': 1, 'weak': Quorum(2), 'strong': Quorum(3), 'propagate': Quorum(2), 'prepare': Quorum(2), 'commit': Quorum(3), 'reply': Quorum(2), 'view_change': Quorum(3), 'election': Quorum(3), 'view_change_ack': Quorum(2), 'view_change_done': Quorum(3), 'same_consistency_proof': Quorum(2), 'consistency_proof': Quorum(2), 'ledger_status': Quorum(2), 'ledger_status_last_3PC': Quorum(2), 'checkpoint': Quorum(2), 'timestamp': Quorum(2), 'bls_signatures': Quorum(3), 'observer_data': Quorum(2), 'backup_instance_faulty': Quorum(2)}",
+          "Reachable_nodes": [
+            [
+              "Node1",
+              0
+            ],
+            [
+              "Node2",
+              1
+            ],
+            [
+              "Node3",
+              null
+            ],
+            [
+              "Node4",
+              null
+            ]
+          ],
+          "Unreachable_nodes": [],
+          "Reachable_nodes_count": 4,
+          "Unreachable_nodes_count": 0,
+          "Blacklisted_nodes": [],
+          "Suspicious_nodes": ""
+        },
+        "Protocol": {},
+        "Node_info": {
+          "Name": "Node4",
+          "Mode": "participating",
+          "Client_port": 9708,
+          "Client_ip": "0.0.0.0",
+          "Client_protocol": "tcp",
+          "Node_port": 9707,
+          "Node_ip": "0.0.0.0",
+          "Node_protocol": "tcp",
+          "did": "4PS3EDQ3dW1tci1Bp6543CfuuebjFrg36kLAUcskGfaA",
+          "verkey": "68yVKe5AeXynD5A8K91aTZFjCQEoKV4hKPtauqjHa9phgitWEGkS5TR",
+          "BLS_key": "2zN3bHM1m4rLz54MJHYSwvqzPchYp8jkHswveCLAEJVcX6Mm1wHQD1SkPYMzUDTZvWvhuE6VNAkK3KxVeEmsanSmvjVkReDeBEMxeDaayjcZjFGPydyey1qxBHmTvAnBKoPydvuTAqx5f7YNNRAdeLmUi99gERUU7TD8KfAa6MpQ9bw",
+          "Metrics": {
+            "Delta": 0.1,
+            "Lambda": 240,
+            "Omega": 20,
+            "instances started": {
+              "0": 39658.582874148,
+              "1": 39658.586160048
+            },
+            "ordered request counts": {
+              "0": 0,
+              "1": 0
+            },
+            "ordered request durations": {
+              "0": 0,
+              "1": 0
+            },
+            "max master request latencies": 0,
+            "client avg request latencies": {
+              "0": null,
+              "1": null
+            },
+            "throughput": {
+              "0": 0.0,
+              "1": 0.0
+            },
+            "master throughput": null,
+            "total requests": 0,
+            "avg backup throughput": 0.0,
+            "master throughput ratio": null,
+            "average-per-second": {
+              "read-transactions": 0.0641512402,
+              "write-transactions": 0.0
+            },
+            "transaction-count": {
+              "ledger": 5,
+              "pool": 4,
+              "config": 0,
+              "audit": 3
+            },
+            "uptime": 576
+          },
+          "Committed_ledger_root_hashes": {
+            "3": "b'GoE282BykcqZQv3C8R9LGES2uLjvmch57CPBaGCt3iwY'",
+            "0": "b'CWbmNc4UzKyiZAxzPnwQYt6WLoxe4Mc481aw1P5PwV51'",
+            "2": "b'GKot5hBsd81kMupNCXHaqbhv3huEbxAFMLnpcX2hniwn'",
+            "1": "b'DJLzEifT7n9DbiCHqQ5KWrWUPFBiZt349popapDfzo5p'"
+          },
+          "Committed_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "Uncommitted_ledger_root_hashes": {},
+          "Uncommitted_ledger_txns": {
+            "3": {
+              "Count": 0
+            },
+            "0": {
+              "Count": 0
+            },
+            "2": {
+              "Count": 0
+            },
+            "1": {
+              "Count": 0
+            }
+          },
+          "Uncommitted_state_root_hashes": {
+            "2": "b'DfNLmH4DAHTKv63YPFJzuRdeEtVwF5RtVnvKYHd8iLEA'",
+            "0": "b'65x39zVf1VcB4YJsnMQEcdiSg2HHDWkWM1b1D1Bh1dPj'",
+            "1": "b'GWEizEWQdGH5QFdxRpoQGvPR42zSUEJoFkQKGBHiNDbM'"
+          },
+          "View_change_status": {
+            "View_No": 0,
+            "VC_in_progress": false,
+            "Last_view_change_started_at": "1970-01-01 00:00:00",
+            "Last_complete_view_no": 0,
+            "IC_queue": {},
+            "VCDone_queue": {}
+          },
+          "Catchup_status": {
+            "Ledger_statuses": {
+              "3": "synced",
+              "0": "synced",
+              "2": "synced",
+              "1": "synced"
+            },
+            "Received_LedgerStatus": "",
+            "Waiting_consistency_proof_msgs": {
+              "3": null,
+              "0": null,
+              "2": null,
+              "1": null
+            },
+            "Number_txns_in_catchup": {
+              "3": 0,
+              "0": 0,
+              "2": 0,
+              "1": 0
+            },
+            "Last_txn_3PC_keys": {
+              "3": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "0": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "2": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              },
+              "1": {
+                "Node2": [
+                  null,
+                  null
+                ],
+                "Node1": [
+                  null,
+                  null
+                ]
+              }
+            }
+          },
+          "Freshness_status": {
+            "0": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "1": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            },
+            "2": {
+              "Last_updated_time": "2020-07-13 06:30:41+00:00",
+              "Has_write_consensus": true
+            }
+          },
+          "Requests_timeouts": {
+            "Propagates_phase_req_timeouts": 0,
+            "Ordering_phase_req_timeouts": 0
+          },
+          "Count_of_replicas": 2,
+          "Replicas_status": {
+            "Node4:0": {
+              "Primary": "Node1:0",
+              "Watermarks": "0:300",
+              "Last_ordered_3PC": [
+                0,
+                3
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            },
+            "Node4:1": {
+              "Primary": "Node2:1",
+              "Watermarks": "0:9223372036854775807",
+              "Last_ordered_3PC": [
+                0,
+                0
+              ],
+              "Stashed_txns": {
+                "Stashed_checkpoints": 0,
+                "Stashed_PrePrepare": 0
+              }
+            }
+          }
+        },
+        "Software": {
+          "OS_version": "Linux-4.19.104-microsoft-standard-x86_64-with-debian-buster-sid",
+          "Installed_packages": [
+            "zipp 3.1.0",
+            "yarl 1.4.2",
+            "wcwidth 0.2.5",
+            "ujson 1.33",
+            "typing 3.7.4.1",
+            "typing-extensions 3.7.4.2",
+            "timeout-decorator 0.4.0",
+            "supervisor 4.0.4",
+            "sortedcontainers 1.5.7",
+            "six 1.11.0",
+            "sha3 0.2.1",
+            "setuptools 40.6.2",
+            "semver 2.7.9",
+            "rlp 0.6.0",
+            "pyzmq 18.1.0",
+            "PyYAML 5.1.2",
+            "python3-indy 1.15.0",
+            "python-ursa 0.1.0",
+            "python-rocksdb 0.6.9",
+            "python-dateutil 2.6.1",
+            "pytest 5.4.3",
+            "pyparsing 2.4.7",
+            "Pympler 0.8",
+            "Pygments 2.2.0",
+            "pycparser 2.20",
+            "pycares 3.1.1",
+            "py 1.8.2",
+            "psutil 5.4.3",
+            "prompt-toolkit 0.57",
+            "portalocker 0.5.7",
+            "pluggy 0.13.1",
+            "pip 9.0.3",
+            "packaging 19.0",
+            "orderedset 2.0.3",
+            "multidict 4.7.6",
+            "msgpack-python 0.4.6",
+            "more-itertools 8.4.0",
+            "meld3 2.0.1",
+            "MarkupSafe 1.1.1",
+            "libnacl 1.6.1",
+            "leveldb 0.201",
+            "jsonpickle 0.9.6",
+            "Jinja2 2.11.2",
+            "ioflo 1.5.4",
+            "intervaltree 2.1.0",
+            "indy-plenum 1.13.0.dev0",
+            "indy-node 1.12.3",
+            "importlib-metadata 1.6.1",
+            "idna 2.9",
+            "idna-ssl 1.1.0",
+            "distro 1.3.0",
+            "chardet 3.0.4",
+            "cffi 1.14.0",
+            "cchardet 2.1.6",
+            "base58 1.0.3",
+            "attrs 19.3.0",
+            "async-timeout 3.0.1",
+            "aiosqlite 0.10.0",
+            "aiohttp 3.5.4",
+            "aiohttp-jinja2 1.1.2",
+            "aiodns 2.0.0"
+          ],
+          "Indy_packages": [
+            ""
+          ],
+          "indy-node": "1.12.3",
+          "sovrin": "unknown"
+        },
+        "Update_time": "Monday, July 13, 2020 6:35:15 AM +0000",
+        "Memory_profiler": [],
+        "Extractions": {
+          "journalctl_exceptions": [
+            ""
+          ],
+          "indy-node_status": [
+            ""
+          ],
+          "node-control status": [
+            ""
+          ],
+          "upgrade_log": "",
+          "stops_stat": null
+        }
+      }
+    }
+  }
+}
