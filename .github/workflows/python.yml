@@ -21,4 +21,4 @@ jobs:
       run: pipenv install
     - name: Test with unittest
       working-directory: fetch-validator-status
-      run: python -m unittest test_prometheus_exporter
+      run: pipenv run python -m unittest test_prometheus_exporter
