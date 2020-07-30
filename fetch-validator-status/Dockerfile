@@ -4,4 +4,4 @@ RUN pip install pynacl
 
 ADD fetch_status.py .
 
-CMD ["python", "fetch_status.py"]
+ENTRYPOINT ["bash", "-c", "python fetch_status.py $@", "--"]

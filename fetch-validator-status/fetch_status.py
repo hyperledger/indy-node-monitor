@@ -9,7 +9,11 @@ import urllib.request
 import nacl.signing
 
 import indy_vdr
-from indy_vdr.ledger import build_get_validator_info_request, Request
+from indy_vdr.ledger import (
+    build_get_validator_info_request,
+    build_get_txn_request,
+    Request,
+)
 from indy_vdr.pool import open_pool
 
 
@@ -38,18 +42,35 @@ def seed_as_bytes(seed):
     return seed.encode("ascii")
 
 
-async def fetch_status(genesis_path: str, ident: DidKey):
+async def fetch_status(genesis_path: str, ident: DidKey = None):
     pool = await open_pool(transactions_path=genesis_path)
+    result = []
 
-    req = build_get_validator_info_request(ident.did)
-    ident.sign_request(req)
-    result = await pool.submit_action(req)
-    for node, val in result.items():
+    if ident:
+        request = build_get_validator_info_request(ident.did)
+        ident.sign_request(request)
+    else:
+        request = build_get_txn_request(None, 1, 1)
+
+    response = await pool.submit_action(request)
+
+    for node, val in response.items():
+        entry = {"name": node}
         try:
             jsval = json.loads(val)
-            result[node] = jsval
+            if "result" in jsval:
+                if ident:
+                    entry["response"] = jsval["result"]["data"]
+                else:
+                    entry["response"] = "ok"
+            elif "reason" in jsval:
+                entry["error"] = jsval["reason"]
+            else:
+                entry["error"] = "unknown error"
         except json.JSONDecodeError:
-            pass
+            entry["error"] = val  # likely "timeout"
+        result.append(entry)
+
     print(json.dumps(result, indent=2))
 
 
@@ -70,12 +91,16 @@ if __name__ == "__main__":
         download_genesis_file(genesis_url, genesis_path)
     if not os.path.exists(genesis_path):
         raise ValueError("Set the GENESIS_URL or GENESIS_PATH environment variable")
-    did_seed = os.getenv("SEED")
-    if not did_seed:
+    anon = "-a" in sys.argv
+    did_seed = None if anon else os.getenv("SEED")
+    if not did_seed and not anon:
         raise ValueError("Set the SEED environment variable")
 
     log("indy-vdr version:", indy_vdr.version())
-    ident = DidKey(did_seed)
-    log("DID:", ident.did, " Verkey:", ident.verkey)
+    if did_seed:
+        ident = DidKey(did_seed)
+        log("DID:", ident.did, " Verkey:", ident.verkey)
+    else:
+        ident = None
 
     asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident))
