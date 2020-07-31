@@ -58,15 +58,18 @@ async def fetch_status(genesis_path: str, ident: DidKey = None):
         entry = {"name": node}
         try:
             jsval = json.loads(val)
-            if "result" in jsval:
+            if "REPLY" in jsval["op"]:
                 if ident:
                     entry["response"] = jsval["result"]["data"]
                 else:
                     entry["response"] = "ok"
-            elif "reason" in jsval:
-                entry["error"] = jsval["reason"]
             else:
-                entry["error"] = "unknown error"
+                if "reason" in jsval:
+                    entry["error"] = jsval["reason"]
+                    entry["full_response"] = jsval
+                else:
+                    entry["error"] = "unknown error"
+                    entry["full_response"] = jsval
         except json.JSONDecodeError:
             entry["error"] = val  # likely "timeout"
         result.append(entry)
