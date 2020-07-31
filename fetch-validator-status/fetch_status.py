@@ -57,7 +57,7 @@ async def fetch_status(genesis_path: str, ident: DidKey = None):
     for node, val in response.items():
         entry = {"name": node}
         try:
-            jsval = json.loads(val)            
+            jsval = json.loads(val)
             if "REPLY" in jsval["op"]:
                 if ident:
                     entry["response"] = jsval["result"]["data"]
