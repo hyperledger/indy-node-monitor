@@ -5,6 +5,7 @@ import json
 import os
 import sys
 import urllib.request
+from typing import Tuple
 
 import nacl.signing
 
@@ -54,24 +55,72 @@ async def fetch_status(genesis_path: str, ident: DidKey = None):
 
     response = await pool.submit_action(request)
 
+    primary = ""
     for node, val in response.items():
+        errors = []
+        warnings = []
         entry = {"name": node}
         try:
             jsval = json.loads(val)
-            if "result" in jsval:
-                if ident:
-                    entry["response"] = jsval["result"]["data"]
-                else:
-                    entry["response"] = "ok"
-            elif "reason" in jsval:
-                entry["error"] = jsval["reason"]
-            else:
-                entry["error"] = "unknown error"
+            if not primary:
+                primary = await get_primary_name(jsval, node)
+            errors, warnings = await detect_issues(jsval, node, primary, ident)
+            entry["response"] = jsval
         except json.JSONDecodeError:
-            entry["error"] = val  # likely "timeout"
+            errors = [val]  # likely "timeout"
+
+        status = {}
+        status["ok"] = (len(errors) <= 0)
+        status["errors"] = len(errors)
+        status["warnings"] = len(warnings)
+        entry["status"] = status
+        
+        if len(errors) > 0:
+            entry["errors"] = errors
+        if len(warnings) > 0:
+            entry["warnings"] = warnings
+
         result.append(entry)
 
     print(json.dumps(result, indent=2))
+
+async def get_primary_name(jsval: any, node: str) -> str:
+    primary = ""
+    if "REPLY" in jsval["op"]:
+        if "Node_info" in jsval["result"]["data"]:
+            primary = jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"]
+    return primary
+
+async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = None) -> Tuple[any, any]:
+    errors = []
+    warnings = []
+    if "REPLY" in jsval["op"]:
+        if ident:
+            # Ledger Write Consensus Issues
+            if not jsval["result"]["data"]["Node_info"]["Freshness_status"]["0"]["Has_write_consensus"]:
+                errors.append("Config Ledger Has_write_consensus: {0}".format(jsval["result"]["data"]["Node_info"]["Freshness_status"]["0"]["Has_write_consensus"]))
+            if not jsval["result"]["data"]["Node_info"]["Freshness_status"]["1"]["Has_write_consensus"]:
+                errors.append("Main Ledger Has_write_consensus: {0}".format(jsval["result"]["data"]["Node_info"]["Freshness_status"]["1"]["Has_write_consensus"]))
+            if not jsval["result"]["data"]["Node_info"]["Freshness_status"]["2"]["Has_write_consensus"]:
+                errors.append("Pool Ledger Has_write_consensus: {0}".format(jsval["result"]["data"]["Node_info"]["Freshness_status"]["2"]["Has_write_consensus"]))
+            if "1001" in  jsval["result"]["data"]["Node_info"]["Freshness_status"]:
+                if not jsval["result"]["data"]["Node_info"]["Freshness_status"]["1001"]["Has_write_consensus"]:
+                    errors.append("Token Ledger Has_write_consensus: {0}".format(jsval["result"]["data"]["Node_info"]["Freshness_status"]["1001"]["Has_write_consensus"]))
+
+            # Primary Node Mismatch
+            if jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"] != primary:
+                warnings.append("Primary Mismatch! This Nodes Primary: {0} (Expected: {1})".format(jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"], primary))
+
+            # Unreachable Nodes
+            if jsval["result"]["data"]["Pool_info"]["Total_nodes_count"] != jsval["result"]["data"]["Pool_info"]["Reachable_nodes_count"]:
+                warnings.append("Unreachable Nodes: The {0} node has Unreachable_nodes_count of {1}; {2}".format(node, jsval["result"]["data"]["Pool_info"]["Unreachable_nodes_count"], jsval["result"]["data"]["Pool_info"]["Unreachable_nodes"]))
+    else:
+        if "reason" in jsval:
+            errors = jsval["reason"]
+        else:
+            errors = "unknown error"
+
+    return errors, warnings
 
 
 def get_script_dir():

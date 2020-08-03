@@ -7,7 +7,7 @@ if [[ "$OSTYPE" == "msys" ]]; then
   terminalEmu="winpty"
 fi
 
-docker build -t fetch_status .
+docker build -t fetch_status . > /dev/null 2>&1
 ${terminalEmu} docker run --rm -ti \
     -e "GENESIS_PATH=${GENESIS_PATH}" \
     -e "GENESIS_URL=${GENESIS_URL}" \
