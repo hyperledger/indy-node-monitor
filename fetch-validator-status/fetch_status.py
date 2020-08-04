@@ -4,6 +4,7 @@ import base64
 import json
 import os
 import sys
+import datetime
 import urllib.request
 from typing import Tuple
 
@@ -43,7 +44,7 @@ def seed_as_bytes(seed):
     return seed.encode("ascii")
 
 
-async def fetch_status(genesis_path: str, ident: DidKey = None):
+async def fetch_status(genesis_path: str, ident: DidKey = None, status_only: bool = False):
     pool = await open_pool(transactions_path=genesis_path)
     result = []
 
@@ -57,6 +58,8 @@ async def fetch_status(genesis_path: str, ident: DidKey = None):
 
     primary = ""
     for node, val in response.items():
+        status = {}
+        jsval = []
         errors = []
         warnings = []
         entry = {"name": node}
@@ -65,24 +68,26 @@ async def fetch_status(genesis_path: str, ident: DidKey = None):
             if not primary:
                 primary = await get_primary_name(jsval, node)
             errors, warnings = await detect_issues(jsval, node, primary, ident)
-            entry["response"] = jsval
         except json.JSONDecodeError:
             errors = [val]  # likely "timeout"
 
-        status = {}
-        status["ok"] = (len(errors) <= 0)
-        status["errors"] = len(errors)
-        status["warnings"] = len(warnings)
-        entry["status"] = status
-        
+        # Status Summary
+        entry["status"] = await get_status_summary(jsval, errors)
+        # Errors / Warnings
         if len(errors) > 0:
+            entry["status"]["errors"] = len(errors)
             entry["errors"] = errors
         if len(warnings) > 0:
+            entry["status"]["warnings"] = len(warnings)
             entry["warnings"] = warnings
-
+        # Full Response
+        if not status_only and jsval:
+            entry["response"] = jsval
+            
         result.append(entry)
 
     print(json.dumps(result, indent=2))
+
 
 async def get_primary_name(jsval: any, node: str) -> str:
     primary = ""
@@ -91,9 +96,27 @@ async def get_primary_name(jsval: any, node: str) -> str:
             primary = jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"]
     return primary
 
+
+async def get_status_summary(jsval: any, errors: list) -> any:
+    status = {}
+    status["ok"] = (len(errors) <= 0)
+    if jsval:
+        if "Node_info" in jsval["result"]["data"]:
+            status["uptime"] = str(datetime.timedelta(seconds = jsval["result"]["data"]["Node_info"]["Metrics"]["uptime"]))
+        if "timestamp" in jsval["result"]["data"]:
+            status["timestamp"] = jsval["result"]["data"]["timestamp"]
+        if "Software" in jsval["result"]["data"]:
+            status["software"] = {}
+            status["software"]["indy-node"] = jsval["result"]["data"]["Software"]["indy-node"]
+            status["software"]["sovrin"] = jsval["result"]["data"]["Software"]["sovrin"]
+
+    return status
+
+
 async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = None) -> Tuple[any, any]:
     errors = []
     warnings = []
+    ledger_sync_status={}
     if "REPLY" in jsval["op"]:
         if ident:
             # Ledger Write Consensus Issues
@@ -107,13 +130,31 @@ async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = Non
                 if not jsval["result"]["data"]["Node_info"]["Freshness_status"]["1001"]["Has_write_consensus"]:
                     errors.append("Token Ledger Has_write_consensus: {0}".format(jsval["result"]["data"]["Node_info"]["Freshness_status"]["1001"]["Has_write_consensus"]))
 
+            # Ledger Status
+            for ledger, status in jsval["result"]["data"]["Node_info"]["Catchup_status"]["Ledger_statuses"].items():
+                if status != "synced":
+                    ledger_sync_status[ledger] = status
+            if ledger_sync_status:
+                ledger_status = {}
+                ledger_status["ledger_status"] = ledger_sync_status
+                ledger_status["ledger_status"]["transaction-count"] = jsval["result"]["data"]["Node_info"]["Metrics"]["transaction-count"]
+                warnings.append(ledger_status)
+
+            # Mode
+            if jsval["result"]["data"]["Node_info"]["Mode"] != "participating":
+                warnings.append("Mode: {0}".format(jsval["result"]["data"]["Node_info"]["Mode"]))
+
             # Primary Node Mismatch
             if jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"] != primary:
                 warnings.append("Primary Mismatch! This Nodes Primary: {0} (Expected: {1})".format(jsval["result"]["data"]["Node_info"]["Replicas_status"][node+":0"]["Primary"], primary))
 
             # Unreachable Nodes
-            if jsval["result"]["data"]["Pool_info"]["Total_nodes_count"] != jsval["result"]["data"]["Pool_info"]["Reachable_nodes_count"]:
+            if jsval["result"]["data"]["Pool_info"]["Unreachable_nodes_count"] > 0:
                 warnings.append("Unreachable Nodes: The {0} node has Unreachable_nodes_count of {1}; {2}".format(node, jsval["result"]["data"]["Pool_info"]["Unreachable_nodes_count"], jsval["result"]["data"]["Pool_info"]["Unreachable_nodes"]))
+
+            # Denylisted Nodes
+            if len(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]) > 0:
+                warnings.append("Denylisted Nodes: {1}".format(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]))
     else:
         if "reason" in jsval:
             errors = jsval["reason"]
@@ -140,7 +181,10 @@ if __name__ == "__main__":
         download_genesis_file(genesis_url, genesis_path)
     if not os.path.exists(genesis_path):
         raise ValueError("Set the GENESIS_URL or GENESIS_PATH environment variable")
+    
     anon = "-a" in sys.argv
+    status = "--status" in sys.argv
+
     did_seed = None if anon else os.getenv("SEED")
     if not did_seed and not anon:
         raise ValueError("Set the SEED environment variable")
@@ -152,4 +196,4 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident))
+    asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident, status))
