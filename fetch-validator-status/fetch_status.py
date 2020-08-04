@@ -104,7 +104,7 @@ async def get_primary_name(jsval: any, node: str) -> str:
 async def get_status_summary(jsval: any, errors: list) -> any:
     status = {}
     status["ok"] = (len(errors) <= 0)
-    if jsval:
+    if jsval and ("REPLY" in jsval["op"]):
         if "Node_info" in jsval["result"]["data"]:
             status["uptime"] = str(datetime.timedelta(seconds = jsval["result"]["data"]["Node_info"]["Metrics"]["uptime"]))
         if "timestamp" in jsval["result"]["data"]:
@@ -161,9 +161,9 @@ async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = Non
                 warnings.append("Denylisted Nodes: {1}".format(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]))
     else:
         if "reason" in jsval:
-            errors = jsval["reason"]
+            errors.append(jsval["reason"])
         else:
-            errors = "unknown error"
+            errors.append("unknown error")
 
     return errors, warnings
 
