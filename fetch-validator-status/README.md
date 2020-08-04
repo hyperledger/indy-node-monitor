@@ -83,6 +83,11 @@ or
 ./run.sh --genesis-url=<URL> --seed=<SEED> --status
 ```
 
+To fetch data for a single node, or a particular set of nodes use the `--nodes` argument and provide a comma delimited list of node names (aliases);
+``` bash
+./run.sh --genesis-url=<URL> --seed=<SEED> --status --nodes node1,node2
+```
+
 For the first test run using von-network:
 
 - the `<SEED>` is the Indy test network Trustee seed: `000000000000000000000000Trustee1`.
