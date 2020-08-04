@@ -20,9 +20,12 @@ from indy_vdr.ledger import (
 from indy_vdr.pool import open_pool
 
 
-def log(*args):
-    print(*args, "\n", file=sys.stderr)
+verbose = False
 
+
+def log(*args):
+    if verbose:
+        print(*args, "\n", file=sys.stderr)
 
 class DidKey:
     def __init__(self, seed):
@@ -182,18 +185,21 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
     parser.add_argument("-a", "--anonymous", action="store_true", help="Perform requests anonymously, without requiring privileged DID seed.")
     parser.add_argument("--status", action="store_true", help="Get status only.  Suppresses detailed results.")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
     args = parser.parse_args()
+
+    verbose = args.verbose
 
     if args.genesis_url:
         download_genesis_file(args.genesis_url, args.genesis_path)
     if not os.path.exists(args.genesis_path):
-        log("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.")
+        print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
         parser.print_help()
         exit()
 
     did_seed = None if args.anonymous else args.seed
     if not did_seed and not args.anonymous:
-        log("Set the SEED environment variable or argument.")
+        print("Set the SEED environment variable or argument.\n", file=sys.stderr)
         parser.print_help()
         exit()
 
