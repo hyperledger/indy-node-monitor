@@ -59,10 +59,28 @@ cd indy-node-monitor/fetch-validator-status
 
 ### Run the Validator Info Script
 
+For a full list of script options run:
+``` bash
+./run.sh -h
+```
+
 To run the validator script, run the following command in your bash terminal from the `fetch-validator-status` folder in the `indy-node-monitor` clone:
 
 ``` bash
 GENESIS_URL=<URL> SEED=<SEED> ./run.sh
+```
+or 
+``` bash
+./run.sh --genesis-url=<URL> --seed=<SEED> 
+```
+
+To just get a status summary for the nodes, run:
+``` bash
+GENESIS_URL=<URL> SEED=<SEED> ./run.sh --status
+```
+or 
+``` bash
+./run.sh --genesis-url=<URL> --seed=<SEED> --status
 ```
 
 For the first test run using von-network:
@@ -75,11 +93,20 @@ If you are running locally, the full command is:
 ``` bash
 GENESIS_URL=http://localhost:9000/genesis SEED=000000000000000000000000Trustee1 ./run.sh
 ```
+or 
+``` bash
+./run.sh --genesis-url=http://localhost:9000/genesis --seed=000000000000000000000000Trustee1
+```
+
 
 To perform an anonymous connection test when a privileged DID seed is not available, omit the `SEED` and pass the `-a` parameter:
 
 ``` bash
 GENESIS_URL=<URL> ./run.sh -a
+```
+or
+``` bash
+./run.sh --genesis-url=<URL> -a
 ```
 
 If running in the browser, you will have to get the URL for the Genesis file (as described above) and replace the `localhost` URL above.
