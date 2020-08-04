@@ -48,7 +48,7 @@ def seed_as_bytes(seed):
     return seed.encode("ascii")
 
 
-async def fetch_status(genesis_path: str, ident: DidKey = None, status_only: bool = False):
+async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = None, status_only: bool = False):
     pool = await open_pool(transactions_path=genesis_path)
     result = []
 
@@ -58,7 +58,10 @@ async def fetch_status(genesis_path: str, ident: DidKey = None, status_only: boo
     else:
         request = build_get_txn_request(None, 1, 1)
 
-    response = await pool.submit_action(request)
+    from_nodes = []
+    if nodes:
+        from_nodes = nodes.split(",")
+    response = await pool.submit_action(request, node_aliases = from_nodes)
 
     primary = ""
     for node, val in response.items():
@@ -185,6 +188,7 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
     parser.add_argument("-a", "--anonymous", action="store_true", help="Perform requests anonymously, without requiring privileged DID seed.")
     parser.add_argument("--status", action="store_true", help="Get status only.  Suppresses detailed results.")
+    parser.add_argument("--nodes", help="The comma delimited list of the nodes from which to collect the status.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
     args = parser.parse_args()
 
@@ -210,4 +214,4 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(args.genesis_path, ident, args.status))
+    asyncio.get_event_loop().run_until_complete(fetch_status(args.genesis_path, args.nodes, ident, args.status))
