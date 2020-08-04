@@ -1,3 +1,4 @@
+import argparse
 import asyncio
 import base58
 import base64
@@ -83,7 +84,7 @@ async def fetch_status(genesis_path: str, ident: DidKey = None, status_only: boo
         # Full Response
         if not status_only and jsval:
             entry["response"] = jsval
-            
+
         result.append(entry)
 
     print(json.dumps(result, indent=2))
@@ -175,19 +176,26 @@ def download_genesis_file(url: str, target_local_path: str):
 
 
 if __name__ == "__main__":
-    genesis_url = os.getenv("GENESIS_URL")
-    genesis_path = os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn"
-    if genesis_url:
-        download_genesis_file(genesis_url, genesis_path)
-    if not os.path.exists(genesis_path):
-        raise ValueError("Set the GENESIS_URL or GENESIS_PATH environment variable")
-    
-    anon = "-a" in sys.argv
-    status = "--status" in sys.argv
+    parser = argparse.ArgumentParser(description="Fetch the status of all the indy-nodes within a given pool.")
+    parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
+    parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn" , help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
+    parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
+    parser.add_argument("-a", "--anonymous", action="store_true", help="Perform requests anonymously, without requiring privileged DID seed.")
+    parser.add_argument("--status", action="store_true", help="Get status only.  Suppresses detailed results.")
+    args = parser.parse_args()
 
-    did_seed = None if anon else os.getenv("SEED")
-    if not did_seed and not anon:
-        raise ValueError("Set the SEED environment variable")
+    if args.genesis_url:
+        download_genesis_file(args.genesis_url, args.genesis_path)
+    if not os.path.exists(args.genesis_path):
+        log("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.")
+        parser.print_help()
+        exit()
+
+    did_seed = None if args.anonymous else args.seed
+    if not did_seed and not args.anonymous:
+        log("Set the SEED environment variable or argument.")
+        parser.print_help()
+        exit()
 
     log("indy-vdr version:", indy_vdr.version())
     if did_seed:
@@ -196,4 +204,4 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(genesis_path, ident, status))
+    asyncio.get_event_loop().run_until_complete(fetch_status(args.genesis_path, ident, args.status))
