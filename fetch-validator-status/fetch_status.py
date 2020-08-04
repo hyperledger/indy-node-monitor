@@ -64,9 +64,10 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
     response = await pool.submit_action(request, node_aliases = from_nodes)
 
     primary = ""
+    packages = {}
     for node, val in response.items():
-        status = {}
         jsval = []
+        status = {}
         errors = []
         warnings = []
         entry = {"name": node}
@@ -75,6 +76,7 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
             if not primary:
                 primary = await get_primary_name(jsval, node)
             errors, warnings = await detect_issues(jsval, node, primary, ident)
+            packages[node] = await get_package_info(jsval)
         except json.JSONDecodeError:
             errors = [val]  # likely "timeout"
 
@@ -92,6 +94,10 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
             entry["response"] = jsval
 
         result.append(entry)
+
+    # Package Mismatches
+    if packages:
+        await merge_package_mismatch_info(result, packages)
 
     print(json.dumps(result, indent=2))
 
@@ -119,6 +125,49 @@ async def get_status_summary(jsval: any, errors: list) -> any:
 
     return status
 
+async def get_package_info(jsval: any) -> any:
+    packages = {}
+    if jsval and ("REPLY" in jsval["op"]):
+        if "Software" in jsval["result"]["data"]:
+            for installed_package in jsval["result"]["data"]["Software"]["Installed_packages"]:
+                package, version = installed_package.split()
+                packages[package] = version
+
+    return packages
+
+async def check_package_versions(packages: any) -> any:
+    warnings = {}
+    for node, package_list in packages.items():
+        mismatches = []
+        for package, version in package_list.items():
+            total = 0
+            same = 0
+            other_version = ""
+            for comp_node, comp_package_list in packages.items():
+                if package in comp_package_list:
+                    total +=1
+                    comp_version = comp_package_list[package]
+                    if comp_version == version:
+                        same +=1
+                    else:
+                        other_version = comp_version
+            if (same/total) < .5:
+                mismatches.append("Package mismatch: '{0}' has '{1}' {2}, while most other nodes have '{1}' {3}".format(node, package, version, other_version))
+        if mismatches:
+            warnings[node] = mismatches
+    return warnings
+
+async def merge_package_mismatch_info(result: any, packages: any):
+    package_warnings = await check_package_versions(packages)
+    if package_warnings:
+        for node_name in package_warnings:
+            entry_to_update = [t for t in result if t["name"] == node_name][0]
+            if "warnings" in entry_to_update:
+                for item in package_warnings[node_name]:
+                    entry_to_update["warnings"].append(item)
+            else:
+                entry_to_update["warnings"] = package_warnings[node_name]
+            entry_to_update["status"]["warnings"] = len(entry_to_update["warnings"])
 
 async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = None) -> Tuple[any, any]:
     errors = []
