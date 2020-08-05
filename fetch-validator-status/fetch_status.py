@@ -225,13 +225,22 @@ def get_script_dir():
 
 
 def download_genesis_file(url: str, target_local_path: str):
-    log("Fetching genesis file")
+    log("Fetching genesis file ...")
     target_local_path = f"{get_script_dir()}/genesis.txn"
     urllib.request.urlretrieve(url, target_local_path)
 
+def load_network_list():
+    with open(f"{get_script_dir()}/networks.json") as json_file:
+        networks = json.load(json_file)
+    return networks
+
+def list_networks():
+    networks = load_network_list()
+    return networks.keys()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fetch the status of all the indy-nodes within a given pool.")
+    parser.add_argument("--net", choices=list_networks(), help="Connect to a known network using an ID.")
     parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
     parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn" , help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
     parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
@@ -243,6 +252,13 @@ if __name__ == "__main__":
 
     verbose = args.verbose
 
+    if args.net:
+        log("Loading known network list ...")
+        networks = load_network_list()
+        if args.net in networks:
+            log("Connecting to '{0}' ...".format(networks[args.net]["name"]))
+            args.genesis_url = networks[args.net]["genesisUrl"]
+
     if args.genesis_url:
         download_genesis_file(args.genesis_url, args.genesis_path)
     if not os.path.exists(args.genesis_path):
@@ -252,7 +268,7 @@ if __name__ == "__main__":
 
     did_seed = None if args.anonymous else args.seed
     if not did_seed and not args.anonymous:
-        print("Set the SEED environment variable or argument.\n", file=sys.stderr)
+        print("Set the SEED environment variable or argument, or specify the anonymous flag.\n", file=sys.stderr)
         parser.print_help()
         exit()
 
