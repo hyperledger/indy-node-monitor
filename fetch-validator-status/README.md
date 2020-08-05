@@ -64,6 +64,11 @@ For a full list of script options run:
 ./run.sh -h
 ```
 
+To get the details for the known networks available for use with the `--net` option, run:
+``` bash
+./run.sh --list-nets
+```
+
 To run the validator script, run the following command in your bash terminal from the `fetch-validator-status` folder in the `indy-node-monitor` clone:
 
 ``` bash

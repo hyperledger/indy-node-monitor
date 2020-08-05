@@ -241,6 +241,7 @@ def list_networks():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fetch the status of all the indy-nodes within a given pool.")
     parser.add_argument("--net", choices=list_networks(), help="Connect to a known network using an ID.")
+    parser.add_argument("--list-nets", action="store_true", help="List known networks.")
     parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
     parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn" , help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
     parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable.")
@@ -251,6 +252,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     verbose = args.verbose
+
+    if args.list_nets:
+        print(json.dumps(load_network_list(), indent=2))
+        exit()
 
     if args.net:
         log("Loading known network list ...")
