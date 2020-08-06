@@ -64,28 +64,33 @@ For a full list of script options run:
 ./run.sh -h
 ```
 
+To get the details for the known networks available for use with the `--net` option, run:
+``` bash
+./run.sh --list-nets
+```
+
 To run the validator script, run the following command in your bash terminal from the `fetch-validator-status` folder in the `indy-node-monitor` clone:
 
 ``` bash
-GENESIS_URL=<URL> SEED=<SEED> ./run.sh
+./run.sh --net=<netId> --seed=<SEED>
 ```
-or 
+or
 ``` bash
-./run.sh --genesis-url=<URL> --seed=<SEED> 
+./run.sh --genesis-url=<URL> --seed=<SEED>
 ```
 
 To just get a status summary for the nodes, run:
 ``` bash
-GENESIS_URL=<URL> SEED=<SEED> ./run.sh --status
+./run.sh --net=<netId> --seed=<SEED> --status
 ```
-or 
+or
 ``` bash
 ./run.sh --genesis-url=<URL> --seed=<SEED> --status
 ```
 
 To fetch data for a single node, or a particular set of nodes use the `--nodes` argument and provide a comma delimited list of node names (aliases);
 ``` bash
-./run.sh --genesis-url=<URL> --seed=<SEED> --status --nodes node1,node2
+./run.sh --net=<netId> --seed=<SEED> --status --nodes node1,node2
 ```
 
 For the first test run using von-network:
@@ -96,9 +101,9 @@ For the first test run using von-network:
 If you are running locally, the full command is:
 
 ``` bash
-GENESIS_URL=http://localhost:9000/genesis SEED=000000000000000000000000Trustee1 ./run.sh
+./run.sh --net=vn --seed=000000000000000000000000Trustee1
 ```
-or 
+or
 ``` bash
 ./run.sh --genesis-url=http://localhost:9000/genesis --seed=000000000000000000000000Trustee1
 ```
@@ -107,7 +112,7 @@ or
 To perform an anonymous connection test when a privileged DID seed is not available, omit the `SEED` and pass the `-a` parameter:
 
 ``` bash
-GENESIS_URL=<URL> ./run.sh -a
+./run.sh --net=<netId> -a
 ```
 or
 ``` bash
