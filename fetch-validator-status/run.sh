@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+# set -x
 
 export MSYS_NO_PATHCONV=1
 
@@ -9,12 +9,12 @@ if [[ "$OSTYPE" == "msys" ]]; then
   terminalEmu="winpty"
 fi
 
-# CM is for "cron mode" so Docker is run the right way for cron
-# Use "CM=1 run.sh <args>..." to run from a fron job to run Docker in non-interactive mode
-if [ -z "${CM+x}" ]; then
-  export DOCKER_INTERACTIVE="-it"
-else
+# IM is for "interactive mode" so Docker is run with the "-it" parameter. Probably never needed
+# but it is there. Use "IM=1 run.sh <args>..." to run the Docker container in interactive mode
+if [ -z "${IM+x}" ]; then
   export DOCKER_INTERACTIVE=""
+else
+  export DOCKER_INTERACTIVE="-it"
 fi
 
 docker build -t fetch_status . > /dev/null 2>&1
