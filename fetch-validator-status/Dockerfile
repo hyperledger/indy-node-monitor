@@ -4,5 +4,6 @@ RUN pip install pynacl prometheus_client
 
 ADD fetch_status.py .
 ADD prometheus_exporter.py .
+ADD networks.json .
 
-CMD ["python", "fetch_status.py"]
+ENTRYPOINT ["bash", "-c", "python fetch_status.py $@", "--"]
