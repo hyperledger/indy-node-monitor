@@ -264,7 +264,7 @@ The following instructions assume that you have configured a Grafana Dashboard s
         1. Select dashboard settings from the upper right menu.
         2. Select ‘variables’
         3. Change the node variable.
-    3. Change all of the top panels query to point to (for example) “localhost:9104”
+    3. Change all of the top panels' queries to point to (for example) “localhost:9104”
     4. Refresh the dashboard
 
 This README.md and related code and dashboard submissions are freely donated to this project by Lynn Bendixsen, lynn@indicio.tech, and are subject to all open source licenses of the parent project hyperledger/indy-node-monitor.
