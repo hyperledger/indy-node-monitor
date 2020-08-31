@@ -50,18 +50,16 @@ These are the steps that I followed to set up the indymonitor.indiciotech.io Gra
 4. Clone and configure (change) run.sh script (from indy-node-monitor)
     1. mkdir ~/github
     2. cd ~/github
-    3. git clone [https://github.com/bcgov/indy-node-monitor](https://github.com/bcgov/indy-node-monitor)
+    3. git clone [https://github.com/hyperledger/indy-node-monitor](https://github.com/hyperledger/indy-node-monitor)
     4. vi indy-node-monitor/fetch-validator-status/run.sh
     5. Edit the file as follows
         1. Remove the -i for running docker (NO LONGER REQUIRED - after a recent PR)
         2. Add the full path to each “docker” command (for cron)
             1. /usr/bin/docker
-5. Download and configure indy_metrics.py (these instructions will change when indy_metrics.py is checked in to github hyperledger/indy-node-monitor)
-    1. Copy indy_metrics.py to the ~/github/indy-node-monitor/dashboards/util directory (where it will eventually reside without having to copy it in) 
-        1. scp -i ~/pems/indymon.pem indy_metrics.py ubuntu@13.58.26.252:~/github/indy-node-monitor/dashboards/util
-    2. vi ~/github/indy-node-monitor/dashboards/util/indy_metrics.py
+5. Configure indy_metrics.py
+    1. vi ~/github/indy-node-monitor/dashboards/util/indy_metrics.py
         1. Change the location of run.sh in this file to match where it really is (fully qualified path is all I could get to work):
-        5. /home/ubuntu/github/indy-node-monitor/fetch-validator-status/run.sh
+        2. /home/ubuntu/github/indy-node-monitor/fetch-validator-status/run.sh
 6. Setup crontab to run indy_metrics.py for each network once every minute
     1. Create the output directories for node_exporter instances:
         1. sudo mkdir -p /var/log/node_exporter/9100
