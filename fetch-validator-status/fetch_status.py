@@ -70,18 +70,24 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
         status = {}
         errors = []
         warnings = []
+        info = []
         entry = {"name": node}
         try:
             jsval = json.loads(val)
             if not primary:
                 primary = await get_primary_name(jsval, node)
             errors, warnings = await detect_issues(jsval, node, primary, ident)
+            info = await get_info(jsval, ident)
             packages[node] = await get_package_info(jsval)
         except json.JSONDecodeError:
             errors = [val]  # likely "timeout"
 
         # Status Summary
         entry["status"] = await get_status_summary(jsval, errors)
+        # Info
+        if len(info) > 0:
+            entry["status"]["info"] = len(info)
+            entry["info"] = info
         # Errors / Warnings
         if len(errors) > 0:
             entry["status"]["errors"] = len(errors)
@@ -168,6 +174,19 @@ async def merge_package_mismatch_info(result: any, packages: any):
             else:
                 entry_to_update["warnings"] = package_warnings[node_name]
             entry_to_update["status"]["warnings"] = len(entry_to_update["warnings"])
+
+
+async def get_info(jsval: any, ident: DidKey = None) -> any:
+    info = []
+    if "REPLY" in jsval["op"]:
+        if ident:
+            # Pending Upgrade
+            if jsval["result"]["data"]["Extractions"]["upgrade_log"]:
+                current_upgrade_status = jsval["result"]["data"]["Extractions"]["upgrade_log"][-1]
+                if "succeeded" not in current_upgrade_status:
+                    info.append("Pending Upgrade: {0}".format(current_upgrade_status.replace('\t', '  ').replace('\n', '')))
+
+    return info
 
 async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = None) -> Tuple[any, any]:
     errors = []
