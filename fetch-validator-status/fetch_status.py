@@ -121,8 +121,8 @@ async def detect_connection_issues(result: any) -> any:
                         if "warnings" in unreachable_node:
                             for unreachable_node_warning in unreachable_node["warnings"]:
                                 if "Unreachable_nodes" in unreachable_node_warning :
-                                    for item in unreachable_node_warning["Unreachable_nodes"]:
-                                        if item[0] == node_name:
+                                    for unreachable_node_item in unreachable_node_warning["Unreachable_nodes"]:
+                                        if unreachable_node_item[0] == node_name:
                                             connection_errors.append(node_name + " and " + unreachable_node_name + " can't reach each other.")
         # Merge errors and update status
         if connection_errors:
