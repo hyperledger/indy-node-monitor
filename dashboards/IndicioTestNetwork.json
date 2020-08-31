@@ -1,0 +1,3003 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 2,
+  "iteration": 1598655776835,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "panels": [],
+      "repeat": "node",
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "title": "$node",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 2,
+      "description": "Indy Validator Node uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 2,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_uptime{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"cynjanode\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_uptime{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Indy Validator Unreachable Nodes (0 is best)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 14,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": " Unreachable",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_unreachable_nodes_count{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"cynjanode\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_unreachable_nodes_count{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Unreachable Nodes",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Primary Node",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 8,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 27,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_primary_node{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{node}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Primary Node",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator indy-node version",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 44,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_version{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{version}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Indy-Node Version",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node current date/time",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 6,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 45,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_current_timestamp{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Current Timestamp",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node Ledger Consensus status",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 4,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "In Consensus",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "text": "NOT in Consensus",
+              "to": "",
+              "type": 1,
+              "value": ">0"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 70,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"cynjanode\"",
+          "value": "\"cynjanode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_consensus{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Consensus Status",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 71,
+      "panels": [],
+      "repeat": null,
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "title": "$node",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 2,
+      "description": "Indy Validator Node uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 72,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 2,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_uptime{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"OpsNode\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_uptime{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Indy Validator Unreachable Nodes (0 is best)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 73,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": " Unreachable",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 14,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_unreachable_nodes_count{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"OpsNode\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_unreachable_nodes_count{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Unreachable Nodes",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Primary Node",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 74,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 27,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_primary_node{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{node}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Primary Node",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator indy-node version",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 75,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 44,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_version{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{version}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Indy-Node Version",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node current date/time",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 6,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 76,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 45,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_current_timestamp{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Current Timestamp",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node Ledger Consensus status",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 4,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "In Consensus",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "text": "NOT in Consensus",
+              "to": "",
+              "type": 1,
+              "value": ">0"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 4
+      },
+      "hideTimeOverride": true,
+      "id": 77,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 70,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"OpsNode\"",
+          "value": "\"OpsNode\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_consensus{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Consensus Status",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 78,
+      "panels": [],
+      "repeat": null,
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "title": "$node",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 2,
+      "description": "Indy Validator Node uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 79,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 2,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_uptime{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"Uphold\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_uptime{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Indy Validator Unreachable Nodes (0 is best)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 4,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 80,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": " Unreachable",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 14,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_unreachable_nodes_count{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"Uphold\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_unreachable_nodes_count{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Unreachable Nodes",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Primary Node",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 8,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 81,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 27,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_primary_node{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{node}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Primary Node",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator indy-node version",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 82,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 44,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_version{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{version}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Indy-Node Version",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node current date/time",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 6,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 83,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 45,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_current_timestamp{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Current Timestamp",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node Ledger Consensus status",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 4,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "In Consensus",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "text": "NOT in Consensus",
+              "to": "",
+              "type": 1,
+              "value": ">0"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 7
+      },
+      "hideTimeOverride": true,
+      "id": 84,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 70,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"Uphold\"",
+          "value": "\"Uphold\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_consensus{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Consensus Status",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 85,
+      "panels": [],
+      "repeat": null,
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "title": "$node",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 2,
+      "description": "Indy Validator Node uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 86,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 2,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_uptime{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"IdRamp\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_uptime{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Indy Validator Unreachable Nodes (0 is best)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 4,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 87,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": " Unreachable",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 14,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_unreachable_nodes_count{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"IdRamp\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_unreachable_nodes_count{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Unreachable Nodes",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Primary Node",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 8,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 88,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 27,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_primary_node{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{node}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Primary Node",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator indy-node version",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 89,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 44,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_version{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{version}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Indy-Node Version",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node current date/time",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 6,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 90,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 45,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_current_timestamp{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Current Timestamp",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node Ledger Consensus status",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 4,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "In Consensus",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "text": "NOT in Consensus",
+              "to": "",
+              "type": 1,
+              "value": ">0"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 10
+      },
+      "hideTimeOverride": true,
+      "id": 91,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 70,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"IdRamp\"",
+          "value": "\"IdRamp\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_consensus{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Consensus Status",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 12
+      },
+      "id": 92,
+      "panels": [],
+      "repeat": null,
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 4,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "title": "$node",
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 2,
+      "description": "Indy Validator Node uptime",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "s",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 93,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": "s",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 2,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_uptime{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"GlobaliD\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_uptime{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Uptime",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "rgba(245, 54, 54, 0.9)",
+        "rgba(237, 129, 40, 0.89)",
+        "rgba(50, 172, 45, 0.97)"
+      ],
+      "datasource": "Prometheus",
+      "decimals": 0,
+      "description": "Indy Validator Unreachable Nodes (0 is best)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 4,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 94,
+      "interval": "10s",
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 1000,
+      "nullPointMode": "null",
+      "nullText": null,
+      "postfix": " Unreachable",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 14,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "indy_unreachable_nodes_count{group=\"prod-ext\", instance=\"localhost:9100\", job=\"node-external\", node_name=\"GlobaliD\", source=\"indy_node\"}",
+      "targets": [
+        {
+          "expr": "indy_unreachable_nodes_count{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "$node Unreachable Nodes",
+      "type": "singlestat",
+      "valueFontSize": "50%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "current"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Primary Node",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 8,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 95,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 27,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_primary_node{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{node}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Primary Node",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator indy-node version",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": null
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 96,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "name"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 44,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_version{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{version}}",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Indy-Node Version",
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node current date/time",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 6,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "dateTimeAsIso"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 16,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 97,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 45,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_node_current_timestamp{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Current Timestamp",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "Prometheus",
+      "description": "Indy Validator Node Ledger Consensus status",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "decimals": 4,
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "In Consensus",
+              "type": 1,
+              "value": "0"
+            },
+            {
+              "from": "",
+              "id": 1,
+              "text": "NOT in Consensus",
+              "to": "",
+              "type": 1,
+              "value": ">0"
+            }
+          ],
+          "nullValueMode": "null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 20,
+        "y": 13
+      },
+      "hideTimeOverride": true,
+      "id": 98,
+      "interval": "10s",
+      "links": [],
+      "maxDataPoints": 1000,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.1.5",
+      "repeatIteration": 1598655776835,
+      "repeatPanelId": 70,
+      "repeatedByRow": true,
+      "scopedVars": {
+        "node": {
+          "selected": false,
+          "text": "\"GlobaliD\"",
+          "value": "\"GlobaliD\""
+        }
+      },
+      "targets": [
+        {
+          "expr": "indy_consensus{instance=\"localhost:9100\",job=\"node-external\",node_name=${node:raw}}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "",
+          "refId": "A",
+          "step": 1800
+        }
+      ],
+      "timeFrom": null,
+      "title": "$node Consensus Status",
+      "transformations": [],
+      "type": "stat"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 26,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "node",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "\"cynjanode\"",
+            "value": "\"cynjanode\""
+          },
+          {
+            "selected": false,
+            "text": "\"OpsNode\"",
+            "value": "\"OpsNode\""
+          },
+          {
+            "selected": false,
+            "text": "\"Uphold\"",
+            "value": "\"Uphold\""
+          },
+          {
+            "selected": false,
+            "text": "\"IdRamp\"",
+            "value": "\"IdRamp\""
+          },
+          {
+            "selected": false,
+            "text": "\"GlobaliD\"",
+            "value": "\"GlobaliD\""
+          }
+        ],
+        "query": "\"cynjanode\",\"OpsNode\",\"Uphold\",\"IdRamp\",\"GlobaliD\"",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "node-external",
+          "value": "node-external"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(node_uname_info, job)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Job",
+        "multi": false,
+        "name": "job",
+        "options": [],
+        "query": "label_values(node_uname_info, job)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "13.58.197.208:9100",
+          "value": "13.58.197.208:9100"
+        },
+        "datasource": "Prometheus",
+        "definition": "label_values(node_uname_info{job=\"$job\"}, instance)",
+        "hide": 0,
+        "includeAll": false,
+        "label": "Host:",
+        "multi": false,
+        "name": "host",
+        "options": [],
+        "query": "label_values(node_uname_info{job=\"$job\"}, instance)",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "utc",
+  "title": "Indicio Test Network",
+  "uid": "0o7ZRnSMz",
+  "version": 6
+}
