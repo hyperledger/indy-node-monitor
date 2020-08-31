@@ -112,7 +112,6 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
 
 
 async def detect_connection_issues(result: any) -> any:
-
     for node in result:
         connection_errors = []
         node_name = node["name"]
@@ -123,13 +122,15 @@ async def detect_connection_issues(result: any) -> any:
                         # This is the name of the unreachable node.  Now we need to determine whether that node can't see the current one.
                         # If the nodes can't see each other, upgrade to an error condition.
                         unreachable_node_name = item[0]
-                        unreachable_node = [t for t in result if t["name"] == unreachable_node_name][0]
-                        if "warnings" in unreachable_node:
-                            for unreachable_node_warning in unreachable_node["warnings"]:
-                                if "Unreachable_nodes" in unreachable_node_warning :
-                                    for unreachable_node_item in unreachable_node_warning["Unreachable_nodes"]:
-                                        if unreachable_node_item[0] == node_name:
-                                            connection_errors.append(node_name + " and " + unreachable_node_name + " can't reach each other.")
+                        unreachable_node_query_result = [t for t in result if t["name"] == unreachable_node_name]
+                        if unreachable_node_query_result:
+                            unreachable_node = unreachable_node_query_result[0]
+                            if "warnings" in unreachable_node:
+                                for unreachable_node_warning in unreachable_node["warnings"]:
+                                    if "Unreachable_nodes" in unreachable_node_warning :
+                                        for unreachable_node_item in unreachable_node_warning["Unreachable_nodes"]:
+                                            if unreachable_node_item[0] == node_name:
+                                                connection_errors.append(node_name + " and " + unreachable_node_name + " can't reach each other.")
         # Merge errors and update status
         if connection_errors:
             if "errors" in node:
