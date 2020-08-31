@@ -99,7 +99,40 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
     if packages:
         await merge_package_mismatch_info(result, packages)
 
+    # Connection Issues
+    await detect_connection_issues(result)
+
     print(json.dumps(result, indent=2))
+
+
+async def detect_connection_issues(result: any) -> any:
+
+    for node in result:
+        connection_errors = []
+        node_name = node["name"]
+        if "warnings" in node:
+            for warning in node["warnings"]:
+                if "Unreachable_nodes" in warning :
+                    for item in warning["Unreachable_nodes"]:
+                        # This is the name of the unreachable node.  Now we need to determine whether that node can't see the current one.
+                        # If the nodes can't see each other, upgrade to an error condition.
+                        unreachable_node_name = item[0]
+                        unreachable_node = [t for t in result if t["name"] == unreachable_node_name][0]
+                        if "warnings" in unreachable_node:
+                            for unreachable_node_warning in unreachable_node["warnings"]:
+                                if "Unreachable_nodes" in unreachable_node_warning :
+                                    for item in unreachable_node_warning["Unreachable_nodes"]:
+                                        if item[0] == node_name:
+                                            connection_errors.append(node_name + " and " + unreachable_node_name + " can't reach each other.")
+        # Merge errors and update status
+        if connection_errors:
+            if "errors" in node:
+                for item in connection_errors:
+                    node["errors"].append(item)
+            else:
+                node["errors"] = connection_errors
+            node["status"]["errors"] = len(node["errors"])
+            node["status"]["ok"] = (len(node["errors"]) <= 0)
 
 
 async def get_primary_name(jsval: any, node: str) -> str:
@@ -206,7 +239,7 @@ async def detect_issues(jsval: any, node: str, primary: str, ident: DidKey = Non
 
             # Unreachable Nodes
             if jsval["result"]["data"]["Pool_info"]["Unreachable_nodes_count"] > 0:
-                warnings.append("Unreachable Nodes: The {0} node has Unreachable_nodes_count of {1}; {2}".format(node, jsval["result"]["data"]["Pool_info"]["Unreachable_nodes_count"], jsval["result"]["data"]["Pool_info"]["Unreachable_nodes"]))
+                warnings.append({"Unreachable_nodes": jsval["result"]["data"]["Pool_info"]["Unreachable_nodes"]})
 
             # Denylisted Nodes
             if len(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]) > 0:
