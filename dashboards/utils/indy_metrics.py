@@ -36,7 +36,7 @@ def flatten_dict(d,separator='.',parent_key=''):
                 )
             i+=1
         return dict(items)
-    for k, v in d.items():
+    for k, v in d_items:
         if parent_key:
             new_key = '{}{}{}'.format(parent_key,separator,k)
         else:
