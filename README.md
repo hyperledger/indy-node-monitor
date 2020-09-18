@@ -18,6 +18,33 @@ This is a simple tool that can be used to retrieve "validator-info"&mdash;detail
 
 For more details see the Fetch Validator Status [readme](fetch-validator-status/README.md)
 
+## Project Structure
+
+Where ever possible, all processes and solutions should be containerized.  This helps manage dependency issues and makes it easy to spin up the tools and dashboards locally or in a hosted container platform.
+
+The core elements of the project are contained in the [fetch-validator-status](./fetch-validator-status) directory.  As described above this is the starting point for collecting data for monitoring the nodes on a given network.  The underlying script is itself wrapped in a container to make it easy to run.  However that does not preclude incorporating the script directly in a another solution.
+
+Components, exporters in particular, should be developed using IOC (plug-in) patterns to allow micro-services, exporters, and dashboards to be mixed and matched as appropriate to allow end-to-end monitoring solutions to be more easily provisioned and maintained.
+
+Solutions should adhere to the following directory structure:
+
+```
+docker/                     - Top level directory to contain all Dockerfiles
+└── <micro_service_name>      - Directory containing the Dockerfile and supporting files for a specific micro-service.
+                                The name should describe the micro-service's functionality not it's tech stack.
+                                Names of any sub-directories are up to the author.
+
+exporters/                  - Top level directory to contain all exporter implementations
+└── <exporter_name>           - Directory containing a specific exporter implementation.
+                                The name should describe the intended target, Prometheus for example.
+                                Names of any sub-directories are up to the author.
+
+dashboards/                 - Top level directory to contain all dashboard implementations
+└── <dashboard_name>          - Directory containing a specific dashboard implementation.
+                                The name should describe the application for which the dashboard was intended, Grafana for example.
+                                Names of any sub-directories are up to the author.
+```
+
 ## Contributions
 
 Pull requests are welcome! Please read our [contributions guide](CONTRIBUTING.md) and submit your PRs. We enforce developer certificate of origin (DCO) commit signing. See guidance [here](https://github.com/apps/dco).
