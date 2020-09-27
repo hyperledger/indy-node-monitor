@@ -51,6 +51,7 @@ def seed_as_bytes(seed):
 async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = None, status_only: bool = False, alerts_only: bool = False):
     pool = await open_pool(transactions_path=genesis_path)
     result = []
+    verifiers = {}
 
     if ident:
         request = build_get_validator_info_request(ident.did)
@@ -62,6 +63,11 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
     if nodes:
         from_nodes = nodes.split(",")
     response = await pool.submit_action(request, node_aliases = from_nodes)
+    try:
+        # Introduced in https://github.com/hyperledger/indy-vdr/commit/ce0e7c42491904e0d563f104eddc2386a52282f7
+        verifiers = await pool.get_verifiers()
+    except AttributeError:
+        pass
 
     primary = ""
     packages = {}
@@ -73,6 +79,7 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
         info = []
         entry = {"name": node}
         try:
+            await get_node_addresses(entry, verifiers)
             jsval = json.loads(val)
             if not primary:
                 primary = await get_primary_name(jsval, node)
@@ -117,6 +124,15 @@ async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = Non
         result = filtered_result
 
     print(json.dumps(result, indent=2))
+
+
+async def get_node_addresses(entry: any, verifiers: any) -> any:
+    if verifiers:
+        node_name = entry["name"]
+        if "client_addr" in verifiers[node_name]:
+            entry["client-address"] = verifiers[node_name]["client_addr"]
+        if "node_addr" in verifiers[node_name]:
+            entry["node-address"] = verifiers[node_name]["node_addr"]
 
 
 async def detect_connection_issues(result: any) -> any:
