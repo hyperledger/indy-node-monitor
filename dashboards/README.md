@@ -251,7 +251,7 @@ The following instructions assume that you have configured a Grafana Dashboard s
 
     3. sudo systemctl restart node_exporters.target
 3. For Prometheus:
-    1. sudo vi /usr/local/etc//prometheus.yml
+    1. sudo vi /etc/prometheus/prometheus.yml
     2. Add a target to the ‘node-external’ job targets line:
         1.       - targets: ['13.58.197.208:9100', 'localhost:9100', 'localhost:9101', 'localhost:9102', 'localhost:9103', 'localhost:9104']
     3. Restart Prometheus
