@@ -15,6 +15,10 @@
     "name": "Local von-network",
     "genesisUrl": "http://host.docker.internal:9000/genesis"
   },
+  "vn-linux": {
+    "name": "Linux Local von-network",
+    "genesisUrl": "http://localhost:9000/genesis"
+  },
   "bcd": {
     "name": "BCovrin Dev",
     "genesisUrl": "http://dev.bcovrin.vonx.io/genesis"
