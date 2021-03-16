@@ -1,3 +1,7 @@
+**/conf/
+**/log/
+*.env
+
 ###
 ### Python
 ###
