@@ -204,7 +204,7 @@ class main(plugin_collection.Plugin):
 
                 # Denylisted Nodes
                 if len(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]) > 0:
-                    warnings.append("Denylisted Nodes: {1}".format(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]))
+                    warnings.append("Denylisted Nodes: {0}".format(jsval["result"]["data"]["Pool_info"]["Blacklisted_nodes"]))
         else:
             if "reason" in jsval:
                 errors.append(jsval["reason"])
