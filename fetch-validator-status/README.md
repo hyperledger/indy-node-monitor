@@ -4,7 +4,7 @@ This folder contains a simple Python script that uses [indy-vdr](https://github.
 
 The call can only be made by an entity with a suitably authorized DID on the ledger. For example, on the Sovrin MainNet, only Stewards and some within the Sovrin Foundation has that access.
 
-The easiest way to use this now is to use the `./run` script and the Docker build process provide in this folder. Work is in progress to add a CI/CD capability to `indy-vdr` so that the artifacts are published to PyPi and native Python apps can be used. In the meantime, we recommend either making changes to the included Python script, or better, just adding programs that read from standard input and process the output of the `./run` script.
+The easiest way to use this now is to use the `./run` script and the Docker build process provide in this folder. Work is in progress to add a CI/CD capability to `indy-vdr` so that the artifacts are published to PyPi and native Python apps can be used. In the meantime, we recommend building your own [plug-in](plugins/README.md).
 
 ## How To Run
 
@@ -108,15 +108,14 @@ or
 ./run.sh --genesis-url=http://localhost:9000/genesis --seed=000000000000000000000000Trustee1
 ```
 
-
-To perform an anonymous connection test when a privileged DID seed is not available, omit the `SEED` and pass the `-a` parameter:
+To perform an anonymous connection test when a privileged DID seed is not available, omit the `SEED` (`-a` is no longer needed to perform an anonymous connection):
 
 ``` bash
-./run.sh --net=<netId> -a
+./run.sh --net=<netId>
 ```
 or
 ``` bash
-./run.sh --genesis-url=<URL> -a
+./run.sh --genesis-url=<URL>
 ```
 
 If running in the browser, you will have to get the URL for the Genesis file (as described above) and replace the `localhost` URL above.
@@ -152,7 +151,7 @@ cd von-network
 
 ### Extracting Useful Information
 
-Once you have the script running, you can write a program that takes the JSON input and produces a more useful monitoring output file&mdash;probably still in JSON. Here is some information that would be useful to extract from the JSON output:
+Once you have the script running, you can write a plug-in that takes the JSON input and produces a more useful monitoring output file&mdash;probably still in JSON. Here is some information that would be useful to extract from the JSON output:
 
 - Detect when a node is inaccessible (as with Node 1 above) and produce standard output for that situation.
 - Detect any nodes that are accessible (populated JSON data) but that are "unreachable" to some or all of the other Indy nodes.
@@ -166,6 +165,11 @@ Once you have the script running, you can write a program that takes the JSON in
 The suggestions above are only ideas. Precise meanings of the values should be investigated, particularly for "ledger" type data (e.g. number of transactions) but that are generated on a per node basis.
 
 Note that there are three different formats for the timestamps in the data structure, and all appear to be UTC. Make sure to convert times into a single format during collection.
+
+
+## Plug-ins
+
+For info on plug-ins see the plug-ins [readme](plugins/README.md)
 
 ### Running against other Indy Networks
 

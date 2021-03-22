@@ -1,14 +1,14 @@
 {
   "sbn": {
-    "name": "Sovrin BuilderNet",
+    "name": "Sovrin Builder Net",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_builder_genesis"
   },
   "ssn": {
-    "name": "Sovrin StagingNet",
+    "name": "Sovrin Staging Net",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_sandbox_genesis"
   },
   "smn": {
-    "name": "Sovrin MainNet",
+    "name": "Sovrin Main Net",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_live_genesis"
   },
   "vn": {
