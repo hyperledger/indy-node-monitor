@@ -109,6 +109,7 @@ if __name__ == "__main__":
         print(json.dumps(load_network_list(), indent=2))
         exit()
 
+    network_name = None 
     if args.net:
         log("Loading known network list ...")
         networks = load_network_list()
@@ -119,7 +120,8 @@ if __name__ == "__main__":
 
     if args.genesis_url:
         download_genesis_file(args.genesis_url, args.genesis_path)
-        network_name = args.genesis_url
+        if not network_name: 
+            network_name = args.genesis_url
     if not os.path.exists(args.genesis_path):
         print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
         parser.print_help()
