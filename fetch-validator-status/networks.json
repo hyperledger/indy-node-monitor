@@ -40,15 +40,15 @@
     "genesisUrl": "http://greenlight.bcovrin.vonx.io/genesis"
   },
   "imn": {
-    "name": "Indicio Mainnet ",
+    "name": "Indicio MainNet ",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_mainnet_genesis"
   },
   "idn": {
-    "name": "Indicio Demonet ",
+    "name": "Indicio DemoNet ",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_demonet_genesis"
   },
   "itn": {
-    "name": "Indicio Testnet ",
+    "name": "Indicio TestNet ",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_testnet_genesis"
   }
 }
