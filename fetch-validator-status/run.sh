@@ -15,18 +15,18 @@ function getVolumeMount() {
   echo "  --volume='${path}:/home/indy/${mountPoint}:Z' "
 }
 
-# Running on Windows?
-if [[ "$OSTYPE" == "msys" ]]; then
-  # Prefix interactive terminal commands ...
-  terminalEmu="winpty"
-fi
-
 # IM is for "interactive mode" so Docker is run with the "-it" parameter. Probably never needed
 # but it is there. Use "IM=1 run.sh <args>..." to run the Docker container in interactive mode
 if [ -z "${IM+x}" ]; then
   export DOCKER_INTERACTIVE=""
 else
   export DOCKER_INTERACTIVE="-it"
+  
+  # Running interactively on Windows?
+  if [[ "$OSTYPE" == "msys" ]]; then
+    # Prefix interactive terminal commands ...
+    export terminalEmu="winpty"
+  fi
 fi
 
 docker build -t fetch_status . > /dev/null 2>&1
@@ -48,4 +48,4 @@ fi
 
 cmd+="fetch_status \"$@\""
 eval ${cmd}
-#echo ${cmd}
+# echo ${cmd}
