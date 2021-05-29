@@ -144,7 +144,12 @@ class PluginCollection(object):
             print(*args, file=sys.stderr)
 
     def plugin_list(self):
-        self.log("\n\033[38;5;37m--- Plug-ins ---\033[0m")
-        for plugin in self.plugins:
-            self.log(f"\033[38;5;37m{plugin.name}: {plugin.__class__.__module__}.{plugin.__class__.__name__}\033[0m")
-        self.log(f"\n")
+        self.log("\033[38;5;37m===========================================================\033[0m")
+        self.log("\033[38;5;37m| Plug-ins                                                |\033[0m")
+        self.log("\033[38;5;37m-----------------------------------------------------------\033[0m")
+        if len(self.plugins) > 0:
+            for plugin in self.plugins:
+                self.log(f"\033[38;5;37m  - {plugin.name}: {plugin.__class__.__module__}.{plugin.__class__.__name__}\033[0m")
+        else:
+            self.log(f"\033[38;5;37m  - No plug-ins found ...\033[0m")
+        self.log("\033[38;5;37m===========================================================\n\033[0m")
