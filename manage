@@ -1,0 +1,179 @@
+#!/bin/bash
+export MSYS_NO_PATHCONV=1
+export DOCKERHOST=${APPLICATION_URL-$(docker run --rm --net=host eclipse/che-ip)}
+SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd)"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-indy-node-monitor-stack}"
+set -e
+
+# =================================================================================================================
+# Usage:
+# -----------------------------------------------------------------------------------------------------------------
+usage() {
+  cat <<-EOF
+
+  Usage: $0 [command] [options]
+
+  Commands:
+
+  Options:
+EOF
+  exit 1
+}
+
+# -----------------------------------------------------------------------------------------------------------------
+# Functions:
+# -----------------------------------------------------------------------------------------------------------------
+function toLower() {
+  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+}
+
+function echoYellow (){
+  _msg=${1}
+  _yellow='\e[33m'
+  _nc='\e[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}" >&2
+}
+
+function echoError (){
+  _msg=${1}
+  _red='\e[31m'
+  _nc='\e[0m' # No Color
+  echo -e "${_red}${_msg}${_nc}" >&2
+}
+
+# function functionExists() {
+#   (
+#     if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+#       return 0
+#     else
+#       return 1
+#     fi
+#   )
+# }
+
+function openInBrowser(){
+  (
+    unset openBrowserCmd
+    if [[ "$OSTYPE" == "msys" ]]; then
+      # Windows
+      # ToDo:
+      #  - Not working - Fix it
+      # openBrowserCmd="start chrome"
+      openBrowserCmd=""
+    elif [ $(uname) == "Darwin" ]; then
+      openBrowserCmd="open"
+    elif [ $(uname) == "Linux" ]; then
+      openBrowserCmd="xdg-open"
+    fi
+
+    if [ ! -z "${openBrowserCmd}" ]; then
+      for url in ${@}; do
+        echo "Opening ${url} in your default browser ..."
+        eval "${openBrowserCmd} ${url}"
+      done
+    else
+      echoYellow "Unable to detect browser start command. Please browser to the following application URLs:"
+      for url in ${@}; do
+        echo "  - ${url}"
+      done
+    fi
+  )
+}
+
+function logs() {
+  (
+    echo "Following container logs for ${@} ..."
+    docker compose logs -f ${@}
+  )
+}
+
+function openShell() {
+  (
+    echo "Connecting remote shell to ${@} ..."
+    docker compose exec ${@} /bin/bash
+  )
+}
+
+function readEnvFile(){
+  (
+    envFile=${1}
+    if [ -f ${envFile} ]; then
+      # Read in the content minus any comments ...
+      _value=$(sed '/^[[:blank:]]*#/d;s/#.*//' ${envFile})
+    fi
+    echo "${_value}"
+  )
+}
+
+function loadEnvVariables(){
+  for envTag in ${@}; do
+    for item in $(readEnvFile ".env-${envTag}"); do
+      export "${item}"
+    done
+  done
+}
+
+# -----------------------------------------------------------------------------------------------------------------
+# Initialization:
+# -----------------------------------------------------------------------------------------------------------------
+_envTags="default"
+_imageTag="latest"
+while getopts ":h-:" FLAG; do
+  case $FLAG in
+    h ) usage ;;
+    \? ) #unrecognized option - show help
+      echoError "\nInvalid script option: -${OPTARG}"
+      usage
+      ;;
+    - ) 
+      case ${OPTARG} in
+        "nightly"*) 
+          _imageTag="nightlies"
+          ;;
+      esac
+  esac
+done
+shift $((OPTIND-1))
+_envTags+=" ${_imageTag}"
+
+# Load network monitor seeds if the '.env-seeds' file is found.
+# The file is ignored by Git so seeds don't end up in source control.
+if [ -f ".env-seeds" ]; then
+  _envTags+=" seeds"
+fi
+# =================================================================================================================
+
+pushd ${SCRIPT_HOME} >/dev/null
+COMMAND=$(toLower ${1})
+shift || COMMAND=usage
+
+loadEnvVariables "${_envTags}"
+
+case "${COMMAND}" in
+  start|up)
+    echoYellow "Starting up the Indy Node Monitoring Stack ..."
+    docker compose up -d --build ${@}
+    sleep 3
+    openInBrowser "http://localhost:8080"
+    ;;
+  stop|down)
+    echoYellow "Stopping the Indy Node Monitoring Stack ..."
+    docker compose down
+    ;;
+  restart)
+    echoYellow "Restarting the Indy Node Monitoring Stack ..."
+    docker compose down ${@}
+    docker compose up -d --build ${@}
+    ;;
+  logs)
+    logs $@
+    ;;
+  shell)
+    openShell $@
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+popd >/dev/null

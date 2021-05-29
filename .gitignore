@@ -1,3 +1,8 @@
+influxdb/data/
+
+# Ignore environment files that could contains seeds (credentials)
+.env-seed*
+
 **/conf/
 **/log/
 *.env

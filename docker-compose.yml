@@ -1,0 +1,72 @@
+version: '3'
+
+  # ToDo:
+  #   - Define a virtual network?
+  #   - Move ports to environment variables, support override?
+  #   - Make --verbose on indy-node-monitor optional
+
+  
+services:
+  indy-node-monitor:
+    build:
+      context: ./fetch-validator-status
+      dockerfile: ./Dockerfile
+    image: "indy-node-monitor"
+    volumes:
+      # Mounts for indy-node-monitor configuration
+      - ./fetch-validator-status/plugins/:/home/indy/plugins/
+      - ./fetch-validator-status/conf/:/home/indy/conf/
+      - ./fetch-validator-status/logs/:/home/indy/logs/
+    ports:
+      - "8080:8080"
+    command: >
+      --net smn --web --verbose
+
+  telegraf:
+    # Full tag list: https://hub.docker.com/r/library/telegraf/tags/
+    build:
+      context: ./images/telegraf/
+      dockerfile: ./${TYPE}/Dockerfile
+      args:
+        TELEGRAF_TAG: ${TELEGRAF_TAG}
+    image: "telegraf"
+    environment:
+      HOSTNAME: "indy-node-monitor"
+      SBN_SEED: ${SBN_SEED}
+      SSN_SEED: ${SSN_SEED}
+      SMN_SEED: ${SMN_SEED}
+    # Telegraf requires network access to:
+    # - InfluxDB
+    # - Indy-Node-Monitor
+    links:
+      - influxdb
+      - indy-node-monitor
+    volumes:
+      # Mount for telegraf configuration
+      - ./telegraf/:/etc/telegraf/
+    depends_on:
+      - influxdb
+      - indy-node-monitor
+    ports:
+      # The WebUI for Chronograf is served on port 8888
+      - "9273:9273"
+
+  influxdb:
+    # Full tag list: https://hub.docker.com/r/library/influxdb/tags/
+    build:
+      context: ./images/influxdb/
+      dockerfile: ./${TYPE}/Dockerfile
+      args:
+        INFLUXDB_TAG: ${INFLUXDB_TAG}
+    image: "influxdb"
+    volumes:
+      # Mount for influxdb data directory
+      - ./influxdb/data:/var/lib/influxdb
+      # Mount for influxdb configuration
+      - ./influxdb/config/:/etc/influxdb/
+    ports:
+      # The API for InfluxDB is served on port 8086
+      - "8086:8086"
+      - "8082:8082"
+      # UDP Port
+      - "8089:8089/udp"
