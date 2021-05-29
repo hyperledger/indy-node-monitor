@@ -94,6 +94,13 @@ function openShell() {
   )
 }
 
+function installPlugin() {
+  (
+    echo "Installing Grafana plugin; ${@} ... "
+    docker compose exec grafana grafana-cli plugins install  ${@}
+  )
+}
+
 function readEnvFile(){
   (
     envFile=${1}
@@ -170,6 +177,9 @@ case "${COMMAND}" in
     ;;
   shell)
     openShell $@
+    ;;
+  install-plugin)
+    installPlugin $@
     ;;
   *)
     usage

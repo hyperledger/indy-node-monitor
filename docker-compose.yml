@@ -4,8 +4,15 @@ version: '3'
   #   - Define a virtual network?
   #   - Move ports to environment variables, support override?
   #   - Make --verbose on indy-node-monitor optional
+  #   - Use env files like grafana does to configure telegraf
 
-  
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  indy-node-monitor:
+
 services:
   indy-node-monitor:
     build:
@@ -19,9 +26,11 @@ services:
       - ./fetch-validator-status/logs/:/home/indy/logs/
     ports:
       - "8080:8080"
+    networks:
+      - indy-node-monitor
     command: >
       --net smn --web --verbose
-
+  
   telegraf:
     # Full tag list: https://hub.docker.com/r/library/telegraf/tags/
     build:
@@ -50,7 +59,9 @@ services:
     ports:
       # The WebUI for Chronograf is served on port 8888
       - "9273:9273"
-
+    networks:
+      - indy-node-monitor
+  
   influxdb:
     # Full tag list: https://hub.docker.com/r/library/influxdb/tags/
     build:
@@ -70,3 +81,55 @@ services:
       - "8082:8082"
       # UDP Port
       - "8089:8089/udp"
+    networks:
+      - indy-node-monitor
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    depends_on:
+      - telegraf
+    networks:
+      - indy-node-monitor
+    links:
+      - telegraf
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure
+
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+      - influxdb
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ./grafana/config.monitoring
+    networks:
+      - indy-node-monitor
+    links:
+      - influxdb
+      - prometheus
+    user: "472"
+    deploy:
+      placement:
+        constraints:
+          - node.role==manager
+      restart_policy:
+        condition: on-failure
