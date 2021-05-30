@@ -5,7 +5,7 @@ volumes:
   grafana_data: {}
 
 networks:
-  indy-node-monitor:
+  node-monitor-net:
 
 services:
   indy-node-monitor:
@@ -21,7 +21,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - indy-node-monitor
+      - node-monitor-net
     command: >
       --net smn --web --verbose
   
@@ -34,7 +34,7 @@ services:
         TELEGRAF_TAG: ${TELEGRAF_TAG}
     image: "telegraf"
     environment:
-      HOSTNAME: "indy-node-monitor"
+      HOSTNAME: "telegraf"
       SBN_SEED: ${SBN_SEED}
       SSN_SEED: ${SSN_SEED}
       SMN_SEED: ${SMN_SEED}
@@ -54,7 +54,7 @@ services:
       # The WebUI for Chronograf is served on port 8888
       - "9273:9273"
     networks:
-      - indy-node-monitor
+      - node-monitor-net
   
   influxdb:
     # Full tag list: https://hub.docker.com/r/library/influxdb/tags/
@@ -76,7 +76,7 @@ services:
       # UDP Port
       - "8089:8089/udp"
     networks:
-      - indy-node-monitor
+      - node-monitor-net
 
   prometheus:
     image: prom/prometheus
@@ -90,18 +90,37 @@ services:
       - '--web.console.templates=/usr/share/prometheus/consoles'
     ports:
       - 9090:9090
-    depends_on:
-      - telegraf
-    networks:
-      - indy-node-monitor
     links:
       - telegraf
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-      restart_policy:
-        condition: on-failure
+      - alertmanager
+    depends_on:
+    - telegraf
+    networks:
+      - node-monitor-net
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure
+
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - "./alertmanager/:/etc/alertmanager/"
+    networks:
+      - node-monitor-net
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure
 
   grafana:
     image: grafana/grafana
@@ -116,14 +135,14 @@ services:
     env_file:
       - ./grafana/config.monitoring
     networks:
-      - indy-node-monitor
+      - node-monitor-net
     links:
       - influxdb
       - prometheus
     user: "472"
-    deploy:
-      placement:
-        constraints:
-          - node.role==manager
-      restart_policy:
-        condition: on-failure
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure
