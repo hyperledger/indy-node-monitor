@@ -68,15 +68,15 @@ promptForConfirmation(){
   )
 }
 
-# function functionExists() {
-#   (
-#     if [ ! -z ${1} ] && type ${1} &>/dev/null; then
-#       return 0
-#     else
-#       return 1
-#     fi
-#   )
-# }
+function functionExists() {
+  (
+    if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
 
 function openInBrowser(){
   (
@@ -198,7 +198,7 @@ function getServices(){
     ymlFile=${1}
     unset services
     if [ -f ${ymlFile} ]; then
-      services="$(yq --prettyPrint eval '.services | keys | .[]' ${ymlFile})"
+      services="$(${YQ_EXE} --prettyPrint eval '.services | keys | .[]' ${ymlFile})"
     fi
     echo "${services}"
   )
@@ -226,6 +226,41 @@ function isService(){
   fi
 }
 
+function up(){
+  echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
+  docker compose up -d --build ${@}
+  sleep 3
+  openInBrowser "http://localhost:3000"
+}
+
+function down(){
+  echoGreen "\nStopping the Indy Node Monitoring Stack ...\n"
+  docker compose down ${@}
+}
+
+function restart(){
+  echoGreen "\nRestarting the Indy Node Monitoring Stack ...\n"
+  down ${@}
+  up ${@}
+}
+# -----------------------------------------------------------------------------------------------------------------
+# Check for dependancies
+# -----------------------------------------------------------------------------------------------------------------
+YQ_EXE=yq
+if ! functionExists ${YQ_EXE}; then
+    echoYellow "The ${YQ_EXE} executable is required and was not found on your path."
+
+  cat <<-EOF
+  The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
+  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+
+  Windows:
+    - chocolatey install yq
+  MAC:
+    - brew install yq
+EOF
+    exit 1
+fi
 # -----------------------------------------------------------------------------------------------------------------
 # Initialization:
 # -----------------------------------------------------------------------------------------------------------------
@@ -270,19 +305,13 @@ loadEnvVariables "${_envTags}"
 
 case "${COMMAND}" in
   start|up)
-    echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
-    docker compose up -d --build ${@}
-    sleep 3
-    openInBrowser "http://localhost:3000"
+    up ${@}
     ;;
   stop|down)
-    echoGreen "\nStopping the Indy Node Monitoring Stack ...\n"
-    docker compose down
+    down ${@}
     ;;
   restart)
-    echoGreen "\nRestarting the Indy Node Monitoring Stack ...\n"
-    docker compose down ${@}
-    docker compose up -d --build ${@}
+    restart ${@}
     ;;
   logs)
     logs ${@}
