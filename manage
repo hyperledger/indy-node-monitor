@@ -24,35 +24,45 @@ EOF
 # Functions:
 # -----------------------------------------------------------------------------------------------------------------
 function toLower() {
-  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+  (
+    echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+  )
 }
 
 function echoBlue (){
-  _msg=${1}
-  _blue='\e[34m'
-  _nc='\e[0m' # No Color
-  echo -e "${_blue}${_msg}${_nc}" >&2
+  (  
+    _msg=${1}
+    _blue='\e[34m'
+    _nc='\e[0m' # No Color
+    echo -e "${_blue}${_msg}${_nc}" >&2
+  )
 }
 
 function echoGreen (){
-  _msg=${1}
-  _blue='\e[32m'
-  _nc='\e[0m' # No Color
-  echo -e "${_blue}${_msg}${_nc}" >&2
+  (
+    _msg=${1}
+    _blue='\e[32m'
+    _nc='\e[0m' # No Color
+    echo -e "${_blue}${_msg}${_nc}" >&2
+  )
 }
 
 function echoYellow (){
+  (
   _msg=${1}
   _yellow='\e[33m'
   _nc='\e[0m' # No Color
   echo -e "${_yellow}${_msg}${_nc}" >&2
+  )
 }
 
 function echoError (){
-  _msg=${1}
-  _red='\e[31m'
-  _nc='\e[0m' # No Color
-  echo -e "${_red}${_msg}${_nc}" >&2
+  (
+    _msg=${1}
+    _red='\e[31m'
+    _nc='\e[0m' # No Color
+    echo -e "${_red}${_msg}${_nc}" >&2
+  )
 }
 
 promptForConfirmation(){
@@ -71,6 +81,16 @@ promptForConfirmation(){
 function functionExists() {
   (
     if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+function isInstalled() {
+  (
+    if [ -x "$(command -v ${@})" ]; then
       return 0
     else
       return 1
@@ -107,7 +127,7 @@ function logs() {
   (
     if [ ! -z "${@}" ] && isService ${@}; then
       echoBlue "Following container logs for ${@} ..."
-      docker compose logs -f ${@}
+      ${DOCKER_COMPOSE_EXE} logs -f ${@}
     fi
   )
 }
@@ -115,8 +135,8 @@ function logs() {
 function openShell() {
   (
     if [ ! -z "${@}" ] && isService ${@}; then
-      echoBlue "Connecting remote shell to ${@} ..."
-      docker compose exec ${@} /bin/bash
+      echoBlue "Connecting remote shell to ${@} (type 'exit' to exit) ..."
+      ${DOCKER_COMPOSE_EXE} exec ${@} /bin/bash
     fi
   )
 }
@@ -124,7 +144,7 @@ function openShell() {
 function installPlugin() {
   (
     echoGreen "Installing Grafana plugin; ${@} ... "
-    docker compose exec grafana grafana-cli plugins install  ${@}
+    ${DOCKER_COMPOSE_EXE} exec grafana grafana-cli plugins install  ${@}
   )
 }
 
@@ -198,57 +218,114 @@ function getServices(){
     ymlFile=${1}
     unset services
     if [ -f ${ymlFile} ]; then
-      services="$(${YQ_EXE} --prettyPrint eval '.services | keys | .[]' ${ymlFile})"
+      services="$(${YQ_EXE} eval '.services | keys | .[]' ${ymlFile})"
     fi
     echo "${services}"
   )
 }
 
+function getImages(){
+  (
+    ymlFile=${1}
+    unset images
+    if [ -f ${ymlFile} ]; then
+      image="$(${YQ_EXE} eval '.services[].image' ${ymlFile})"
+    fi
+    echo "${image}"
+  )
+}
+
 function contains(){
-  local _item
-  _find=${1}
-  shift
-  for _item in ${@}; do [[ "${_item}" == "${_find}" ]] && return 0; done
-  return 1
+  (
+    local _item
+    _find=${1}
+    shift
+    for _item in ${@}; do [[ "${_item}" == "${_find}" ]] && return 0; done
+    return 1
+  )
 }
 
 function isService(){
-  serviceName=${1}
-  if contains "${serviceName}" "${_services[@]}"; then
-    return 0
-  else
-    echoYellow "No such service: ${serviceName}"
-    echoBlue "Available Services:"
-    for service in ${_services}; do
-      echoBlue " - ${service}"
-    done
-    return 1
-  fi
+  (
+    serviceName=${1}
+    if contains "${serviceName}" "${_services[@]}"; then
+      return 0
+    else
+      echoYellow "No such service: ${serviceName}"
+      echoBlue "Available Services:"
+      for service in ${_services}; do
+        echoBlue " - ${service}"
+      done
+      return 1
+    fi
+  )
 }
 
 function up(){
-  echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
-  docker compose up -d --build ${@}
-  sleep 3
-  openInBrowser "http://localhost:3000"
+  (
+    echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
+    ${DOCKER_COMPOSE_EXE} up -d --build ${@}
+    sleep 3
+    openInBrowser "http://localhost:3000"
+  )
 }
 
 function down(){
+  (
   echoGreen "\nStopping the Indy Node Monitoring Stack ...\n"
-  docker compose down ${@}
+  ${DOCKER_COMPOSE_EXE} down ${@}
+  )
 }
 
 function restart(){
-  echoGreen "\nRestarting the Indy Node Monitoring Stack ...\n"
-  down ${@}
-  up ${@}
+  (
+    echoGreen "\nRestarting the Indy Node Monitoring Stack ...\n"
+    down ${@}
+    up ${@}
+  )
+}
+
+function clean(){
+  (
+    down
+    deleteData
+    echoGreen "\nRemoving project images ...\n"
+    ${DOCKER_EXE} image remove --force ${_images} > /dev/null 2>&1
+    ${DOCKER_EXE} image prune --force > /dev/null 2>&1
+  )
+}
+
+function openInfluxCli(){
+  (
+    echoBlue "Opening the influx cli (type 'exit' to exit) ..."
+    ${DOCKER_COMPOSE_EXE} exec influxdb /usr/bin/influx
+  )
+}
+
+function openFluxRepl(){
+  (
+    echoBlue "Opening the flux REPL (press Ctrl-D to exit) ..."
+    ${DOCKER_COMPOSE_EXE} exec influxdb /usr/bin/influx -type flux
+  )
 }
 # -----------------------------------------------------------------------------------------------------------------
 # Check for dependancies
 # -----------------------------------------------------------------------------------------------------------------
+DOCKER_EXE="docker"
+if ! isInstalled ${DOCKER_EXE}; then
+  echoYellow "${DOCKER_EXE} is not installed."
+  exit 1
+fi
+
+DOCKER_COMPOSE_EXE="${DOCKER_EXE} compose"
+if ! isInstalled ${DOCKER_COMPOSE_EXE}; then
+  echoYellow "${DOCKER_COMPOSE_EXE} is not installed."
+  exit 1
+fi
+
 YQ_EXE=yq
-if ! functionExists ${YQ_EXE}; then
-    echoYellow "The ${YQ_EXE} executable is required and was not found on your path."
+if ! isInstalled ${YQ_EXE}; then
+  echoYellow "The ${YQ_EXE} executable is required and was not found on your path."
 
   cat <<-EOF
   The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
@@ -259,7 +336,7 @@ if ! functionExists ${YQ_EXE}; then
   MAC:
     - brew install yq
 EOF
-    exit 1
+  exit 1
 fi
 # -----------------------------------------------------------------------------------------------------------------
 # Initialization:
@@ -292,6 +369,7 @@ fi
 
 # Get the list of services ...
 _services=$(getServices "./docker-compose.yml")
+_images=$(getImages "./docker-compose.yml")
 # =================================================================================================================
 
 # =================================================================================================================
@@ -324,6 +402,15 @@ case "${COMMAND}" in
     ;;
   delete-data)
     deleteData ${@}
+    ;;
+  clean)
+    clean ${@}
+    ;;
+  influx-cli)
+    openInfluxCli ${@}
+    ;;
+  flux-repl)
+    openFluxRepl ${@}
     ;;
   *)
     usage
