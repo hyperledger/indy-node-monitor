@@ -530,7 +530,7 @@
           "value": "Absa"
         },
         "datasource": "InfluxDB",
-        "definition": "show measurements on telegraf",
+        "definition": "show tag values on telegraf with key = \"name\"",
         "description": "Select a node.",
         "error": null,
         "hide": 0,
@@ -539,7 +539,7 @@
         "multi": false,
         "name": "node",
         "options": [],
-        "query": "show measurements on telegraf",
+        "query": "show tag values on telegraf with key = \"name\"",
         "refresh": 2,
         "regex": "",
         "skipUrlSync": false,
