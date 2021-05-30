@@ -105,15 +105,19 @@ function openInBrowser(){
 
 function logs() {
   (
-    echoBlue "Following container logs for ${@} ..."
-    docker compose logs -f ${@}
+    if [ ! -z "${@}" ] && isService ${@}; then
+      echoBlue "Following container logs for ${@} ..."
+      docker compose logs -f ${@}
+    fi
   )
 }
 
 function openShell() {
   (
-    echoBlue "Connecting remote shell to ${@} ..."
-    docker compose exec ${@} /bin/bash
+    if [ ! -z "${@}" ] && isService ${@}; then
+      echoBlue "Connecting remote shell to ${@} ..."
+      docker compose exec ${@} /bin/bash
+    fi
   )
 }
 
@@ -189,6 +193,39 @@ If you want to save any of your work, ensure you export it and update your provi
   )
 }
 
+function getServices(){
+  (
+    ymlFile=${1}
+    unset services
+    if [ -f ${ymlFile} ]; then
+      services="$(yq --prettyPrint eval '.services | keys | .[]' ${ymlFile})"
+    fi
+    echo "${services}"
+  )
+}
+
+function contains(){
+  local _item
+  _find=${1}
+  shift
+  for _item in ${@}; do [[ "${_item}" == "${_find}" ]] && return 0; done
+  return 1
+}
+
+function isService(){
+  serviceName=${1}
+  if contains "${serviceName}" "${_services[@]}"; then
+    return 0
+  else
+    echoYellow "No such service: ${serviceName}"
+    echoBlue "Available Services:"
+    for service in ${_services}; do
+      echoBlue " - ${service}"
+    done
+    return 1
+  fi
+}
+
 # -----------------------------------------------------------------------------------------------------------------
 # Initialization:
 # -----------------------------------------------------------------------------------------------------------------
@@ -217,6 +254,9 @@ _envTags+=" ${_imageTag}"
 if [ -f ".env-seeds" ]; then
   _envTags+=" seeds"
 fi
+
+# Get the list of services ...
+_services=$(getServices "./docker-compose.yml")
 # =================================================================================================================
 
 # =================================================================================================================
