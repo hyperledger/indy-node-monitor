@@ -394,6 +394,15 @@ _envTags+=" ${_imageTag}"
 # The file is ignored by Git so seeds don't end up in source control.
 if [ -f ".env-seeds" ]; then
   _envTags+=" seeds"
+else
+  echoYellow "\nNo '.env-seeds' file was found.  \
+This file is used to inject your network monitor seeds into Telegaf so it can make privileged queries to the Indy Node Monitor web service.  \
+This file is ignored by git so it does not accidentally make its way into source control.  \
+If you do not supply a set of network monitor seeds Telegaf will only be able to make unprivileged queries to the Indy Node Monitor.  \
+The responses to unprivileged queries only allow node monitoring at a very high level, i.e. up/down."
+  if promptForConfirmation "Would you like to create a template '.env-seeds' file now?"; then
+    echo -e "SBN_SEED=\nSSN_SEED=\nSMN_SEED=" > .env-seeds
+  fi
 fi
 
 # Get the list of services ...
