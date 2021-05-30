@@ -319,7 +319,7 @@ function clean(){
     down
     deleteData
     echoGreen "\nRemoving project images ...\n"
-    ${DOCKER_EXE} image remove --force ${_images} > /dev/null 2>&1
+    ${DOCKER_EXE} image remove --force ${_images} 2>/dev/null
     ${DOCKER_EXE} image prune --force > /dev/null 2>&1
   )
 }
