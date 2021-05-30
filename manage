@@ -41,6 +41,19 @@ function echoError (){
   echo -e "${_red}${_msg}${_nc}" >&2
 }
 
+promptForConfirmation(){
+  (
+    _msg=${@}
+    echoYellow "\n${_msg}"
+    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press \'Y\' to continue, or any other key to exit ...\n' key
+    if [[ $(toLower ${key}) == 'y' ]]; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
 # function functionExists() {
 #   (
 #     if [ ! -z ${1} ] && type ${1} &>/dev/null; then
@@ -120,6 +133,52 @@ function loadEnvVariables(){
   done
 }
 
+function deleteData(){
+  (
+    deleteList=${@:-influxdb prometheus grafana}
+    unset influxdb_data
+    unset prometheus_data
+    unset grafana_data
+    unset delete_msg
+    for item in ${deleteList}; do
+      case ${item} in
+        influxdb)
+          influxdb_data=1 ;;
+        prometheus)
+          prometheus_data=1 ;;
+        grafana)
+          grafana_data=1 ;;
+        *)
+          influxdb_data=1
+          prometheus_data=1
+          grafana_data=1
+          ;;
+      esac
+      delete_msg+=" ${item}"
+    done
+    msg_start=$(echo ${delete_msg} | awk '{$NF="";sub(/[ \t]+$/,"")}1')
+    msg_end=$(echo ${delete_msg} | awk '{print $(NF)}')
+    delete_msg="${msg_start}${msg_start:+ and }${msg_end}"
+
+    if promptForConfirmation "If you continue all ${delete_msg} data will be deleted and reprovisioned from scratch next time you start the monitor.
+If you want to save any of your work, ensure you export it and update your provisioning configurations before continuing.\n"; then
+
+      if [ ! -z ${influxdb_data} ]; then
+        echo "Deleting all InfluxDB data..."
+        rm -rf influxdb/data
+      fi
+      if [ ! -z ${prometheus_data} ]; then
+        echo "Deleting all Prometheus data..."
+        $(docker volume rm indy-node-monitor-stack_prometheus_data -f >/dev/null 2>&1)
+      fi
+      if [ ! -z ${grafana_data} ]; then
+        echo "Deleting all Grafana data..."
+        $(docker volume rm indy-node-monitor-stack_grafana_data -f >/dev/null 2>&1)
+      fi
+    fi
+  )
+}
+
 # -----------------------------------------------------------------------------------------------------------------
 # Initialization:
 # -----------------------------------------------------------------------------------------------------------------
@@ -132,9 +191,9 @@ while getopts ":h-:" FLAG; do
       echoError "\nInvalid script option: -${OPTARG}"
       usage
       ;;
-    - ) 
+    - )
       case ${OPTARG} in
-        "nightly"*) 
+        "nightly"*)
           _imageTag="nightlies"
           ;;
       esac
@@ -173,13 +232,16 @@ case "${COMMAND}" in
     docker compose up -d --build ${@}
     ;;
   logs)
-    logs $@
+    logs ${@}
     ;;
   shell)
-    openShell $@
+    openShell ${@}
     ;;
   install-plugin)
-    installPlugin $@
+    installPlugin ${@}
+    ;;
+  delete-data)
+    deleteData ${@}
     ;;
   *)
     usage
