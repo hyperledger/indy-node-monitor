@@ -57,22 +57,19 @@ datasources:
   type: influxdb
   typeName: InfluxDB
   typeLogoUrl: public/app/plugins/datasource/influxdb/img/influxdb_logo.svg
-  access: direct
+  access: proxy
   orgId: 1
-  # ToDo:
-  # - Figure out why this does not work when set to http://influxdb:8086 like it does 
-  #   with the Prometheus configuration above.
-  url: http://localhost:8086
+  url: http://influxdb:8086
   password: ''
   user: ''
   database: telegraf
   basicAuth: false
   isDefault: false
-  jsonData:
-    defaultBucket: telegraf
-    httpMode: POST
-    organization: InfluxDB
-    timeInterval: ''
-    tlsSkipVerify: false
-    version: InfluxQL
+  # jsonData:
+  #   defaultBucket: telegraf
+  #   httpMode: POST
+  #   organization: InfluxDB
+  #   timeInterval: ''
+  #   tlsSkipVerify: false
+  #   version: InfluxQL
   readOnly: false
