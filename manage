@@ -27,6 +27,20 @@ function toLower() {
   echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
 }
 
+function echoBlue (){
+  _msg=${1}
+  _blue='\e[34m'
+  _nc='\e[0m' # No Color
+  echo -e "${_blue}${_msg}${_nc}" >&2
+}
+
+function echoGreen (){
+  _msg=${1}
+  _blue='\e[32m'
+  _nc='\e[0m' # No Color
+  echo -e "${_blue}${_msg}${_nc}" >&2
+}
+
 function echoYellow (){
   _msg=${1}
   _yellow='\e[33m'
@@ -68,21 +82,17 @@ function openInBrowser(){
   (
     unset openBrowserCmd
     if [[ "$OSTYPE" == "msys" ]]; then
-      # Windows
-      # ToDo:
-      #  - Not working - Fix it
-      # openBrowserCmd="start chrome"
-      openBrowserCmd=""
+      openBrowserCmd='cmd "/c start ${url}"'
     elif [ $(uname) == "Darwin" ]; then
-      openBrowserCmd="open"
+      openBrowserCmd='open ${url}'
     elif [ $(uname) == "Linux" ]; then
-      openBrowserCmd="xdg-open"
+      openBrowserCmd='xdg-open ${url}'
     fi
 
     if [ ! -z "${openBrowserCmd}" ]; then
       for url in ${@}; do
-        echo "Opening ${url} in your default browser ..."
-        eval "${openBrowserCmd} ${url}"
+        echoBlue "\nOpening ${url} in your default browser ..."
+        eval ${openBrowserCmd}
       done
     else
       echoYellow "Unable to detect browser start command. Please browser to the following application URLs:"
@@ -95,21 +105,21 @@ function openInBrowser(){
 
 function logs() {
   (
-    echo "Following container logs for ${@} ..."
+    echoBlue "Following container logs for ${@} ..."
     docker compose logs -f ${@}
   )
 }
 
 function openShell() {
   (
-    echo "Connecting remote shell to ${@} ..."
+    echoBlue "Connecting remote shell to ${@} ..."
     docker compose exec ${@} /bin/bash
   )
 }
 
 function installPlugin() {
   (
-    echo "Installing Grafana plugin; ${@} ... "
+    echoGreen "Installing Grafana plugin; ${@} ... "
     docker compose exec grafana grafana-cli plugins install  ${@}
   )
 }
@@ -217,17 +227,17 @@ loadEnvVariables "${_envTags}"
 
 case "${COMMAND}" in
   start|up)
-    echoYellow "Starting up the Indy Node Monitoring Stack ..."
+    echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
     docker compose up -d --build ${@}
     sleep 3
-    openInBrowser "http://localhost:8080"
+    openInBrowser "http://localhost:3000"
     ;;
   stop|down)
-    echoYellow "Stopping the Indy Node Monitoring Stack ..."
+    echoGreen "\nStopping the Indy Node Monitoring Stack ...\n"
     docker compose down
     ;;
   restart)
-    echoYellow "Restarting the Indy Node Monitoring Stack ..."
+    echoGreen "\nRestarting the Indy Node Monitoring Stack ...\n"
     docker compose down ${@}
     docker compose up -d --build ${@}
     ;;
