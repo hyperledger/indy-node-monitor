@@ -2,6 +2,7 @@ influxdb/data/
 
 # Ignore environment files that could contains seeds (credentials)
 .env-seed*
+to.do
 
 **/conf/
 **/log/

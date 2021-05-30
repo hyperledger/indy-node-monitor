@@ -1,11 +1,5 @@
 version: '3'
 
-  # ToDo:
-  #   - Define a virtual network?
-  #   - Move ports to environment variables, support override?
-  #   - Make --verbose on indy-node-monitor optional
-  #   - Use env files like grafana does to configure telegraf
-
 volumes:
   prometheus_data: {}
   grafana_data: {}
