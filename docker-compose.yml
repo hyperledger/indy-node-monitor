@@ -33,11 +33,8 @@ services:
       args:
         TELEGRAF_TAG: ${TELEGRAF_TAG}
     image: "telegraf"
-    environment:
-      HOSTNAME: "telegraf"
-      SBN_SEED: ${SBN_SEED}
-      SSN_SEED: ${SSN_SEED}
-      SMN_SEED: ${SMN_SEED}
+    env_file:
+      - ${TELEGRAF_ENV}
     # Telegraf requires network access to:
     # - InfluxDB
     # - Indy-Node-Monitor
