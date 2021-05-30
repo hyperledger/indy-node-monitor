@@ -32,6 +32,8 @@ Commands:
                             Deletes all containers images and prunes any dangling images.
   influx-cli              - Open a shell to the Influx CLI on the influxdb container
   flux-repl               - Open a shell to the Flux REPL on the influxdb container
+  build [service]         - Use for troubleshooting builds when making image configuration changes.
+                            Builds container images based on the docker-compose configuration.
 
 Options:
   -h                      - Print this help documentation.
@@ -281,6 +283,13 @@ function isService(){
   )
 }
 
+function build(){
+  (
+    echoGreen "\nBuilding ${@} ...\n"
+    ${DOCKER_COMPOSE_EXE} up --build --no-start ${@}
+  )
+}
+
 function up(){
   (
     echoGreen "\nStarting up the Indy Node Monitoring Stack ...\n"
@@ -431,6 +440,9 @@ case "${COMMAND}" in
     ;;
   flux-repl)
     openFluxRepl ${@}
+    ;;
+  build)
+    build ${@}
     ;;
   *)
     usage

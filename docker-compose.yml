@@ -123,7 +123,12 @@ services:
     #     condition: on-failure
 
   grafana:
-    image: grafana/grafana
+    build:
+      context: ./images/grafana/
+      dockerfile: ./Dockerfile
+      args:
+        GRAFANA_TAG: ${GRAFANA_TAG}
+    image: grafana
     depends_on:
       - prometheus
       - influxdb
