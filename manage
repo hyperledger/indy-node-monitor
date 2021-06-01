@@ -529,6 +529,22 @@ done
 shift $((OPTIND-1))
 _envTags+=" ${_imageTag}"
 
+# Create the directories expected by the docker-compose project ...
+INFLUX_DB_DIR="./influxdb/data"
+if [ -d "${INFLUX_DB_DIR}" ]; then
+  mkdir -p "${INFLUX_DB_DIR}"
+fi
+
+NODE_MONITOR_CONF="./fetch-validator-status/conf"
+if [ -d "${NODE_MONITOR_CONF}" ]; then
+  mkdir -p "${NODE_MONITOR_CONF}"
+fi
+
+NODE_MONITOR_LOGS="./fetch-validator-status/logs"
+if [ -d "${NODE_MONITOR_LOGS}" ]; then
+  mkdir -p "${NODE_MONITOR_LOGS}"
+fi
+
 # Load network monitor seeds if the '.env-seeds' file is found.
 # The file is ignored by Git so seeds don't end up in source control.
 if [ -f ".env-seeds" ]; then
