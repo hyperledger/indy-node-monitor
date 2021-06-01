@@ -34,6 +34,8 @@ Commands:
   flux-repl               - Open a shell to the Flux REPL on the influxdb container
   build [service]         - Use for troubleshooting builds when making image configuration changes.
                             Builds container images based on the docker-compose configuration.
+  sed-test                - Run a 'sed' parsing test on your machine.  Helps diagnose issues with the version
+                            of 'sed on some machines.
 
 Options:
   -h                      - Print this help documentation.
