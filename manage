@@ -87,7 +87,19 @@ function echoError (){
   )
 }
 
-promptForConfirmation(){
+function printAndWait() {
+  (
+    _msg=${@}
+    if [ ! -z "${_msg}" ]; then
+      echoYellow "\n${_msg}"
+    fi
+    read -n1 -s -r -p $'Press any key to continue ...' key
+    echo -e \\n
+    return 0
+  )
+}
+
+function promptForConfirmation(){
   (
     _msg=${@}
     echoYellow "\n${_msg}"
@@ -174,8 +186,17 @@ function readEnvFile(){
   (
     envFile=${1}
     if [ -f ${envFile} ]; then
-      # Read in the content minus any comments ...
-      _value=$(sed '/^[[:blank:]]*#/d;s/#.*//' ${envFile})
+      # Remove blank lines ...
+      filters="/^[[:blank:]]*$/d;"
+      # Remove full line comments ...
+      filters+="/^[[:blank:]]*#/d;"
+      # Remove any comments from the end of a line ...
+      filters+="s/#.*//;"
+      # Remove leading whitespace ...
+      filters+="s/^ *//;"
+      # Remove trailing whitespace ...
+      filters+="s/ *$//;"
+      _value=$(${SED_EXE} "${filters}" ${envFile})
     fi
     echo "${_value}"
   )
@@ -337,6 +358,108 @@ function openFluxRepl(){
     ${DOCKER_COMPOSE_EXE} exec influxdb /usr/bin/influx -type flux
   )
 }
+
+function writeEnvSeeds(){
+  (
+  cat <<-EOF > .env-seeds
+# =======================================================
+# Network Monitor Seeds:
+#   - Leave blank if you do not have a
+#     Network Monitor DID registered on the Network
+#   - This file is ignored by Git
+#
+# Format:
+#   <Network_ID>_SEED=<Your_Seed>
+# -------------------------------------------------------
+SBN_SEED=
+SSN_SEED=
+SMN_SEED=
+# =======================================================
+EOF
+  )
+}
+
+function sedTest(){
+  (
+    sedTestFile=sed-test.txt
+    testPhrase='This is the test Phrase.'
+    cat <<-EOF > ${sedTestFile}
+# ===========================================================
+# This is a file to test parsing with 'sed' on your machine.
+#   - All of the blank lines, comments, and leading and 
+#     trailing whitespace should be stripped out of this 
+#     file and you should only be left with the 
+#     test phrase wrapped in single quotes:
+#
+#     '${testPhrase}'
+#
+# -----------------------------------------------------------
+ # This line should be removed, it's a comment
+
+# The leading and trailing whitespace around the test
+# phrase should be removed too.
+  ${testPhrase}  # This comment should be removed
+
+# ===========================================================
+EOF
+
+    result="'$(readEnvFile ${sedTestFile})'"
+    echoBlue "\nTest Results for 'sed':"
+    if [[ ${result} == "'${testPhrase}'"  ]]; then
+      echoGreen "  - Pass"
+      rm -rf ${sedTestFile}
+    else
+      echoError "  - Fail"
+
+      echoBlue "\n==================================================================================="
+      echoBlue "# Result of parsing the file using 'sed':"
+      echoBlue "-----------------------------------------------------------------------------------"
+      echo ${result}
+      echoBlue "===================================================================================\n"
+
+      echoBlue "==================================================================================="
+      echoBlue "# Original test file:"
+      echoBlue "-----------------------------------------------------------------------------------"
+      cat ${sedTestFile}
+      echoBlue "==================================================================================="
+
+      rm -rf ${sedTestFile}
+      printAndWait "Please review the results and then,"
+
+      echoBlue "================================================================================================================================================================="
+      echoBlue "# Special instructions for MAC Setup:"
+      echoBlue "-----------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    cat <<-EOF
+These scripts use 'sed' and regular expression processing.  The default version of 'sed' on MAC does support some of the processing.
+Details can be found here; 
+[Differences between sed on Mac OSX and other "standard" sed?](https://unix.stackexchange.com/questions/13711/differences-between-sed-on-mac-osx-and-other-standard-sed)
+
+Please install 'gnu-sed'.
+
+Using [Homebrew](https://brew.sh):
+'''
+brew install gnu-sed
+'''
+
+Then update your path and prepend '/usr/local/opt/gnu-sed/libexec/gnubin:' to your existing path so that the system defaults to using 'sed' rather than 'gsed'.
+Append this line to your '~\.bashrc' file:
+'''
+[[ ":\$PATH:" != *"/usr/local/opt/gnu-sed/libexec/gnubin:"* ]] && export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:\$PATH"
+'''
+
+Also make sure 'usr/local/bin' is at a higher priority on your **PATH** than 'usr/bin'.  You can do this by making sure 'usr/local/bin' is to the left of 'usr/bin', 
+preceding it in the **PATH** string.  This will ensure that packages installed by Homebrew override system binaries; in this case 'sed'.
+Append this line to your '~\.bashrc' file:
+'''
+[[ ":\$PATH:" != *"/usr/local/bin:"* ]] && export PATH="/usr/local/bin:\$PATH"
+'''
+
+'brew doctor' can help diagnose such issues.
+EOF
+      echoBlue "================================================================================================================================================================="
+    fi
+  )
+}
 # -----------------------------------------------------------------------------------------------------------------
 # Check for dependancies
 # -----------------------------------------------------------------------------------------------------------------
@@ -352,6 +475,22 @@ if ! isInstalled ${DOCKER_COMPOSE_EXE}; then
   exit 1
 fi
 
+SED_EXE=sed
+if ! isInstalled ${SED_EXE}; then
+  echoYellow "The ${SED_EXE} executable is required and was not found on your path."
+
+  cat <<-EOF
+  The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
+  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+
+  Windows:
+    - chocolatey install sed
+  MAC:
+    - brew install gnu-sed
+EOF
+  exit 1
+fi
+
 YQ_EXE=yq
 if ! isInstalled ${YQ_EXE}; then
   echoYellow "The ${YQ_EXE} executable is required and was not found on your path."
@@ -361,9 +500,9 @@ if ! isInstalled ${YQ_EXE}; then
   or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
 
   Windows:
-    - chocolatey install yq
+    - chocolatey install ${YQ_EXE}
   MAC:
-    - brew install yq
+    - brew install ${YQ_EXE}
 EOF
   exit 1
 fi
@@ -401,7 +540,7 @@ This file is ignored by git so it does not accidentally make its way into source
 If you do not supply a set of network monitor seeds Telegaf will only be able to make unprivileged queries to the Indy Node Monitor.  \
 The responses to unprivileged queries only allow node monitoring at a very high level, i.e. up/down."
   if promptForConfirmation "Would you like to create a template '.env-seeds' file now?"; then
-    echo -e "SBN_SEED=\nSSN_SEED=\nSMN_SEED=" > .env-seeds
+    writeEnvSeeds
   fi
 fi
 
@@ -452,6 +591,9 @@ case "${COMMAND}" in
     ;;
   build)
     build ${@}
+    ;;
+  sed-test)
+    sedTest ${@}
     ;;
   *)
     usage
