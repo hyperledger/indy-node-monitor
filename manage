@@ -556,7 +556,8 @@ else
 This file is used to inject your network monitor seeds into Telegaf so it can make privileged queries to the Indy Node Monitor web service.  \
 This file is ignored by git so it does not accidentally make its way into source control.  \
 If you do not supply a set of network monitor seeds Telegaf will only be able to make unprivileged queries to the Indy Node Monitor.  \
-The responses to unprivileged queries only allow node monitoring at a very high level, i.e. up/down."
+The responses to unprivileged queries only allow node monitoring at a very high level, i.e. up/down.\n\n\
+To make privileged queries, add you seeds to the generated file and run './manage restart'."
   if promptForConfirmation "Would you like to create a template '.env-seeds' file now?"; then
     writeEnvSeeds
   fi
