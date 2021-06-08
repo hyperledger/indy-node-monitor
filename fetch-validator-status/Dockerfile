@@ -12,6 +12,11 @@ USER $user
 
 RUN pip install pynacl gspread oauth2client
 
+USER $user
+
+ADD requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
 ADD networks.json .
 ADD *.py ./
 
