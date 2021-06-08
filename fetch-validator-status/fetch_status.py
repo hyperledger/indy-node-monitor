@@ -1,90 +1,22 @@
 import argparse
 import asyncio
-# import base58
-# import base64
 import json
 import os
 import sys
-# import datetime
-import urllib.request
-# from typing import Tuple
-
-# import nacl.signing
 
 import indy_vdr
-from indy_vdr.ledger import (
-    build_get_validator_info_request,
-    build_get_txn_request,
-    # Request,
+from fetch_status_library import (
+    enable_verbose,
+    log,
+    fetch_status,
+    get_script_dir,
+    download_genesis_file,
+    load_network_list,
+    list_networks
 )
-from indy_vdr.pool import open_pool
-from plugin_collection import PluginCollection
-# import time
 from DidKey import DidKey
 
-verbose = False
-
-
-def log(*args):
-    if verbose:
-        print(*args, "\n", file=sys.stderr)
-
-
-async def fetch_status(genesis_path: str, nodes: str = None, ident: DidKey = None, network_name: str = None):
-    # Start Of Engine
-    attempt = 3
-    while attempt:
-        try:
-            pool = await open_pool(transactions_path=genesis_path)
-        except:
-            log("Pool Timed Out! Trying again...")
-            if not attempt:
-                print("Unable to get pool Response! 3 attempts where made. Exiting...")
-                exit()
-            attempt -= 1
-            continue
-        break
-
-    result = []
-    verifiers = {}
-
-    if ident:
-        request = build_get_validator_info_request(ident.did)
-        ident.sign_request(request)
-    else:
-        request = build_get_txn_request(None, 1, 1)
-
-    from_nodes = []
-    if nodes:
-        from_nodes = nodes.split(",")
-    response = await pool.submit_action(request, node_aliases = from_nodes)
-    try:
-        # Introduced in https://github.com/hyperledger/indy-vdr/commit/ce0e7c42491904e0d563f104eddc2386a52282f7
-        verifiers = await pool.get_verifiers()
-    except AttributeError:
-        pass
-    # End Of Engine
-
-    result = await monitor_plugins.apply_all_plugins_on_value(result, network_name, response, verifiers)
-    print(json.dumps(result, indent=2))
-
-def get_script_dir():
-    return os.path.dirname(os.path.realpath(__file__))
-
-              
-def download_genesis_file(url: str, target_local_path: str):
-    log("Fetching genesis file ...")
-    target_local_path = f"{get_script_dir()}/genesis.txn"
-    urllib.request.urlretrieve(url, target_local_path)
-
-def load_network_list():
-    with open(f"{get_script_dir()}/networks.json") as json_file:
-        networks = json.load(json_file)
-    return networks
-
-def list_networks():
-    networks = load_network_list()
-    return networks.keys()
+from plugin_collection import PluginCollection
 
 if __name__ == "__main__":
     monitor_plugins = PluginCollection('plugins')
@@ -102,6 +34,7 @@ if __name__ == "__main__":
     args, unknown = parser.parse_known_args()
 
     verbose = args.verbose
+    enable_verbose(verbose)
 
     monitor_plugins.load_all_parse_args(args)
 
@@ -136,4 +69,4 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(args.genesis_path, args.nodes, ident, network_name))
+    asyncio.get_event_loop().run_until_complete(fetch_status(monitor_plugins, args.genesis_path, args.nodes, ident, network_name))
