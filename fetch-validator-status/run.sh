@@ -15,6 +15,17 @@ function getVolumeMount() {
   echo "  --volume='${path}:/home/indy/${mountPoint}:Z' "
 }
 
+function runCmd() {
+  _cmd=${1}
+  if [ ! -z ${LOG} ]; then
+    _cmd+=" > ${LOG%.*}_`date +\%Y-\%m-\%d_%H-%M-%S`.json"
+  fi
+
+  eval ${_cmd}
+  # echo
+  # echo ${_cmd}
+}
+
 # IM is for "interactive mode" so Docker is run with the "-it" parameter. Probably never needed
 # but it is there. Use "IM=1 run.sh <args>..." to run the Docker container in interactive mode
 if [ -z "${IM+x}" ]; then
@@ -35,7 +46,6 @@ cmd="${terminalEmu} docker run --rm ${DOCKER_INTERACTIVE} \
   -e "GENESIS_PATH=${GENESIS_PATH}" \
   -e "GENESIS_URL=${GENESIS_URL}" \
   -e "SEED=${SEED}""
-  
 
 # Dynamically mount teh 'conf' directory if it exists.
 if [ -d "./conf" ]; then
@@ -47,5 +57,15 @@ if [ -d "./plugins" ]; then
 fi
 
 cmd+="fetch_status \"$@\""
-eval ${cmd}
-# echo ${cmd}
+
+counter=${SAMPLES:-1}
+while [[ ${counter} > 0 ]]
+do
+  runCmd "${cmd}"
+  counter=$(( ${counter} - 1 ))
+  if [[ ${counter} > 0 ]]; then
+    # Nodes update their validator info every minute.
+    # Therefore calling more than once per minute is not productive.
+    sleep 60
+  fi
+done
