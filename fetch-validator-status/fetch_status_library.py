@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from collections import namedtuple
 
 import urllib.request
 from indy_vdr.ledger import (
@@ -27,6 +28,7 @@ async def fetch_status(monitor_plugins: PluginCollection, genesis_path: str, nod
     attempt = 3
     while attempt:
         try:
+            log("Connecting to Pool ...")
             pool = await open_pool(transactions_path=genesis_path)
         except:
             log("Pool Timed Out! Trying again...")
@@ -35,6 +37,8 @@ async def fetch_status(monitor_plugins: PluginCollection, genesis_path: str, nod
                 exit()
             attempt -= 1
             continue
+        else:
+            log("Connected to Pool ...")
         break
 
     result = []
@@ -76,3 +80,28 @@ def load_network_list():
 def list_networks():
     networks = load_network_list()
     return networks.keys()
+
+def init_network_args(network: str = None, genesis_url: str = None, genesis_path: str = None):
+
+    if network:
+        log("Loading known network list ...")
+        networks = load_network_list()
+        if network in networks:
+            log("Connecting to '{0}' ...".format(networks[network]["name"]))
+            genesis_url = networks[network]["genesisUrl"]
+            network_name = networks[network]["name"]
+
+    if genesis_url:
+        download_genesis_file(genesis_url, genesis_path)
+        if not network_name:
+            network_name = genesis_url
+            log(f"Setting network name  = {network_name} ...")
+
+    if not os.path.exists(genesis_path):
+        print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
+        exit()
+
+    Network_Info = namedtuple('Network_Info', ['network_name', 'genesis_url', 'genesis_path']) 
+    network_info = Network_Info(network_name, genesis_url, genesis_path)
+
+    return network_info

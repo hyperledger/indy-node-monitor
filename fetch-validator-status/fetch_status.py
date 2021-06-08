@@ -12,7 +12,8 @@ from fetch_status_library import (
     get_script_dir,
     download_genesis_file,
     load_network_list,
-    list_networks
+    list_networks,
+    init_network_args
 )
 from DidKey import DidKey
 
@@ -33,31 +34,12 @@ if __name__ == "__main__":
     monitor_plugins.get_parse_args(parser)
     args, unknown = parser.parse_known_args()
 
-    verbose = args.verbose
-    enable_verbose(verbose)
+    enable_verbose(args.verbose)
 
     monitor_plugins.load_all_parse_args(args)
 
     if args.list_nets:
         print(json.dumps(load_network_list(), indent=2))
-        exit()
-
-    network_name = None 
-    if args.net:
-        log("Loading known network list ...")
-        networks = load_network_list()
-        if args.net in networks:
-            log("Connecting to '{0}' ...".format(networks[args.net]["name"]))
-            args.genesis_url = networks[args.net]["genesisUrl"]
-            network_name = networks[args.net]["name"]
-
-    if args.genesis_url:
-        download_genesis_file(args.genesis_url, args.genesis_path)
-        if not network_name: 
-            network_name = args.genesis_url
-    if not os.path.exists(args.genesis_path):
-        print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
-        parser.print_help()
         exit()
 
     did_seed = None if not args.seed else args.seed
@@ -69,4 +51,5 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    asyncio.get_event_loop().run_until_complete(fetch_status(monitor_plugins, args.genesis_path, args.nodes, ident, network_name))
+    network_info = init_network_args(network=args.net, genesis_url=args.genesis_url, genesis_path=args.genesis_path)
+    asyncio.get_event_loop().run_until_complete(fetch_status(monitor_plugins, network_info.genesis_path, args.nodes, ident, network_info.network_name))

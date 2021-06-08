@@ -1,3 +1,4 @@
+asyncio
 pynacl
 gspread
 oauth2client
