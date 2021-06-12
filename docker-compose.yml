@@ -12,7 +12,7 @@ services:
     build:
       context: ./fetch-validator-status
       dockerfile: ./Dockerfile
-    image: "indy-node-monitor"
+    image: indy-node-monitor
     volumes:
       # Mounts for indy-node-monitor configuration
       - ./fetch-validator-status/plugins/:/home/indy/plugins/
@@ -32,7 +32,7 @@ services:
       dockerfile: ./${TYPE}/Dockerfile
       args:
         TELEGRAF_TAG: ${TELEGRAF_TAG}
-    image: "telegraf"
+    image: telegraf
     env_file:
       - ${TELEGRAF_ENV}
     # Telegraf requires network access to:
@@ -60,7 +60,7 @@ services:
       dockerfile: ./${TYPE}/Dockerfile
       args:
         INFLUXDB_TAG: ${INFLUXDB_TAG}
-    image: "influxdb"
+    image: influxdb
     volumes:
       # Mount for influxdb data directory
       - ./influxdb/data:/var/lib/influxdb
@@ -135,7 +135,7 @@ services:
       - grafana_data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
     env_file:
-      - ./grafana/config.monitoring
+      - ${GRAFANA_ENV}
     networks:
       - node-monitor-net
     links:
