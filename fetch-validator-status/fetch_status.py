@@ -9,8 +9,6 @@ from fetch_status_library import (
     enable_verbose,
     log,
     fetch_status,
-    get_script_dir,
-    download_genesis_file,
     load_network_list,
     list_networks,
     init_network_args
@@ -26,10 +24,11 @@ if __name__ == "__main__":
     parser.add_argument("--net", choices=list_networks(), help="Connect to a known network using an ID.")
     parser.add_argument("--list-nets", action="store_true", help="List known networks.")
     parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
-    parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH") or f"{get_script_dir()}/genesis.txn" , help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
+    parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH"), help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
     parser.add_argument("-s", "--seed", default=os.environ.get('SEED') , help="The privileged DID seed to use for the ledger requests.  Can be specified using the 'SEED' environment variable. If DID seed is not given the request will run anonymously.")
     parser.add_argument("--nodes", help="The comma delimited list of the nodes from which to collect the status.  The default is all of the nodes in the pool.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
+    parser.add_argument("--web", action="store_true", help="Start API server.")
 
     monitor_plugins.get_parse_args(parser)
     args, unknown = parser.parse_known_args()
@@ -51,5 +50,12 @@ if __name__ == "__main__":
     else:
         ident = None
 
-    network_info = init_network_args(network=args.net, genesis_url=args.genesis_url, genesis_path=args.genesis_path)
-    asyncio.get_event_loop().run_until_complete(fetch_status(monitor_plugins, network_info.genesis_path, args.nodes, ident, network_info.network_name))
+    if args.web:
+        log("Starting web server ...")
+        # Pass verbose to rest api through env var
+        os.environ['VERBOSE'] = str(args.verbose)
+        os.system('uvicorn rest_api:app --reload --host 0.0.0.0 --port 8080')
+    else:
+        network_info = init_network_args(network=args.net, genesis_url=args.genesis_url, genesis_path=args.genesis_path)
+        log("Starting from the command line ...")
+        asyncio.get_event_loop().run_until_complete(fetch_status(monitor_plugins, network_info.genesis_path, args.nodes, ident, network_info.network_name))

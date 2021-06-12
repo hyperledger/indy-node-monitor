@@ -40,12 +40,13 @@ else
   fi
 fi
 
-docker build -t fetch_status . > /dev/null 2>&1
+docker build -t fetch_status . #> /dev/null 2>&1
 
 cmd="${terminalEmu} docker run --rm ${DOCKER_INTERACTIVE} \
   -e "GENESIS_PATH=${GENESIS_PATH}" \
   -e "GENESIS_URL=${GENESIS_URL}" \
-  -e "SEED=${SEED}""
+  -e "SEED=${SEED}" \
+  --publish 8080:8080"
 
 # Dynamically mount teh 'conf' directory if it exists.
 if [ -d "./conf" ]; then

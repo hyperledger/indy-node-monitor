@@ -63,6 +63,7 @@ async def fetch_status(monitor_plugins: PluginCollection, genesis_path: str, nod
 
     result = await monitor_plugins.apply_all_plugins_on_value(result, network_name, response, verifiers)
     print(json.dumps(result, indent=2))
+    return result
 
 def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
@@ -82,6 +83,8 @@ def list_networks():
     return networks.keys()
 
 def init_network_args(network: str = None, genesis_url: str = None, genesis_path: str = None):
+    if not genesis_path:
+        genesis_path = f"{get_script_dir()}/genesis.txn"
 
     if network:
         log("Loading known network list ...")
