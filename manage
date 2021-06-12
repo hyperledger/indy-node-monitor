@@ -22,10 +22,12 @@ Commands:
                             Optionally specify the service to tear down.
   restart [service]       - Restart the ${APP_NAME} environment.
                             Optionally specify the service to restart.
+  list-services           - Get a list the services that make up the ${APP_NAME}.
   logs <service>          - Stream the logs from a given container.
   shell <service>         - Open a shell on a given container.
   install-plugin          - Install a Grafana plug-in on the Grafana container.
                             You must restart the ${APP_NAME} environment for it to be loaded.
+
   delete-data [service]   - Delete the data for a given service, or all services by default.
                             Useful to clear data from Prometheus and/or InfluxDB when making changes to how the data is collected.
   clean                   - Cleans up all environment resources.
@@ -298,12 +300,18 @@ function isService(){
       return 0
     else
       echoYellow "No such service: ${serviceName}"
-      echoBlue "Available Services:"
-      for service in ${_services}; do
-        echoBlue " - ${service}"
-      done
+      listServices
       return 1
     fi
+  )
+}
+
+function listServices(){
+  (
+    echoBlue "Available Services:"
+    for service in ${_services}; do
+      echoBlue " - ${service}"
+    done
   )
 }
 
@@ -325,8 +333,8 @@ function up(){
 
 function down(){
   (
-  echoGreen "\nStopping the ${APP_NAME} ...\n"
-  ${DOCKER_COMPOSE_EXE} down ${@}
+    echoGreen "\nStopping the ${APP_NAME} ...\n"
+    ${DOCKER_COMPOSE_EXE} down ${@}
   )
 }
 
@@ -614,6 +622,9 @@ case "${COMMAND}" in
     ;;
   sed-test)
     sedTest ${@}
+    ;;
+  list-services)
+    listServices ${@}
     ;;
   *)
     usage
