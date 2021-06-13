@@ -12,7 +12,8 @@ from fetch_status_library import (
     log,
     fetch_status,
     load_network_list,
-    init_network_args
+    init_network_args,
+    create_did
 )
 from DidKey import DidKey
 from plugin_collection import PluginCollection
@@ -28,32 +29,32 @@ app = FastAPI(
     version = APP_VERSION
 )
 
-args = None
+default_args = None
 monitor_plugins = None
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
 
     # Store args and monitor_plugins for lazy loading.
-    global args
-    global monitor_plugins
+    global default_args
 
-    if not args:
+    if not default_args:
         # Create plugin instance and set default args
-        monitor_plugins = PluginCollection('plugins')
+        default_monitor_plugins = PluginCollection('plugins')
         parser = argparse.ArgumentParser()
         parser.add_argument("-v", "--verbose", default=(os.environ.get('VERBOSE', 'False').lower() == 'true'), action="store_true")
-        monitor_plugins.get_parse_args(parser)
-        args, unknown = parser.parse_known_args()
-        enable_verbose(args.verbose)
+        default_monitor_plugins.get_parse_args(parser)
+        default_args, unknown = parser.parse_known_args()
+        enable_verbose(default_args.verbose)
 
     # Create namspace with default args
     api_args = argparse.Namespace()
-    for name, value in args._get_kwargs():
+    for name, value in default_args._get_kwargs():
         setattr(api_args, name, value)
 
     setattr(api_args, 'status', status)
     setattr(api_args, 'alerts', alerts)
 
+    monitor_plugins = PluginCollection('plugins') 
     monitor_plugins.load_all_parse_args(api_args)
 
     return monitor_plugins
@@ -67,14 +68,7 @@ async def networks():
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     network_info = init_network_args(network=network)
-
-    ident = None
-    if seed:
-        try:
-            ident = DidKey(seed)
-            log("DID:", ident.did, " Verkey:", ident.verkey)
-        except:
-            log("Invalid seed.  Continuing anonymously ...")
+    ident = create_did(seed)
 
     result = await fetch_status(monitor_plugins=monitor_plugins, genesis_path=network_info.genesis_path, ident=ident, network_name=network_info.network_name)
     return result
@@ -83,14 +77,7 @@ async def network(network, status: bool = False, alerts: bool = False, seed: Opt
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     network_info = init_network_args(network=network)
-
-    ident = None
-    if seed:
-        try:
-            ident = DidKey(seed)
-            log("DID:", ident.did, " Verkey:", ident.verkey)
-        except:
-            log("Invalid seed.  Continuing anonymously ...")
+    ident = create_did(seed)
 
     result = await fetch_status(monitor_plugins, network_info.genesis_path, node, ident, network_info.network_name)
     return result

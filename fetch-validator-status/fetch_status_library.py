@@ -31,9 +31,9 @@ async def fetch_status(monitor_plugins: PluginCollection, genesis_path: str, nod
             log("Connecting to Pool ...")
             pool = await open_pool(transactions_path=genesis_path)
         except:
-            log("Pool Timed Out! Trying again...")
+            log("Pool Timed Out! Trying again ...")
             if not attempt:
-                print("Unable to get pool Response! 3 attempts where made. Exiting...")
+                print("Unable to get pool Response! 3 attempts where made. Exiting ...")
                 exit()
             attempt -= 1
             continue
@@ -45,24 +45,32 @@ async def fetch_status(monitor_plugins: PluginCollection, genesis_path: str, nod
     verifiers = {}
 
     if ident:
+        log(f"Building request with did: {ident.did} ...")
         request = build_get_validator_info_request(ident.did)
         ident.sign_request(request)
     else:
+        log("Building anonymous request ...")
         request = build_get_txn_request(None, 1, 1)
 
     from_nodes = []
     if nodes:
         from_nodes = nodes.split(",")
+        log("Submitting request ...")
+
     response = await pool.submit_action(request, node_aliases = from_nodes)
+    
     try:
         # Introduced in https://github.com/hyperledger/indy-vdr/commit/ce0e7c42491904e0d563f104eddc2386a52282f7
+        log("Getting list of verifiers ...")
         verifiers = await pool.get_verifiers()
     except AttributeError:
+        log("Unable to get list of verifiers. Plesase make sure you have the latest verson of indy-vdr.")
         pass
     # End Of Engine
 
+    log("Passing results to plugins for processing ...")
     result = await monitor_plugins.apply_all_plugins_on_value(result, network_name, response, verifiers)
-    print(json.dumps(result, indent=2))
+    log("Processing complete.")
     return result
 
 def get_script_dir():
@@ -108,3 +116,13 @@ def init_network_args(network: str = None, genesis_url: str = None, genesis_path
     network_info = Network_Info(network_name, genesis_url, genesis_path)
 
     return network_info
+
+def create_did(seed):
+    ident = None
+    if seed:
+        try:
+            ident = DidKey(seed)
+            log("DID:", ident.did, " Verkey:", ident.verkey)
+        except:
+            log("Invalid seed.  Continuing anonymously ...")
+    return ident
