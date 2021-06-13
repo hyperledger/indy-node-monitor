@@ -84,7 +84,7 @@ class PluginCollection(object):
         self.log(f'\033[38;5;37mRunning plugins ...\033[0m\n')
         for plugin in self.plugins:
             if plugin.enabled:
-                self.log(f'\033[38;5;37mRunning {plugin.name} ...\033[0m')
+                self.log(f'\033[38;5;37mRunning {plugin.name} ...\033[0m\n')
                 result = await plugin.perform_operation(result, network_name, response, verifiers)
             else:
                 self.log(f"\033[38;5;3m{plugin.name} disabled.\033[0m\n")
@@ -144,6 +144,7 @@ class PluginCollection(object):
             print(*args, file=sys.stderr)
 
     def plugin_list(self):
-        self.log("\033[38;5;37m--- Plug-ins ---\033[0m")
+        self.log("\n\033[38;5;37m--- Plug-ins ---\033[0m")
         for plugin in self.plugins:
             self.log(f"\033[38;5;37m{plugin.name}: {plugin.__class__.__module__}.{plugin.__class__.__name__}\033[0m")
+        self.log(f"\n")

@@ -3,7 +3,5 @@ pynacl
 gspread
 oauth2client
 fastapi
-pydantic
-httpx
 uvicorn
 gunicorn

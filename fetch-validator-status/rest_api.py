@@ -1,21 +1,17 @@
 import os
-import json
 import argparse
 
 from typing import Optional
 from fastapi import FastAPI, Header
-from pydantic import BaseModel
-from httpx import AsyncClient
 
-from fetch_status_library import (
+from util import (
     enable_verbose,
-    log,
-    fetch_status,
-    load_network_list,
-    init_network_args,
+#    log,
     create_did
 )
-from DidKey import DidKey
+
+from pool import PoolCollection
+from fetch_status import FetchStatus
 from plugin_collection import PluginCollection
 
 APP_NAME='test_name'
@@ -33,7 +29,6 @@ default_args = None
 monitor_plugins = None
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
-
     # Store args and monitor_plugins for lazy loading.
     global default_args
 
@@ -46,7 +41,7 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
         default_args, unknown = parser.parse_known_args()
         enable_verbose(default_args.verbose)
 
-    # Create namspace with default args
+    # Create namespace with default args
     api_args = argparse.Namespace()
     for name, value in default_args._get_kwargs():
         setattr(api_args, name, value)
@@ -61,23 +56,28 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
 
 @app.get("/networks")
 async def networks():
-    data = load_network_list()
+    data = PoolCollection.load_network_list()
     return data
 
 @app.get("/networks/{network}")
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
-    network_info = init_network_args(network=network)
     ident = create_did(seed)
-
-    result = await fetch_status(monitor_plugins=monitor_plugins, genesis_path=network_info.genesis_path, ident=ident, network_name=network_info.network_name)
+    pool_collection = PoolCollection(default_args.verbose)
+    network_info = pool_collection.get_network_info(network=network)
+    status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
+    result = await status.fetch(network_info=network_info)
     return result
 
 @app.get("/networks/{network}/{node}")
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
-    network_info = init_network_args(network=network)
+    
     ident = create_did(seed)
-
-    result = await fetch_status(monitor_plugins, network_info.genesis_path, node, ident, network_info.network_name)
+    pool_collection = PoolCollection(default_args.verbose)
+    network_info = pool_collection.get_network_info(network=network)
+    status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
+    result = await status.fetch(network_info, node)
+    # result = await status.fetch(network_info, ident, node)
+    
     return result

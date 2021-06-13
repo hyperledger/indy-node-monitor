@@ -17,7 +17,7 @@ class main(plugin_collection.Plugin):
         self.type = ''
 
     def parse_args(self, parser):
-        # Declear your parser arguments here. This will add them to the fetch_status.py parser arguments.
+        # Declear your parser arguments here. This will add them to the main.py parser arguments.
         parser.add_argument("--example", action="store_true", help="Example Plug-in: Runs expample plug-in")
 
     # Here you set your variables with the arguments from the parser
