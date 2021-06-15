@@ -20,6 +20,7 @@
   "links": [],
   "panels": [
     {
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -27,8 +28,165 @@
         "x": 0,
         "y": 0
       },
-      "id": 60,
-      "title": "Main",
+      "id": 75,
+      "panels": [],
+      "title": "External Address",
+      "type": "row"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "id": 69,
+      "options": {
+        "showHeader": false,
+        "sortBy": []
+      },
+      "pluginVersion": "8.0.2",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"client-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Client Address",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 3,
+        "y": 1
+      },
+      "id": 68,
+      "options": {
+        "showHeader": false,
+        "sortBy": []
+      },
+      "pluginVersion": "8.0.2",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"node-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Node Address",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 4
+      },
+      "id": 73,
+      "panels": [],
+      "title": "Internal Address",
       "type": "row"
     },
     {
@@ -65,7 +223,7 @@
         "h": 2,
         "w": 2,
         "x": 0,
-        "y": 1
+        "y": 5
       },
       "id": 11,
       "options": {
@@ -77,7 +235,7 @@
           }
         ]
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "exemplar": true,
@@ -155,26 +313,31 @@
         "h": 2,
         "w": 2,
         "x": 2,
-        "y": 1
+        "y": 5
       },
-      "id": 13,
+      "id": 71,
       "options": {
-        "showHeader": false
+        "showHeader": false,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "instance"
+          }
+        ]
       },
-      "pluginVersion": "8.0.0",
+      "pluginVersion": "8.0.2",
       "targets": [
         {
           "exemplar": true,
           "expr": "node_response_result_data_Node_info_Node_port{job=\"tick\", name=\"[[node]]\"}",
           "format": "table",
+          "hide": false,
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Node Port",
+      "title": "NodePort",
       "transformations": [
         {
           "id": "filterFieldsByName",
@@ -192,12 +355,33 @@
             "includeTimeField": false,
             "mode": "reduceFields",
             "reducers": [
-              "lastNotNull"
+              "last"
             ]
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "Value #A",
+            "renamePattern": "Port"
           }
         }
       ],
       "type": "table"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 60,
+      "panels": [],
+      "title": "Main",
+      "type": "row"
     },
     {
       "datasource": null,
@@ -256,7 +440,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 8
       },
       "id": 4,
       "options": {
@@ -391,7 +575,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 11
+        "y": 16
       },
       "id": 2,
       "options": {
@@ -479,7 +663,7 @@
         "h": 7,
         "w": 7,
         "x": 7,
-        "y": 11
+        "y": 16
       },
       "id": 6,
       "options": {
@@ -565,7 +749,7 @@
         "h": 7,
         "w": 5,
         "x": 14,
-        "y": 11
+        "y": 16
       },
       "id": 8,
       "options": {
@@ -652,7 +836,7 @@
         "h": 7,
         "w": 5,
         "x": 19,
-        "y": 11
+        "y": 16
       },
       "id": 9,
       "options": {
@@ -688,7 +872,158 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 23
+      },
+      "id": 77,
+      "panels": [
+        {
+          "datasource": "InfluxDB-Flux",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "displayMode": "color-text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 0,
+            "y": 24
+          },
+          "id": 79,
+          "options": {
+            "showHeader": false
+          },
+          "pluginVersion": "8.0.2",
+          "targets": [
+            {
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_sovrin\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+              "refId": "A"
+            }
+          ],
+          "title": "Sovrin Version",
+          "transformations": [
+            {
+              "id": "reduce",
+              "options": {
+                "reducers": [
+                  "lastNotNull"
+                ]
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "Last (not null)"
+                  ]
+                }
+              }
+            }
+          ],
+          "type": "table"
+        },
+        {
+          "datasource": "InfluxDB-Flux",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "displayMode": "color-text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 3,
+            "x": 3,
+            "y": 24
+          },
+          "id": 80,
+          "options": {
+            "showHeader": false
+          },
+          "pluginVersion": "8.0.2",
+          "targets": [
+            {
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_indy-node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+              "refId": "A"
+            }
+          ],
+          "title": "Indy Version",
+          "transformations": [
+            {
+              "id": "reduce",
+              "options": {
+                "reducers": [
+                  "lastNotNull"
+                ]
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "Last (not null)"
+                  ]
+                }
+              }
+            }
+          ],
+          "type": "table"
+        }
+      ],
+      "title": "Software Versions",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 24
       },
       "id": 62,
       "panels": [
@@ -865,7 +1200,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 25
       },
       "id": 40,
       "panels": [
@@ -1797,7 +2132,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 26
       },
       "id": 42,
       "panels": [
@@ -1857,7 +2192,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 21
+            "y": 26
           },
           "id": 54,
           "options": {
@@ -1938,7 +2273,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 21
+            "y": 26
           },
           "id": 56,
           "options": {
@@ -2067,7 +2402,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 21
+            "y": 26
           },
           "id": 58,
           "options": {
@@ -2151,7 +2486,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 21
+        "y": 27
       },
       "id": 21,
       "panels": [
@@ -2946,5 +3281,5 @@
   "timezone": "",
   "title": "Prometheus Dashboard Updated",
   "uid": "IBGWryqGa",
-  "version": 25
+  "version": 28
 }
