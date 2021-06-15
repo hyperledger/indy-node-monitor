@@ -18,6 +18,7 @@ class FetchStatus():
         result = []
         verifiers = {}
 
+        # network_info = pool_collection.get_network_info(network=network)
         pool = await self.pool_collection.get_pool(network_info)
 
         if self.ident:

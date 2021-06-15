@@ -27,6 +27,7 @@ app = FastAPI(
 
 default_args = None
 monitor_plugins = None
+pool_collection = None
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
     # Store args and monitor_plugins for lazy loading.
@@ -40,6 +41,8 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
         default_monitor_plugins.get_parse_args(parser)
         default_args, unknown = parser.parse_known_args()
         enable_verbose(default_args.verbose)
+        global pool_collection
+        pool_collection = PoolCollection(default_args.verbose)
 
     # Create namespace with default args
     api_args = argparse.Namespace()
@@ -63,7 +66,6 @@ async def networks():
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    pool_collection = PoolCollection(default_args.verbose)
     network_info = pool_collection.get_network_info(network=network)
     status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
     result = await status.fetch(network_info=network_info)
@@ -74,10 +76,14 @@ async def node(network, node, status: bool = False, alerts: bool = False, seed: 
     monitor_plugins = set_plugin_parameters(status, alerts)
     
     ident = create_did(seed)
-    pool_collection = PoolCollection(default_args.verbose)
+    
     network_info = pool_collection.get_network_info(network=network)
     status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
+    # TODO status = FetchStatus(default_args.verbose, pool_collection)
     result = await status.fetch(network_info, node)
-    # result = await status.fetch(network_info, ident, node)
+    # TODO result = await status.fetch(network, ident, node, monitor_plugins, network)
     
     return result
+
+# TODO fetchstatus.fetch for be refactored to take network, node, ident and monitor_plugins
+# TODO FetchStatus as singleton

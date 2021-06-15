@@ -1,14 +1,26 @@
 import os
+from os import path
 import json
 import urllib.request
 import sys
+import asyncio
 from collections import namedtuple
 from util import log
 from indy_vdr.pool import open_pool
 
-class PoolCollection(object):
+# https://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+        
+class PoolCollection(object, metaclass=Singleton):
     def __init__(self, verbose):
         self.verbose = verbose
+        self.network_cache = {}
+        self.lock = asyncio.Lock()
 
     async def fetch_pool_connection(self, genesis_path):
         attempt = 3
@@ -29,33 +41,50 @@ class PoolCollection(object):
         return pool
 
     async def get_pool(self, network_info):
-        # manage dict
-        # get network_info use as key
-        # look into dict with network_info as tupl or network_info.network_name as key
-        # if key found return value pool
-        # other wise fetch pool connection
-        # add value to dict with key 
-        # return value
 
-        return await self.fetch_pool_connection(network_info.genesis_path)
+        async with self.lock:
+            if network_info.network_name in self.network_cache:
+                log(f"Pool for {network_info.network_name} found in cache ... ")
+                pool = self.network_cache[network_info.network_name]['pool']
+            else:        
+                log(f"Pool for {network_info.network_name} not found in cache, creating new connection ... ")    
+                self.network_cache[network_info.network_name] = {}
+                self.network_cache[network_info.network_name]['genesis_path'] = network_info.genesis_path
+                self.network_cache[network_info.network_name]['genesis_url'] = network_info.genesis_url
+                pool = await self.fetch_pool_connection(network_info.genesis_path)
+                self.network_cache[network_info.network_name]['pool'] = pool
+
+            return pool
 
     def get_network_info(self, network: str = None, genesis_url: str = None, genesis_path: str = None):
-        if not genesis_path:
-            genesis_path = f"{PoolCollection.get_script_dir()}/genesis.txn" # use as base dir save file with using network name or genesis url
-
+        network_name = None
+        genesis_path_base = f"{PoolCollection.get_script_dir()}/"
+        
         if network:
             log("Loading known network list ...")
             networks = PoolCollection.load_network_list()
             if network in networks:
                 log("Connecting to '{0}' ...".format(networks[network]["name"]))
                 genesis_url = networks[network]["genesisUrl"]
-                network_name = networks[network]["name"] # if dosen't exist brake down the url ^
+                network_name = networks[network]["name"]
 
         if genesis_url:
-            self.download_genesis_file(genesis_url, genesis_path)
             if not network_name:
                 network_name = genesis_url
                 log(f"Setting network name = {network_name} ...")
+
+            if not genesis_path:
+                network_name_path = network_name.replace("https://", "")
+                network_name_path = network_name_path.replace(" ", "_")
+                network_name_path = network_name_path.replace("/", "_")
+                network_name_path = network_name_path.replace(".", "_")
+                genesis_path = f"{genesis_path_base}{network_name_path}/"
+                if not path.exists(genesis_path):
+                    os.makedirs(genesis_path)
+                genesis_path = f"{genesis_path}genesis.txn"
+                # genesis_path = f"{genesis_path_base}/genesis.txn" # use as base dir save file with using network name or genesis url
+
+            self.download_genesis_file(genesis_url, genesis_path)
 
         if not os.path.exists(genesis_path):
             print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
@@ -68,7 +97,6 @@ class PoolCollection(object):
 
     def download_genesis_file(self, url: str, target_local_path: str):
         log("Fetching genesis file ...")
-        target_local_path = f"{PoolCollection.get_script_dir()}/genesis.txn"
         urllib.request.urlretrieve(url, target_local_path)
 
     @staticmethod
