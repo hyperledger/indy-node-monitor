@@ -46,5 +46,5 @@ if __name__ == "__main__":
         ident = create_did(did_seed)
         pool_collection = PoolCollection(args.verbose)
         status = FetchStatus(args.verbose, pool_collection)
-        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident))
+        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident, args.genesis_url, args.genesis_path))
         print(json.dumps(result, indent=2))

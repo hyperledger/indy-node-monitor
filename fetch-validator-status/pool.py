@@ -3,17 +3,11 @@ import json
 import urllib.request
 import sys
 import asyncio
+import re
 from collections import namedtuple
 from util import log
 from indy_vdr.pool import open_pool
-
-# https://stackoverflow.com/questions/6760685/creating-a-singleton-in-python
-class Singleton(type):
-    _instances = {}
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+from singleton import Singleton
         
 class PoolCollection(object, metaclass=Singleton):
     def __init__(self, verbose):
@@ -40,19 +34,20 @@ class PoolCollection(object, metaclass=Singleton):
         return pool
 
     async def get_pool(self, network_info):
-
+        # Network pool connection cache with async thread lock for REST API.
         async with self.lock:
             if network_info.network_name in self.network_cache:
+                # Use cache.
                 log(f"Pool for {network_info.network_name} found in cache ... ")
                 pool = self.network_cache[network_info.network_name]['pool']
             else:        
+                # Create cache.
                 log(f"Pool for {network_info.network_name} not found in cache, creating new connection ... ")    
                 self.network_cache[network_info.network_name] = {}
                 self.network_cache[network_info.network_name]['genesis_path'] = network_info.genesis_path
                 self.network_cache[network_info.network_name]['genesis_url'] = network_info.genesis_url
                 pool = await self.fetch_pool_connection(network_info.genesis_path)
                 self.network_cache[network_info.network_name]['pool'] = pool
-
             return pool
 
     def get_network_info(self, network: str = None, genesis_url: str = None, genesis_path: str = None):
@@ -71,20 +66,16 @@ class PoolCollection(object, metaclass=Singleton):
             if not network_name:
                 network_name = genesis_url
                 log(f"Setting network name = {network_name} ...")
-
             if not genesis_path:
+                # Remove and replace parts of the string to make a file name to create the path.
                 network_name_path = network_name.replace("https://", "")
-                network_name_path = network_name_path.replace(" ", "_")
-                network_name_path = network_name_path.replace("/", "_")
-                network_name_path = network_name_path.replace(".", "_")
+                network_name_path = re.sub('[ /.]', '_', network_name_path)
                 genesis_path = f"{genesis_path_base}{network_name_path}/"
                 if not os.path.exists(genesis_path):
                     os.makedirs(genesis_path)
                 genesis_path = f"{genesis_path}genesis.txn"
-                # genesis_path = f"{genesis_path_base}/genesis.txn" # use as base dir save file with using network name or genesis url
 
             self.download_genesis_file(genesis_url, genesis_path)
-
         if not os.path.exists(genesis_path):
             print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
             exit()

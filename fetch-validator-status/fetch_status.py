@@ -6,17 +6,18 @@ from util import log
 from plugin_collection import PluginCollection
 from DidKey import DidKey
 from pool import PoolCollection
+from singleton import Singleton
 
-class FetchStatus():
+class FetchStatus(object, metaclass=Singleton):
     def __init__(self, verbose, pool_collection: PoolCollection):
         self.verbose = verbose
         self.pool_collection = pool_collection
 
-    async def fetch(self, network, monitor_plugins: PluginCollection, nodes: str = None, ident: DidKey = None):
+    async def fetch(self, network, monitor_plugins: PluginCollection, nodes: str = None, ident: DidKey = None, genesis_url: str = None, genesis_path: str = None):
         result = []
         verifiers = {}
 
-        network_info = self.pool_collection.get_network_info(network=network)
+        network_info = self.pool_collection.get_network_info(network, genesis_url, genesis_path)
         pool = await self.pool_collection.get_pool(network_info)
 
         if ident:

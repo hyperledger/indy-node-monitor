@@ -11,9 +11,9 @@ from pool import PoolCollection
 from fetch_status import FetchStatus
 from plugin_collection import PluginCollection
 
-APP_NAME='test_name'
+APP_NAME='Node Monitor'
 APP_DESCRIPTION='test_description'
-APP_VERSION='app_version'
+APP_VERSION='0.0.0'
 
 # https://fastapi.tiangolo.com/tutorial/metadata/
 app = FastAPI(
@@ -25,6 +25,9 @@ app = FastAPI(
 default_args = None
 monitor_plugins = None
 pool_collection = None
+
+# TODO fix 
+status_test = None
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
     # Store args and monitor_plugins for lazy loading.
@@ -41,14 +44,20 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
         global pool_collection
         pool_collection = PoolCollection(default_args.verbose)
 
-    # Create namespace with default args
+        # TODO fix 
+        global status_test
+        status_test = FetchStatus(default_args.verbose, pool_collection)
+
+    # Create namespace with default args and load them into api_args
     api_args = argparse.Namespace()
     for name, value in default_args._get_kwargs():
         setattr(api_args, name, value)
 
+    # Set api_args with the values from the parameters 
     setattr(api_args, 'status', status)
     setattr(api_args, 'alerts', alerts)
 
+    # Create anf load plugins with api_args
     monitor_plugins = PluginCollection('plugins') 
     monitor_plugins.load_all_parse_args(api_args)
 
@@ -63,16 +72,16 @@ async def networks():
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    status = FetchStatus(default_args.verbose, pool_collection)
-    result = await status.fetch(network=network, monitor_plugins=monitor_plugins, ident=ident)
+
+    # TODO fix 
+    result = await status_test.fetch(network=network, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    status = FetchStatus(default_args.verbose, pool_collection)
-    result = await status.fetch(network, monitor_plugins, node, ident)
-    return result
 
-# TODO FetchStatus as singleton
+    # TODO fix 
+    result = await status_test.fetch(network=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+    return result
