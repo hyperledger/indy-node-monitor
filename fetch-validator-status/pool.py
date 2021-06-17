@@ -1,5 +1,4 @@
 import os
-from os import path
 import json
 import urllib.request
 import sys
@@ -79,7 +78,7 @@ class PoolCollection(object, metaclass=Singleton):
                 network_name_path = network_name_path.replace("/", "_")
                 network_name_path = network_name_path.replace(".", "_")
                 genesis_path = f"{genesis_path_base}{network_name_path}/"
-                if not path.exists(genesis_path):
+                if not os.path.exists(genesis_path):
                     os.makedirs(genesis_path)
                 genesis_path = f"{genesis_path}genesis.txn"
                 # genesis_path = f"{genesis_path_base}/genesis.txn" # use as base dir save file with using network name or genesis url

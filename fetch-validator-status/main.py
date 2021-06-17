@@ -2,7 +2,6 @@ import argparse
 import asyncio
 import json
 import os
-
 import indy_vdr
 from util import (
     enable_verbose,
@@ -45,9 +44,7 @@ if __name__ == "__main__":
         log("indy-vdr version:", indy_vdr.version())
         did_seed = None if not args.seed else args.seed    
         ident = create_did(did_seed)
-
         pool_collection = PoolCollection(args.verbose)
-        network_info = pool_collection.get_network_info(args.net, args.genesis_url, args.genesis_path)
-        status = FetchStatus(args.verbose, pool_collection, monitor_plugins, ident)
-        result = asyncio.get_event_loop().run_until_complete(status.fetch(network_info, args.nodes))
+        status = FetchStatus(args.verbose, pool_collection)
+        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident))
         print(json.dumps(result, indent=2))

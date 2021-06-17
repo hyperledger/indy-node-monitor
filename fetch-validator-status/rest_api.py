@@ -1,15 +1,12 @@
 import os
 import argparse
-
 from typing import Optional
 from fastapi import FastAPI, Header
-
 from util import (
     enable_verbose,
 #    log,
     create_did
 )
-
 from pool import PoolCollection
 from fetch_status import FetchStatus
 from plugin_collection import PluginCollection
@@ -66,24 +63,16 @@ async def networks():
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    network_info = pool_collection.get_network_info(network=network)
-    status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
-    result = await status.fetch(network_info=network_info)
+    status = FetchStatus(default_args.verbose, pool_collection)
+    result = await status.fetch(network=network, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
-    
     ident = create_did(seed)
-    
-    network_info = pool_collection.get_network_info(network=network)
-    status = FetchStatus(default_args.verbose, pool_collection, monitor_plugins, ident)
-    # TODO status = FetchStatus(default_args.verbose, pool_collection)
-    result = await status.fetch(network_info, node)
-    # TODO result = await status.fetch(network, ident, node, monitor_plugins, network)
-    
+    status = FetchStatus(default_args.verbose, pool_collection)
+    result = await status.fetch(network, monitor_plugins, node, ident)
     return result
 
-# TODO fetchstatus.fetch for be refactored to take network, node, ident and monitor_plugins
 # TODO FetchStatus as singleton

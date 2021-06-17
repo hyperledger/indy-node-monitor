@@ -8,23 +8,21 @@ from DidKey import DidKey
 from pool import PoolCollection
 
 class FetchStatus():
-    def __init__(self, verbose, pool_collection: PoolCollection, monitor_plugins: PluginCollection, ident: DidKey = None):
+    def __init__(self, verbose, pool_collection: PoolCollection):
         self.verbose = verbose
         self.pool_collection = pool_collection
-        self.monitor_plugins = monitor_plugins
-        self.ident = ident
 
-    async def fetch(self, network_info, nodes: str = None):
+    async def fetch(self, network, monitor_plugins: PluginCollection, nodes: str = None, ident: DidKey = None):
         result = []
         verifiers = {}
 
-        # network_info = pool_collection.get_network_info(network=network)
+        network_info = self.pool_collection.get_network_info(network=network)
         pool = await self.pool_collection.get_pool(network_info)
 
-        if self.ident:
-            log(f"Building request with did: {self.ident.did} ...")
-            request = build_get_validator_info_request(self.ident.did)
-            self.ident.sign_request(request)
+        if ident:
+            log(f"Building request with did: {ident.did} ...")
+            request = build_get_validator_info_request(ident.did)
+            ident.sign_request(request)
         else:
             log("Building anonymous request ...")
             request = build_get_txn_request(None, 1, 1)
@@ -45,6 +43,6 @@ class FetchStatus():
             pass
 
         log("Passing results to plugins for processing ...")
-        result = await self.monitor_plugins.apply_all_plugins_on_value(result, network_info.network_name, response, verifiers)
+        result = await monitor_plugins.apply_all_plugins_on_value(result, network_info.network_name, response, verifiers)
         log("Processing complete.")
         return result
