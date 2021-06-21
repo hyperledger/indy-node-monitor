@@ -10,11 +10,12 @@ from util import (
 )
 from fetch_status import FetchStatus
 from pool import PoolCollection
+from pool import Networks
 from plugin_collection import PluginCollection
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fetch the status of all the indy-nodes within a given pool.")
-    parser.add_argument("--net", choices=PoolCollection.list_networks(), help="Connect to a known network using an ID.")
+    parser.add_argument("--net", choices=Networks.get_names(), help="Connect to a known network using an ID.")
     parser.add_argument("--list-nets", action="store_true", help="List known networks.")
     parser.add_argument("--genesis-url", default=os.environ.get('GENESIS_URL') , help="The url to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_URL' environment variable.")
     parser.add_argument("--genesis-path", default=os.getenv("GENESIS_PATH"), help="The path to the genesis file describing the ledger pool.  Can be specified using the 'GENESIS_PATH' environment variable.")
@@ -38,13 +39,20 @@ if __name__ == "__main__":
         enable_verbose(args.verbose)
 
         if args.list_nets:
-            print(json.dumps(PoolCollection.load_network_list(), indent=2))
+            print(json.dumps(Networks.get_all(), indent=2))
             exit()
 
         log("indy-vdr version:", indy_vdr.version())
         did_seed = None if not args.seed else args.seed    
         ident = create_did(did_seed)
-        pool_collection = PoolCollection(args.verbose)
+        networks = Networks()
+
+        # ToDo:
+        #   - Flesh out Networks.resolve so this registers a adhoc network
+        #     (i.e. user passed in args.genesis_url, or args.genesis_path rather than a known network id)
+        networks.resolve(args.net, args.genesis_url, args.genesis_path)
+        
+        pool_collection = PoolCollection(args.verbose, networks)
         status = FetchStatus(args.verbose, pool_collection)
-        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident, args.genesis_url, args.genesis_path))
+        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident))
         print(json.dumps(result, indent=2))

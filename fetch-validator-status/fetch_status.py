@@ -13,13 +13,11 @@ class FetchStatus(object, metaclass=Singleton):
         self.verbose = verbose
         self.pool_collection = pool_collection
 
-    async def fetch(self, network, monitor_plugins: PluginCollection, nodes: str = None, ident: DidKey = None, genesis_url: str = None, genesis_path: str = None):
+    async def fetch(self, network_id: str, monitor_plugins: PluginCollection, nodes: str = None, ident: DidKey = None):
         result = []
         verifiers = {}
 
-        network_info = self.pool_collection.get_network_info(network, genesis_url, genesis_path)
-        pool = await self.pool_collection.get_pool(network_info)
-
+        pool, network_name = await self.pool_collection.get_pool(network_id)
         if ident:
             log(f"Building request with did: {ident.did} ...")
             request = build_get_validator_info_request(ident.did)
@@ -44,6 +42,6 @@ class FetchStatus(object, metaclass=Singleton):
             pass
 
         log("Passing results to plugins for processing ...")
-        result = await monitor_plugins.apply_all_plugins_on_value(result, network_info.network_name, response, verifiers)
+        result = await monitor_plugins.apply_all_plugins_on_value(result, network_name, response, verifiers)
         log("Processing complete.")
         return result

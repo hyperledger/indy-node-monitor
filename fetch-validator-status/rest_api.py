@@ -8,6 +8,7 @@ from util import (
     create_did
 )
 from pool import PoolCollection
+from pool import Networks
 from fetch_status import FetchStatus
 from plugin_collection import PluginCollection
 
@@ -26,6 +27,7 @@ default_args = None
 monitor_plugins = None
 pool_collection = None
 
+
 # TODO fix 
 status_test = None
 
@@ -42,7 +44,7 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
         default_args, unknown = parser.parse_known_args()
         enable_verbose(default_args.verbose)
         global pool_collection
-        pool_collection = PoolCollection(default_args.verbose)
+        pool_collection = PoolCollection(default_args.verbose, Networks())
 
         # TODO fix 
         global status_test
@@ -65,7 +67,7 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
 
 @app.get("/networks")
 async def networks():
-    data = PoolCollection.load_network_list()
+    data = Networks.get_all()
     return data
 
 @app.get("/networks/{network}")
@@ -74,7 +76,7 @@ async def network(network, status: bool = False, alerts: bool = False, seed: Opt
     ident = create_did(seed)
 
     # TODO fix 
-    result = await status_test.fetch(network=network, monitor_plugins=monitor_plugins, ident=ident)
+    result = await status_test.fetch(network_id=network, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
@@ -83,5 +85,5 @@ async def node(network, node, status: bool = False, alerts: bool = False, seed: 
     ident = create_did(seed)
 
     # TODO fix 
-    result = await status_test.fetch(network=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+    result = await status_test.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
     return result
