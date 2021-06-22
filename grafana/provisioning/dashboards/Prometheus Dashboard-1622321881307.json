@@ -64,7 +64,7 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -73,7 +73,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "8.0.2",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"client-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -135,8 +135,8 @@
       },
       "gridPos": {
         "h": 3,
-        "w": 3,
-        "x": 3,
+        "w": 4,
+        "x": 4,
         "y": 1
       },
       "id": 68,
@@ -144,7 +144,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "8.0.2",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"node-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -199,8 +199,7 @@
           "custom": {
             "align": "center",
             "displayMode": "color-text",
-            "filterable": false,
-            "width": 110
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -220,8 +219,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 2,
+        "h": 3,
+        "w": 8,
         "x": 0,
         "y": 5
       },
@@ -235,7 +234,7 @@
           }
         ]
       },
-      "pluginVersion": "8.0.2",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -247,18 +246,8 @@
           "refId": "A"
         }
       ],
-      "title": "Client Port",
+      "title": "Client Address",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "Value #A"
-              ]
-            }
-          }
-        },
         {
           "id": "reduce",
           "options": {
@@ -270,13 +259,31 @@
           }
         },
         {
-          "id": "renameByRegex",
+          "id": "filterFieldsByName",
           "options": {
-            "regex": "Value #A",
-            "renamePattern": "Port"
+            "include": {
+              "names": [
+                "response_result_data_Node_info_Client_ip",
+                "Value #A",
+                "response_result_data_Node_info_Node_protocol"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value #A": 2,
+              "response_result_data_Node_info_Client_ip": 1,
+              "response_result_data_Node_info_Node_protocol": 0
+            },
+            "renameByName": {}
           }
         }
       ],
+      "transparent": true,
       "type": "table"
     },
     {
@@ -289,8 +296,7 @@
           "custom": {
             "align": "center",
             "displayMode": "color-text",
-            "filterable": false,
-            "width": 110
+            "filterable": false
           },
           "mappings": [],
           "thresholds": {
@@ -310,9 +316,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 2,
-        "x": 2,
+        "h": 3,
+        "w": 8,
+        "x": 8,
         "y": 5
       },
       "id": 71,
@@ -325,7 +331,7 @@
           }
         ]
       },
-      "pluginVersion": "8.0.2",
+      "pluginVersion": "8.0.3",
       "targets": [
         {
           "exemplar": true,
@@ -335,20 +341,18 @@
           "interval": "",
           "legendFormat": "",
           "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "response_result_data_Node_info_Node_port{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
         }
       ],
-      "title": "NodePort",
+      "title": "Node Address",
       "transformations": [
-        {
-          "id": "filterFieldsByName",
-          "options": {
-            "include": {
-              "names": [
-                "Value #A"
-              ]
-            }
-          }
-        },
         {
           "id": "reduce",
           "options": {
@@ -360,13 +364,31 @@
           }
         },
         {
-          "id": "renameByRegex",
+          "id": "filterFieldsByName",
           "options": {
-            "regex": "Value #A",
-            "renamePattern": "Port"
+            "include": {
+              "names": [
+                "response_result_data_Node_info_Node_ip",
+                "Value #A",
+                "response_result_data_Node_info_Node_protocol"
+              ]
+            }
+          }
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "Value #A": 2,
+              "response_result_data_Node_info_Node_ip": 1,
+              "response_result_data_Node_info_Node_protocol": 0
+            },
+            "renameByName": {}
           }
         }
       ],
+      "transparent": true,
       "type": "table"
     },
     {
@@ -376,7 +398,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 8
       },
       "id": 60,
       "panels": [],
@@ -440,7 +462,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 9
       },
       "id": 4,
       "options": {
@@ -575,7 +597,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 2,
       "options": {
@@ -663,7 +685,7 @@
         "h": 7,
         "w": 7,
         "x": 7,
-        "y": 16
+        "y": 17
       },
       "id": 6,
       "options": {
@@ -749,7 +771,7 @@
         "h": 7,
         "w": 5,
         "x": 14,
-        "y": 16
+        "y": 17
       },
       "id": 8,
       "options": {
@@ -836,7 +858,7 @@
         "h": 7,
         "w": 5,
         "x": 19,
-        "y": 16
+        "y": 17
       },
       "id": 9,
       "options": {
@@ -872,7 +894,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 24
       },
       "id": 77,
       "panels": [
@@ -908,13 +930,13 @@
             "h": 2,
             "w": 3,
             "x": 0,
-            "y": 24
+            "y": 22
           },
           "id": 79,
           "options": {
             "showHeader": false
           },
-          "pluginVersion": "8.0.2",
+          "pluginVersion": "8.0.3",
           "targets": [
             {
               "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_sovrin\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -976,13 +998,13 @@
             "h": 2,
             "w": 3,
             "x": 3,
-            "y": 24
+            "y": 22
           },
           "id": 80,
           "options": {
             "showHeader": false
           },
-          "pluginVersion": "8.0.2",
+          "pluginVersion": "8.0.3",
           "targets": [
             {
               "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_indy-node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -1023,7 +1045,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 25
       },
       "id": 62,
       "panels": [
@@ -1052,7 +1074,7 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": true,
                 "stacking": {
                   "group": "A",
@@ -1083,7 +1105,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 19
+            "y": 23
           },
           "id": 64,
           "options": {
@@ -1133,7 +1155,7 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": true,
                 "stacking": {
                   "group": "A",
@@ -1164,7 +1186,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 19
+            "y": 23
           },
           "id": 66,
           "options": {
@@ -1200,7 +1222,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 26
       },
       "id": 40,
       "panels": [
@@ -1264,7 +1286,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 27
+            "y": 24
           },
           "id": 15,
           "options": {
@@ -1381,7 +1403,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 27
+            "y": 24
           },
           "id": 17,
           "options": {
@@ -1498,7 +1520,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 27
+            "y": 24
           },
           "id": 19,
           "options": {
@@ -1583,7 +1605,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 35
+            "y": 32
           },
           "id": 23,
           "options": {
@@ -1668,7 +1690,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 35
+            "y": 32
           },
           "id": 25,
           "options": {
@@ -1753,7 +1775,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 35
+            "y": 32
           },
           "id": 27,
           "options": {
@@ -1838,7 +1860,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 43
+            "y": 40
           },
           "id": 29,
           "options": {
@@ -1923,7 +1945,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 43
+            "y": 40
           },
           "id": 30,
           "options": {
@@ -2008,7 +2030,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 43
+            "y": 40
           },
           "id": 32,
           "options": {
@@ -2093,7 +2115,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 51
+            "y": 48
           },
           "id": 34,
           "options": {
@@ -2132,7 +2154,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 42,
       "panels": [
@@ -2161,7 +2183,7 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": true,
                 "stacking": {
                   "group": "A",
@@ -2192,7 +2214,7 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 26
+            "y": 37
           },
           "id": 54,
           "options": {
@@ -2242,7 +2264,7 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": true,
                 "stacking": {
                   "group": "A",
@@ -2273,7 +2295,7 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 26
+            "y": 37
           },
           "id": 56,
           "options": {
@@ -2371,7 +2393,7 @@
                 "scaleDistribution": {
                   "type": "linear"
                 },
-                "showPoints": "auto",
+                "showPoints": "never",
                 "spanNulls": true,
                 "stacking": {
                   "group": "A",
@@ -2402,7 +2424,7 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 26
+            "y": 37
           },
           "id": 58,
           "options": {
@@ -2474,765 +2496,1457 @@
           ],
           "title": "Throughput",
           "type": "timeseries"
+        },
+        {
+          "datasource": "InfluxDB-Flux",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": "center",
+                "displayMode": "color-text"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 2,
+            "w": 22,
+            "x": 0,
+            "y": 45
+          },
+          "id": 94,
+          "options": {
+            "showHeader": false
+          },
+          "pluginVersion": "8.0.3",
+          "targets": [
+            {
+              "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Quorums\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+              "refId": "A"
+            }
+          ],
+          "title": "Quorums",
+          "transformations": [
+            {
+              "id": "reduce",
+              "options": {
+                "reducers": [
+                  "lastNotNull"
+                ]
+              }
+            },
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "names": [
+                    "Last (not null)"
+                  ]
+                }
+              }
+            }
+          ],
+          "transparent": true,
+          "type": "table"
         }
       ],
       "title": "Plot to see how it displays",
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 28
       },
       "id": 21,
-      "panels": [
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
+      "panels": [],
+      "title": "Misc",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
           },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 22
-          },
-          "id": 36,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
             },
-            "tooltip": {
-              "mode": "single"
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
             }
           },
-          "pluginVersion": "8.0.0",
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_0{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 0",
-              "refId": "A"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_1{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 1",
-              "refId": "B"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_2{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 2",
-              "refId": "C"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_3{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 3",
-              "refId": "D"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_4{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 4",
-              "refId": "E"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_5{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Avg Req. Latencies 5",
-              "refId": "F"
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Client Avg Request Latencies",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 8,
-            "y": 22
-          },
-          "id": 38,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_total_requests{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Total Requests",
-              "refId": "A"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_0{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 0",
-              "refId": "B"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_1{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 1",
-              "refId": "C"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_2{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 2",
-              "refId": "D"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_3{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 3",
-              "refId": "E"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_4{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 4",
-              "refId": "F"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_5{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 5",
-              "refId": "G"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_node_response_result_data_Node_info_Metrics_ordered_request_counts_6{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Count 6",
-              "refId": "H"
-            }
-          ],
-          "title": "Request Counts",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 16,
-            "y": 22
-          },
-          "id": 44,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_max_master_request_latencies{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Request Latency",
-              "refId": "A"
-            }
-          ],
-          "title": "Max Master Req. Latencies",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 30
-          },
-          "id": 46,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_Delta{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Delta",
-              "refId": "A"
-            }
-          ],
-          "title": "Delta Response",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 8,
-            "y": 30
-          },
-          "id": 48,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_0{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Request 0",
-              "refId": "A"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_1{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 1",
-              "refId": "B"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_2{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 2",
-              "refId": "C"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_3{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 3",
-              "refId": "D"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_4{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 4",
-              "refId": "E"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_5{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 5",
-              "refId": "F"
-            },
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_6{job=\"tick\", name=\"[[node]]\"}",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "Request 6",
-              "refId": "G"
-            }
-          ],
-          "title": "Ordered Request Durations",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 16,
-            "y": 30
-          },
-          "id": 50,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_avg_backup_throughput{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Avg backup throughup",
-              "refId": "A"
-            }
-          ],
-          "title": "Avg Backup Throughput",
-          "type": "timeseries"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "auto",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
-            },
-            "overrides": [
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "__systemRef": "hideSeriesFrom",
-                "matcher": {
-                  "id": "byNames",
-                  "options": {
-                    "mode": "exclude",
-                    "names": [
-                      "Master throughput ratio"
-                    ],
-                    "prefix": "All except:",
-                    "readOnly": true
-                  }
-                },
-                "properties": [
-                  {
-                    "id": "custom.hideFrom",
-                    "value": {
-                      "legend": false,
-                      "tooltip": false,
-                      "viz": true
-                    }
-                  }
-                ]
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           },
-          "gridPos": {
-            "h": 8,
-            "w": 8,
-            "x": 0,
-            "y": 38
-          },
-          "id": 52,
-          "options": {
-            "legend": {
-              "calcs": [],
-              "displayMode": "list",
-              "placement": "bottom"
-            },
-            "tooltip": {
-              "mode": "single"
-            }
-          },
-          "targets": [
-            {
-              "exemplar": true,
-              "expr": "node_response_result_data_Node_info_Metrics_master_throughput_ratio{job=\"tick\", name=\"[[node]]\"}",
-              "interval": "",
-              "legendFormat": "Master throughput ratio",
-              "refId": "A"
-            }
-          ],
-          "title": "Master Throughput Ratio",
-          "type": "timeseries"
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 29
+      },
+      "id": 36,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "pluginVersion": "8.0.0",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_0{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 0",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_1{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 1",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_2{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 2",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_3{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 3",
+          "refId": "D"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_4{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 4",
+          "refId": "E"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_5{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Avg Req. Latencies 5",
+          "refId": "F"
         }
       ],
-      "title": "Misc",
-      "type": "row"
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Client Avg Request Latencies",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 29
+      },
+      "id": 38,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_total_requests{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Total Requests",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_0{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 0",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_1{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 1",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_2{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 2",
+          "refId": "D"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_3{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 3",
+          "refId": "E"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_4{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 4",
+          "refId": "F"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_5{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 5",
+          "refId": "G"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_node_response_result_data_Node_info_Metrics_ordered_request_counts_6{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Count 6",
+          "refId": "H"
+        }
+      ],
+      "title": "Request Counts",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 29
+      },
+      "id": 44,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_max_master_request_latencies{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Request Latency",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Master Req. Latencies",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 37
+      },
+      "id": 46,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_Delta{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Delta",
+          "refId": "A"
+        }
+      ],
+      "title": "Delta Response",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 37
+      },
+      "id": 48,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_0{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Request 0",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_1{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 1",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_2{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 2",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_3{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 3",
+          "refId": "D"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_4{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 4",
+          "refId": "E"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_5{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 5",
+          "refId": "F"
+        },
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_6{job=\"tick\", name=\"[[node]]\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Request 6",
+          "refId": "G"
+        }
+      ],
+      "title": "Ordered Request Durations",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 37
+      },
+      "id": 50,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_avg_backup_throughput{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Avg backup throughup",
+          "refId": "A"
+        }
+      ],
+      "title": "Avg Backup Throughput",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": true,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Master throughput ratio"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 45
+      },
+      "id": 52,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "node_response_result_data_Node_info_Metrics_master_throughput_ratio{job=\"tick\", name=\"[[node]]\"}",
+          "interval": "",
+          "legendFormat": "Master throughput ratio",
+          "refId": "A"
+        }
+      ],
+      "title": "Master Throughput Ratio",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 9,
+        "x": 14,
+        "y": 45
+      },
+      "id": 98,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_verkey\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Verkey",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 53
+      },
+      "id": 86,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_BLS_key\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "BLSKey",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 0,
+        "y": 55
+      },
+      "id": 82,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_ok\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Status Ok",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 3,
+        "x": 3,
+        "y": 55
+      },
+      "id": 84,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_Mode\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Mode",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 6,
+        "y": 55
+      },
+      "id": 88,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Hardware_HDD_used_by_node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "HDD Used",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 9,
+        "y": 55
+      },
+      "id": 90,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Read_only\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Read Only",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "noValue": "Null",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 3,
+        "x": 12,
+        "y": 55
+      },
+      "id": 92,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Suspicious_nodes\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Suspicious Nodes",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 7,
+        "x": 15,
+        "y": 55
+      },
+      "id": 96,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Software_OS_version\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "OS Version",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": "InfluxDB-Flux",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 7,
+        "x": 7,
+        "y": 57
+      },
+      "id": 100,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "8.0.3",
+      "targets": [
+        {
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_did\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "refId": "A"
+        }
+      ],
+      "title": "DID",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Last (not null)"
+              ]
+            }
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
     }
   ],
   "refresh": false,
@@ -3245,8 +3959,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "Absa",
-          "value": "Absa"
+          "text": "anonyome",
+          "value": "anonyome"
         },
         "datasource": null,
         "definition": "label_values(name)",
@@ -3281,5 +3995,5 @@
   "timezone": "",
   "title": "Prometheus Dashboard",
   "uid": "IBGWryqGa",
-  "version": 28
+  "version": 2
 }
