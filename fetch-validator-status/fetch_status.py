@@ -38,7 +38,7 @@ class FetchStatus(object, metaclass=Singleton):
             log("Getting list of verifiers ...")
             verifiers = await pool.get_verifiers()
         except AttributeError:
-            log("Unable to get list of verifiers. Plesase make sure you have the latest verson of indy-vdr.")
+            log("Unable to get list of verifiers. Please make sure you have the latest version of indy-vdr.")
             pass
 
         log("Passing results to plugins for processing ...")

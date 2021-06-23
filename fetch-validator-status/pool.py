@@ -34,12 +34,12 @@ class Networks(object, metaclass=Singleton):
         return self._networks
 
     @staticmethod
-    def get_names():
+    def get_ids():
         networks = Networks()
         return networks.names
 
     @staticmethod
-    def get_all():
+    def get_details():
         networks = Networks()
         return networks.networks
 
@@ -95,7 +95,7 @@ class PoolCollection(object, metaclass=Singleton):
         self.pool_cache = {}
         self.lock = asyncio.Lock()
 
-    async def fetch_pool_connection(self, genesis_path):
+    async def __fetch_pool_connection(self, genesis_path):
         attempt = 3
         while attempt:
             try:
@@ -114,7 +114,7 @@ class PoolCollection(object, metaclass=Singleton):
         return pool
 
     # ToDo:
-    #   - Once Networks.resolve is fully fleshed out and the Networks class managaes all of the network properties
+    #   - Once Networks.resolve is fully fleshed out and the Networks class manages all of the network properties
     #     this class no longer has to manage the 'genesis_path' and 'genesis_url' properties, it can use the 
     #     networks instance for lookup, and cache and look up information by network key rather than network name; 
     #     Networks.names (the network keys), rather than full Networks.networks[key].name (network name).
@@ -132,6 +132,6 @@ class PoolCollection(object, metaclass=Singleton):
                 self.pool_cache[network.name] = {}
                 self.pool_cache[network.name]['genesis_path'] = network.genesis_path
                 self.pool_cache[network.name]['genesis_url'] = network.genesis_url
-                pool = await self.fetch_pool_connection(network.genesis_path)
+                pool = await self.__fetch_pool_connection(network.genesis_path)
                 self.pool_cache[network.name]['pool'] = pool
             return pool, network.name

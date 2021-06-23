@@ -23,17 +23,15 @@ app = FastAPI(
     version = APP_VERSION
 )
 
+# global variables
 default_args = None
 monitor_plugins = None
 pool_collection = None
-
-
-# TODO fix 
-status_test = None
+node_info = None
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
     # Store args and monitor_plugins for lazy loading.
-    global default_args
+    global default_args, pool_collection, node_info
 
     if not default_args:
         # Create plugin instance and set default args
@@ -43,12 +41,8 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
         default_monitor_plugins.get_parse_args(parser)
         default_args, unknown = parser.parse_known_args()
         enable_verbose(default_args.verbose)
-        global pool_collection
         pool_collection = PoolCollection(default_args.verbose, Networks())
-
-        # TODO fix 
-        global status_test
-        status_test = FetchStatus(default_args.verbose, pool_collection)
+        node_info = FetchStatus(default_args.verbose, pool_collection)
 
     # Create namespace with default args and load them into api_args
     api_args = argparse.Namespace()
@@ -59,7 +53,7 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
     setattr(api_args, 'status', status)
     setattr(api_args, 'alerts', alerts)
 
-    # Create anf load plugins with api_args
+    # Create and load plugins with api_args
     monitor_plugins = PluginCollection('plugins') 
     monitor_plugins.load_all_parse_args(api_args)
 
@@ -67,23 +61,19 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
 
 @app.get("/networks")
 async def networks():
-    data = Networks.get_all()
+    data = Networks.get_details()
     return data
 
 @app.get("/networks/{network}")
 async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-
-    # TODO fix 
-    result = await status_test.fetch(network_id=network, monitor_plugins=monitor_plugins, ident=ident)
+    result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-
-    # TODO fix 
-    result = await status_test.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+    result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
     return result
