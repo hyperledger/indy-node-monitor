@@ -39,20 +39,15 @@ if __name__ == "__main__":
         enable_verbose(args.verbose)
 
         if args.list_nets:
-            print(json.dumps(Networks.get_details(), indent=2))
+            print(json.dumps(Networks.get_networks(), indent=2))
             exit()
 
         log("indy-vdr version:", indy_vdr.version())
-        did_seed = None if not args.seed else args.seed    
+        did_seed = None if not args.seed else args.seed
         ident = create_did(did_seed)
         networks = Networks()
-
-        # ToDo:
-        #   - Flesh out Networks.resolve so this registers a adhoc network
-        #     (i.e. user passed in args.genesis_url, or args.genesis_path rather than a known network id)
-        networks.resolve(args.net, args.genesis_url, args.genesis_path)
-        
         pool_collection = PoolCollection(args.verbose, networks)
-        status = FetchStatus(args.verbose, pool_collection)
-        result = asyncio.get_event_loop().run_until_complete(status.fetch(args.net, monitor_plugins, args.nodes, ident))
+        network = networks.resolve(args.net, args.genesis_url, args.genesis_path)
+        node_info = FetchStatus(args.verbose, pool_collection)
+        result = asyncio.get_event_loop().run_until_complete(node_info.fetch(network.id, monitor_plugins, args.nodes, ident))
         print(json.dumps(result, indent=2))

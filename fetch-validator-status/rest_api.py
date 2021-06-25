@@ -1,7 +1,8 @@
 import os
 import argparse
 from typing import Optional
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, HTTPException
+from starlette.responses import RedirectResponse
 from util import (
     enable_verbose,
 #    log,
@@ -9,7 +10,7 @@ from util import (
 )
 from pool import PoolCollection
 from pool import Networks
-from fetch_status import FetchStatus
+from fetch_status import FetchStatus, NodeNotFound
 from plugin_collection import PluginCollection
 
 APP_NAME='Node Monitor'
@@ -49,19 +50,25 @@ def set_plugin_parameters(status: bool = False, alerts: bool = False):
     for name, value in default_args._get_kwargs():
         setattr(api_args, name, value)
 
-    # Set api_args with the values from the parameters 
+    # Set api_args with the values from the parameters
     setattr(api_args, 'status', status)
     setattr(api_args, 'alerts', alerts)
 
     # Create and load plugins with api_args
-    monitor_plugins = PluginCollection('plugins') 
+    monitor_plugins = PluginCollection('plugins')
     monitor_plugins.load_all_parse_args(api_args)
 
     return monitor_plugins
 
+# Redirect users to the '/docs' page but don't include this endpoint in the docs.
+@app.get("/", include_in_schema=False)
+async def redirect():
+    response = RedirectResponse(url='/docs')
+    return response
+
 @app.get("/networks")
 async def networks():
-    data = Networks.get_details()
+    data = Networks.get_networks()
     return data
 
 @app.get("/networks/{network}")
@@ -75,5 +82,10 @@ async def network(network, status: bool = False, alerts: bool = False, seed: Opt
 async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+    try:
+        result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+    except NodeNotFound as error:
+        print(error)
+        raise HTTPException(status_code=400, detail=str(error))
+
     return result

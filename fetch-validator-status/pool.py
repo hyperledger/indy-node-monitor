@@ -10,7 +10,7 @@ from indy_vdr.pool import open_pool
 from singleton import Singleton
 
 
-Network = namedtuple('Network', ['name', 'genesis_url', 'genesis_path'])
+Network = namedtuple('Network', ['id', 'name', 'genesis_url', 'genesis_path'])
 
 class Networks(object, metaclass=Singleton):
     def __init__(self):
@@ -26,7 +26,7 @@ class Networks(object, metaclass=Singleton):
         return networks
 
     @property
-    def names(self):
+    def ids(self):
         return self._networks.keys()
 
     @property
@@ -36,55 +36,51 @@ class Networks(object, metaclass=Singleton):
     @staticmethod
     def get_ids():
         networks = Networks()
-        return networks.names
+        return networks.ids
 
     @staticmethod
-    def get_details():
+    def get_networks():
         networks = Networks()
         return networks.networks
 
     @staticmethod
-    def __download_genesis_file(url: str, target_local_path: str):
+    def __download_genesis_file(genesis_url: str, destination_path: str):
         log("Fetching genesis file ...")
-        urllib.request.urlretrieve(url, target_local_path)
+        urllib.request.urlretrieve(genesis_url, destination_path)
 
-    # ToDo:
-    #   - Refactor to maintain the list of networks dynamically using self._networks
-    #   - In the case a network does not existing the list add it.
-    #       - For example in the case a user provides a genesis_url or genesis_path rather than a named named (known) network.
-    #       - The key for the network should be dynamically generated, could simply be Network#; Network1, Network2, etc.
-    #   - As genesis files are downloaded (or provided) the entries should be updated with the genesis_path information.
-    #   - Genesis files should only be downloaded for entries without genesis_path info.
-    def resolve(self, network: str = None, genesis_url: str = None, genesis_path: str = None):
-        network_id = None
+    def resolve(self, network_id: str = None, genesis_url: str = None, genesis_path: str = None):
+        network_name = None
         genesis_path_base = f"{self.__get_script_dir()}/"
 
-        if network:
-            if network in self.names:
-                log("Connecting to '{0}' ...".format(self.networks[network]["name"]))
-                genesis_url = self.networks[network]["genesisUrl"]
-                network_id = self.networks[network]["name"]
+        if network_id and network_id in self.ids:
+            log("Connecting to '{0}' ...".format(self.networks[network_id]["name"]))
+            network_name = self.networks[network_id]["name"]
+            genesis_url = self.networks[network_id]["genesisUrl"]
+            if 'genesisPath' in self.networks[network_id]:
+                genesis_path = self.networks[network_id]['genesisPath']
 
         if genesis_url:
-            if not network_id:
-                network_id = genesis_url
-                log(f"Setting network name = {network_id} ...")
+            if not network_name:
+                network_name = genesis_url
+                network_id = network_name
+                log(f"Setting network name = {network_name} ...")
+
             if not genesis_path:
-                # Remove and replace parts of the string to make a file name to create the path.
-                network_id_path = network_id.replace("https://", "")
-                network_id_path = re.sub('[ /.]', '_', network_id_path)
-                genesis_path = f"{genesis_path_base}{network_id_path}/"
+                # Remove and replace parts of the string to make a valid path based on the network name.
+                sub_path = network_name.replace("https://", "")
+                sub_path = re.sub('[ /.]', '_', sub_path)
+                genesis_path = f"{genesis_path_base}{sub_path}/"
                 if not os.path.exists(genesis_path):
                     os.makedirs(genesis_path)
                 genesis_path = f"{genesis_path}genesis.txn"
+                Networks.__download_genesis_file(genesis_url, genesis_path)
+                self._networks[network_id] = {'name': network_name, 'genesisUrl': genesis_url, 'genesisPath': genesis_path}
 
-            Networks.__download_genesis_file(genesis_url, genesis_path)
         if not os.path.exists(genesis_path):
             print("Set the GENESIS_URL or GENESIS_PATH environment variable or argument.\n", file=sys.stderr)
             exit()
 
-        network = Network(network_id, genesis_url, genesis_path)
-
+        network = Network(network_id, network_name, genesis_url, genesis_path)
         return network
 
 
@@ -104,7 +100,7 @@ class PoolCollection(object, metaclass=Singleton):
             except:
                 log("Pool Timed Out! Trying again ...")
                 if not attempt:
-                    print("Unable to get pool Response! 3 attempts where made. Exiting ...")
+                    print("Unable to get response from pool!  3 attempts where made.  Exiting ...")
                     exit()
                 attempt -= 1
                 continue
@@ -113,25 +109,19 @@ class PoolCollection(object, metaclass=Singleton):
             break
         return pool
 
-    # ToDo:
-    #   - Once Networks.resolve is fully fleshed out and the Networks class manages all of the network properties
-    #     this class no longer has to manage the 'genesis_path' and 'genesis_url' properties, it can use the 
-    #     networks instance for lookup, and cache and look up information by network key rather than network name; 
-    #     Networks.names (the network keys), rather than full Networks.networks[key].name (network name).
     async def get_pool(self, network_id):
         network = self.networks.resolve(network_id)
         # Network pool connection cache with async thread lock for REST API.
         async with self.lock:
-            if network.name in self.pool_cache:
-                # Use cache.
-                log(f"Pool for {network.name} found in cache ... ")
-                pool = self.pool_cache[network.name]['pool']
+            if network.id in self.pool_cache:
+                # Cache hit ...
+                log(f"The pool for {network.name} was found in the cache ...")
+                pool = self.pool_cache[network.id]['pool']
             else:
-                # Create cache.
-                log(f"Pool for {network.name} not found in cache, creating new connection ... ")
-                self.pool_cache[network.name] = {}
-                self.pool_cache[network.name]['genesis_path'] = network.genesis_path
-                self.pool_cache[network.name]['genesis_url'] = network.genesis_url
+                # Cache miss ...
+                log(f"A pool for {network.name} was not found in the cache, creating new connection ...")
                 pool = await self.__fetch_pool_connection(network.genesis_path)
-                self.pool_cache[network.name]['pool'] = pool
+                self.pool_cache[network.id] = {}
+                self.pool_cache[network.id]['pool'] = pool
+                log(f"Cached the pool for {network.name} ...")
             return pool, network.name
