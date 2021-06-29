@@ -1,4 +1,3 @@
-from argparse import ArgumentError
 from indy_vdr.ledger import (
     build_get_validator_info_request,
     build_get_txn_request,

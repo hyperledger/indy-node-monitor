@@ -9,7 +9,7 @@ from util import (
     create_did
 )
 from pool import PoolCollection
-from pool import Networks
+from networks import Networks
 from fetch_status import FetchStatus, NodeNotFound
 from plugin_collection import PluginCollection
 

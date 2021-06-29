@@ -10,7 +10,7 @@ from util import (
 )
 from fetch_status import FetchStatus
 from pool import PoolCollection
-from pool import Networks
+from networks import Networks
 from plugin_collection import PluginCollection
 
 if __name__ == "__main__":
