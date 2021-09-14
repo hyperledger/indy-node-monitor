@@ -23,20 +23,38 @@ if __name__ == "__main__":
     parser.add_argument("--nodes", help="The comma delimited list of the nodes from which to collect the status.  The default is all of the nodes in the pool.")
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
     parser.add_argument("--web", action="store_true", help="Start API server.")
+    parser.add_argument("--debug", action="store_true", help="Run in debug mode.")
 
     monitor_plugins = PluginCollection('plugins')
     monitor_plugins.get_parse_args(parser)
     args, unknown = parser.parse_known_args()
     monitor_plugins.load_all_parse_args(args)
 
+    enable_verbose(args.verbose)
+
     if args.web:
-        log("Starting web server ...")
         # Pass verbose to rest api through env var
         os.environ['VERBOSE'] = str(args.verbose)
-        os.system('uvicorn rest_api:app --reload --host 0.0.0.0 --port 8080')
+
+        MODULE_NAME = os.environ.get('MODULE_NAME', "rest_api")
+        VARIABLE_NAME = os.environ.get('VARIABLE_NAME', "app")
+        APP_MODULE = os.environ.get('APP_MODULE', f"{MODULE_NAME}:{VARIABLE_NAME}")
+
+        if args.debug:
+            HOST = os.environ.get('HOST', '0.0.0.0')
+            PORT = os.environ.get('PORT', '8080')
+            LOG_LEVEL = os.environ.get('LOG_LEVEL', 'info')
+
+            log("Starting web server in debug mode ...")
+            os.system(f'uvicorn --reload --host {HOST} --port {PORT} --log-level {LOG_LEVEL} "{APP_MODULE}"')
+        else:
+            GUNICORN_CONF = os.environ.get('GUNICORN_CONF', 'gunicorn_conf.py')
+            WORKER_CLASS = os.environ.get('WORKER_CLASS', "uvicorn.workers.UvicornWorker")
+
+            log("Starting web server ...")
+            os.system(f'gunicorn -k "{WORKER_CLASS}" -c "{GUNICORN_CONF}" "{APP_MODULE}"')
     else:
         log("Starting from the command line ...")
-        enable_verbose(args.verbose)
 
         if args.list_nets:
             print(json.dumps(Networks.get_networks(), indent=2))
