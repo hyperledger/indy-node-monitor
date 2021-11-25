@@ -33,6 +33,12 @@ if __name__ == "__main__":
     enable_verbose(args.verbose)
 
     if args.web:
+        if args.seed:
+            print("WARNING: You are trying to run the REST API with a SEED.")
+            print("Please remove your SEED and try again.")
+            print("Exiting...")
+            exit()
+
         # Pass verbose to rest api through env var
         os.environ['VERBOSE'] = str(args.verbose)
 

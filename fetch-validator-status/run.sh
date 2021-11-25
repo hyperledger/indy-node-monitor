@@ -40,7 +40,7 @@ else
   fi
 fi
 
-docker build -t fetch_status . #> /dev/null 2>&1
+docker build -t fetch_status . > /dev/null 2>&1
 
 cmd="${terminalEmu} docker run --rm ${DOCKER_INTERACTIVE} \
   -e "GENESIS_PATH=${GENESIS_PATH}" \

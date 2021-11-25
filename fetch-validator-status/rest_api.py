@@ -13,8 +13,8 @@ from networks import Networks
 from fetch_status import FetchStatus, NodeNotFound
 from plugin_collection import PluginCollection
 
-APP_NAME='Node Monitor'
-APP_DESCRIPTION='test_description'
+APP_NAME='Hyperledger Indy Node Monitor REST API'
+APP_DESCRIPTION='https://github.com/hyperledger/indy-node-monitor'
 APP_VERSION='0.0.0'
 
 # https://fastapi.tiangolo.com/tutorial/metadata/
