@@ -10,10 +10,6 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 USER $user
 
-RUN pip install pynacl gspread oauth2client
-
-USER $user
-
 ADD requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
