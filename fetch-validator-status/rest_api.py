@@ -1,7 +1,7 @@
 import os
 import argparse
 from typing import Optional
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Header, HTTPException, Path, Query
 from starlette.responses import RedirectResponse
 from util import (
     enable_verbose,
@@ -72,14 +72,21 @@ async def networks():
     return data
 
 @app.get("/networks/{network}")
-async def network(network, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
+async def network(network: str = Path(..., example="sbn", description="The network code."),
+                  status: bool = Query(False, description="Filter results to status only."), 
+                  alerts: bool = Query(False, description="Filter results to alerts only."),
+                  seed: Optional[str] = Header(None, description="Your network monitor seed.")):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
     result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
-async def node(network, node, status: bool = False, alerts: bool = False, seed: Optional[str] = Header(None)):
+async def node(network: str = Path(..., example="sbn", description="The network code."),
+               node: str = Path(..., example="FoundationBuilder", description="The node name."),
+               status: bool = Query(False, description="Filter results to status only."), 
+               alerts: bool = Query(False, description="Filter results to alerts only."),
+               seed: Optional[str] = Header(None, description="Your network monitor seed.")):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
     try:

@@ -99,6 +99,8 @@ class main(plugin_collection.Plugin):
         #    by the monitor.
         status["timestamp"] = datetime.datetime.now(datetime.timezone.utc).strftime('%s')
         if jsval and ("REPLY" in jsval["op"]):
+            if "timestamp" in jsval["result"]["data"]:
+                status["node_timestamp"] = jsval["result"]["data"]["timestamp"]
             if "Node_info" in jsval["result"]["data"]:
                 status["uptime"] = str(datetime.timedelta(seconds = jsval["result"]["data"]["Node_info"]["Metrics"]["uptime"]))
             if "Software" in jsval["result"]["data"]:
