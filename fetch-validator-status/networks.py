@@ -3,11 +3,16 @@ import json
 import urllib.request
 import sys
 import re
+from enum import Enum
 from collections import namedtuple
 from util import log
 from singleton import Singleton
 
 Network = namedtuple('Network', ['id', 'name', 'genesis_url', 'genesis_path'])
+
+class NetworkEnum(Enum):
+    def _generate_next_value_(name, start, count, last_values):
+        return name
 
 class Networks(object, metaclass=Singleton):
     def __init__(self):
@@ -44,6 +49,13 @@ class Networks(object, metaclass=Singleton):
     def __download_genesis_file(genesis_url: str, destination_path: str):
         log("Fetching genesis file ...")
         urllib.request.urlretrieve(genesis_url, destination_path)
+
+    @staticmethod
+    def get_NetworkEnum() -> NetworkEnum:
+        """Dynamically generates a NetworkEnum that can be used to select the available Networks.
+        """
+        networks = Networks()
+        return NetworkEnum('Network', list(networks.ids))
 
     def resolve(self, network_id: str = None, genesis_url: str = None, genesis_path: str = None):
         network_name = None

@@ -9,7 +9,7 @@ from util import (
     create_did
 )
 from pool import PoolCollection
-from networks import Networks
+from networks import Networks, NetworkEnum
 from fetch_status import FetchStatus, NodeNotFound
 from plugin_collection import PluginCollection
 
@@ -29,6 +29,8 @@ default_args = None
 monitor_plugins = None
 pool_collection = None
 node_info = None
+
+Network: NetworkEnum = Networks.get_NetworkEnum()
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
     # Store args and monitor_plugins for lazy loading.
@@ -72,17 +74,17 @@ async def networks():
     return data
 
 @app.get("/networks/{network}")
-async def network(network: str = Path(..., example="sbn", description="The network code."),
+async def network(network: Network = Path(Network.sbn, example="sbn", description="The network code."),
                   status: bool = Query(False, description="Filter results to status only."), 
                   alerts: bool = Query(False, description="Filter results to alerts only."),
                   seed: Optional[str] = Header(None, description="Your network monitor seed.")):
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
-    result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, ident=ident)
+    result = await node_info.fetch(network_id=network.value, monitor_plugins=monitor_plugins, ident=ident)
     return result
 
 @app.get("/networks/{network}/{node}")
-async def node(network: str = Path(..., example="sbn", description="The network code."),
+async def node(network: Network = Path(Network.sbn, example="sbn", description="The network code."),
                node: str = Path(..., example="FoundationBuilder", description="The node name."),
                status: bool = Query(False, description="Filter results to status only."), 
                alerts: bool = Query(False, description="Filter results to alerts only."),
@@ -90,7 +92,7 @@ async def node(network: str = Path(..., example="sbn", description="The network 
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
     try:
-        result = await node_info.fetch(network_id=network, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
+        result = await node_info.fetch(network_id=network.value, monitor_plugins=monitor_plugins, nodes=node, ident=ident)
     except NodeNotFound as error:
         print(error)
         raise HTTPException(status_code=400, detail=str(error))
