@@ -24,7 +24,7 @@
     "genesisUrl": "http://dev.bcovrin.vonx.io/genesis"
   },
   "bct": {
-    "name": "BCovrin Test ",
+    "name": "BCovrin Test",
     "genesisUrl": "http://test.bcovrin.vonx.io/genesis"
   },
   "bcp": {
@@ -32,23 +32,23 @@
     "genesisUrl": "http://prod.bcovrin.vonx.io/genesis"
   },
   "gld": {
-    "name": "GreenLight Dev Ledger ",
+    "name": "GreenLight Dev Ledger",
     "genesisUrl": "http://dev.greenlight.bcovrin.vonx.io/genesis"
   },
   "gl": {
-    "name": "GreenLight Ledger ",
+    "name": "GreenLight Ledger",
     "genesisUrl": "http://greenlight.bcovrin.vonx.io/genesis"
   },
   "imn": {
-    "name": "Indicio MainNet ",
+    "name": "Indicio MainNet",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_mainnet_genesis"
   },
   "idn": {
-    "name": "Indicio DemoNet ",
+    "name": "Indicio DemoNet",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_demonet_genesis"
   },
   "itn": {
-    "name": "Indicio TestNet ",
+    "name": "Indicio TestNet",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_testnet_genesis"
   }
 }

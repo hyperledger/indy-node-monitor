@@ -10,9 +10,10 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*
 USER $user
 
-RUN pip install pynacl gspread oauth2client
+ADD requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
 ADD networks.json .
 ADD *.py ./
 
-ENTRYPOINT ["bash", "-c", "python fetch_status.py $@", "--"]
+ENTRYPOINT ["bash", "-c", "python main.py $@", "--"]

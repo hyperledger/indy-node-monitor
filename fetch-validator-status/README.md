@@ -171,6 +171,10 @@ Note that there are three different formats for the timestamps in the data struc
 
 For info on plug-ins see the plug-ins [readme](plugins/README.md)
 
+## Rest API
+
+For info on Rest API see [REST API](REST_API.md)
+
 ### Running against other Indy Networks
 
 To see the validator info against any other Indy network, you need a URL for the Genesis file for the network, and the seed for a suitably authorized DID. The pool Genesis file URLs are easy, since that is published data needed by agents connecting to Indy networks. Sovrin genesis URLs can be found [here](https://github.com/sovrin-foundation/sovrin/tree/master/sovrin). You need the URL for the raw version of the pool transaction files. For example, the URL you need for the Sovrin MainNet is:
