@@ -23,7 +23,7 @@ services:
     networks:
       - node-monitor-net
     command: >
-      --net smn --web --verbose
+      --web --verbose
   
   telegraf:
     # Full tag list: https://hub.docker.com/r/library/telegraf/tags/
