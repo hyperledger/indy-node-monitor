@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1642619799228,
+  "iteration": 1642803806554,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -85,12 +85,17 @@
           ],
           "show": false
         },
+        "frameIndex": 1,
         "showHeader": false,
         "sortBy": []
       },
       "pluginVersion": "8.3.4",
       "targets": [
         {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P35862FFA6F3BFED8"
+          },
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"client-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
           "refId": "A"
         }
@@ -121,8 +126,8 @@
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "P35862FFA6F3BFED8"
+        "type": "datasource",
+        "uid": "-- Mixed --"
       },
       "fieldConfig": {
         "defaults": {
@@ -172,7 +177,12 @@
       "pluginVersion": "8.3.4",
       "targets": [
         {
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"node-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P35862FFA6F3BFED8"
+          },
+          "hide": false,
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"node-address\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()",
           "refId": "A"
         }
       ],
@@ -181,18 +191,33 @@
         {
           "id": "reduce",
           "options": {
+            "includeTimeField": false,
+            "mode": "seriesToRows",
             "reducers": [
               "lastNotNull"
             ]
           }
         },
         {
-          "id": "filterFieldsByName",
+          "id": "organize",
           "options": {
-            "include": {
-              "names": [
-                "Last *"
-              ]
+            "excludeByName": {
+              "Builder": true,
+              "Field": true,
+              "Main": true,
+              "Net": true,
+              "name": true,
+              "network": true,
+              "node-address": true,
+              "url": true,
+              "{host": true
+            },
+            "indexByName": {},
+            "renameByName": {
+              "Builder": "",
+              "Field": "Network",
+              "Last *": "IPs",
+              "network": ""
             }
           }
         }
@@ -4074,7 +4099,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Axuall",
           "value": "Axuall"
         },
@@ -4102,7 +4127,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},

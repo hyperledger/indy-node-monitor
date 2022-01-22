@@ -21,18 +21,235 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 4,
-  "iteration": 1642631340268,
+  "iteration": 1642803812134,
   "links": [],
   "liveNow": false,
   "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 104,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": false,
+          "expr": "node_status_ok{job=\"tick\", network=\"[[network]]\"}",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "text",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "true",
+                "result": {
+                  "color": "green",
+                  "index": 0
+                }
+              },
+              "type": "special"
+            },
+            {
+              "options": {
+                "match": "false",
+                "result": {
+                  "color": "red",
+                  "index": 1
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 8
+      },
+      "id": 102,
+      "options": {
+        "footer": {
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "8.3.4",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": false,
+          "expr": "node_status_ok{job=\"tick\", network=\"[[network]]\"}",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "{{name}}",
+          "refId": "A"
+        }
+      ],
+      "title": "POC",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "__name__": true,
+              "client_address": true,
+              "host": true,
+              "instance": true,
+              "job": true,
+              "network": true,
+              "node_address": true,
+              "response_result_data_Hardware_HDD_used_by_node": true,
+              "response_result_data_Node_info_BLS_key": true,
+              "response_result_data_Node_info_Client_ip": true,
+              "response_result_data_Node_info_Mode": true,
+              "response_result_data_Node_info_Node_ip": true,
+              "response_result_data_Node_info_Node_protocol": true,
+              "response_result_data_Node_info_did": true,
+              "response_result_data_Node_info_verkey": true,
+              "response_result_data_Pool_info_Quorums": true,
+              "response_result_data_Software_OS_version": true,
+              "status_software_indy_node": true,
+              "status_software_sovrin": true,
+              "url": true
+            },
+            "indexByName": {
+              "Time": 3,
+              "Value": 2,
+              "__name__": 1,
+              "client_address": 4,
+              "host": 5,
+              "instance": 6,
+              "job": 7,
+              "name": 0,
+              "network": 8,
+              "node_address": 9,
+              "response_result_data_Hardware_HDD_used_by_node": 10,
+              "response_result_data_Node_info_BLS_key": 11,
+              "response_result_data_Node_info_Client_ip": 12,
+              "response_result_data_Node_info_Mode": 13,
+              "response_result_data_Node_info_Node_ip": 14,
+              "response_result_data_Node_info_Node_protocol": 15,
+              "response_result_data_Node_info_did": 16,
+              "response_result_data_Node_info_verkey": 17,
+              "response_result_data_Pool_info_Quorums": 18,
+              "response_result_data_Software_OS_version": 19,
+              "status_software_indy_node": 20,
+              "status_software_sovrin": 21,
+              "url": 22
+            },
+            "renameByName": {
+              "Time": "",
+              "Value": "Status OK",
+              "__name__": "",
+              "name": "Node"
+            }
+          }
+        },
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "boolean",
+                "targetField": "Value"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "transparent": true,
+      "type": "table"
+    },
     {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 16
       },
       "id": 60,
       "panels": [],
@@ -78,7 +295,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -94,7 +312,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 1
+        "y": 17
       },
       "id": 4,
       "options": {
@@ -201,7 +419,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -242,7 +461,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 9
+        "y": 25
       },
       "id": 2,
       "options": {
@@ -315,7 +534,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -331,7 +551,7 @@
         "h": 7,
         "w": 7,
         "x": 7,
-        "y": 9
+        "y": 25
       },
       "id": 6,
       "options": {
@@ -401,7 +621,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -417,7 +638,7 @@
         "h": 7,
         "w": 5,
         "x": 14,
-        "y": 9
+        "y": 25
       },
       "id": 8,
       "options": {
@@ -488,7 +709,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -504,7 +726,7 @@
         "h": 7,
         "w": 5,
         "x": 19,
-        "y": 9
+        "y": 25
       },
       "id": 9,
       "options": {
@@ -542,7 +764,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 32
       },
       "id": 77,
       "panels": [],
@@ -568,7 +790,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -583,7 +806,7 @@
         "h": 2,
         "w": 3,
         "x": 0,
-        "y": 17
+        "y": 33
       },
       "id": 79,
       "options": {
@@ -645,7 +868,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -660,7 +884,7 @@
         "h": 2,
         "w": 3,
         "x": 3,
-        "y": 17
+        "y": 33
       },
       "id": 80,
       "options": {
@@ -709,7 +933,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 35
       },
       "id": 62,
       "panels": [],
@@ -755,7 +979,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -770,7 +995,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 20
+        "y": 36
       },
       "id": 64,
       "options": {
@@ -785,8 +1010,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Requests_timeouts_Ordering_phase_req_timeouts{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Requests_timeouts_Ordering_phase_req_timeouts{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Request timeouts",
           "refId": "A"
@@ -834,7 +1063,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -849,7 +1079,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 20
+        "y": 36
       },
       "id": 66,
       "options": {
@@ -864,8 +1094,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Requests_timeouts_Propagates_phase_req_timeouts{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Requests_timeouts_Propagates_phase_req_timeouts{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Request timeouts",
           "refId": "A"
@@ -880,7 +1114,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 44
       },
       "id": 40,
       "panels": [],
@@ -929,7 +1163,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -945,7 +1180,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 29
+        "y": 45
       },
       "id": 15,
       "options": {
@@ -961,39 +1196,59 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Uncommitted_ledger_txns_0_Count{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_0_Count{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Ledger 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Uncommitted_ledger_txns_1_Count{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_1_Count{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Uncommitted_ledger_txns_2_Count{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_2_Count{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Uncommitted_ledger_txns_3_Count{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_3_Count{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "ledger 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Uncommitted_ledger_txns_1001_Count{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_1001_Count{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 1001",
@@ -1042,7 +1297,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1058,7 +1314,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 29
+        "y": 45
       },
       "id": 17,
       "options": {
@@ -1074,39 +1330,59 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Ledger 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1001{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1001{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Ledger 1001",
@@ -1155,7 +1431,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1171,7 +1448,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 29
+        "y": 45
       },
       "id": 19,
       "options": {
@@ -1187,8 +1464,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Count_of_replicas{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Count_of_replicas{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Replicas",
           "refId": "A"
@@ -1236,7 +1517,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1252,7 +1534,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 37
+        "y": 53
       },
       "id": 23,
       "options": {
@@ -1268,8 +1550,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_master_throughput{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_master_throughput{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Throughput",
           "refId": "A"
@@ -1317,7 +1603,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1333,7 +1620,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 37
+        "y": 53
       },
       "id": 25,
       "options": {
@@ -1349,8 +1636,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_Omega{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_Omega{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Omega",
           "refId": "A"
@@ -1398,7 +1689,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1414,7 +1706,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 37
+        "y": 53
       },
       "id": 27,
       "options": {
@@ -1430,8 +1722,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_transaction_count_ledger{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_ledger{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Txn Count",
           "refId": "A"
@@ -1479,7 +1775,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1495,7 +1792,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 45
+        "y": 61
       },
       "id": 29,
       "options": {
@@ -1511,8 +1808,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_transaction_count_1001{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_1001{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Txn Count",
           "refId": "A"
@@ -1560,7 +1861,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1576,7 +1878,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 45
+        "y": 61
       },
       "id": 30,
       "options": {
@@ -1592,8 +1894,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_transaction_count_pool{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_pool{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Txn Count",
           "refId": "A"
@@ -1641,7 +1947,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1657,7 +1964,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 45
+        "y": 61
       },
       "id": 32,
       "options": {
@@ -1673,8 +1980,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_transaction_count_config{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_config{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Txn Count",
           "refId": "A"
@@ -1722,7 +2033,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1738,7 +2050,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 53
+        "y": 69
       },
       "id": 34,
       "options": {
@@ -1754,8 +2066,12 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_transaction_count_audit{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_audit{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Txn Count",
           "refId": "A"
@@ -1770,7 +2086,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 61
+        "y": 77
       },
       "id": 42,
       "panels": [],
@@ -1816,7 +2132,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1831,7 +2148,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 62
+        "y": 78
       },
       "id": 54,
       "options": {
@@ -1846,8 +2163,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_Lambda{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_Lambda{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Lambda",
           "refId": "A"
@@ -1895,7 +2216,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1910,7 +2232,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 62
+        "y": 78
       },
       "id": 56,
       "options": {
@@ -1925,55 +2247,83 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_0{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Instance 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_4{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_4{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 4",
           "refId": "E"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_5{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_5{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 5",
           "refId": "F"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_instances_started_6{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_6{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Instance 6",
@@ -2022,7 +2372,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2037,7 +2388,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 62
+        "y": 78
       },
       "id": 58,
       "options": {
@@ -2052,55 +2403,83 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_0{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Throughput 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_4{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_4{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 4",
           "refId": "E"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_5{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_5{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 5",
           "refId": "F"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_throughput_6{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_6{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Throughput 6",
@@ -2129,7 +2508,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2144,7 +2524,7 @@
         "h": 2,
         "w": 22,
         "x": 0,
-        "y": 70
+        "y": 86
       },
       "id": 94,
       "options": {
@@ -2194,7 +2574,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 88
       },
       "id": 21,
       "panels": [],
@@ -2240,7 +2620,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2256,7 +2637,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 73
+        "y": 89
       },
       "id": 36,
       "options": {
@@ -2272,47 +2653,71 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_0{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Avg Req. Latencies 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Req. Latencies 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Req. Latencies 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Req. Latencies 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_4{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_4{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Req. Latencies 4",
           "refId": "E"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_client_avg_request_latencies_5{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_5{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Avg Req. Latencies 5",
@@ -2361,7 +2766,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2376,7 +2782,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 73
+        "y": 89
       },
       "id": 38,
       "options": {
@@ -2391,63 +2797,95 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_total_requests{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_total_requests{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Total Requests",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_0{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 0",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 1",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 2",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 3",
           "refId": "E"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_4{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_4{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 4",
           "refId": "F"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_counts_5{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_5{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 5",
           "refId": "G"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_node_response_result_data_Node_info_Metrics_ordered_request_counts_6{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_node_response_result_data_Node_info_Metrics_ordered_request_counts_6{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Count 6",
@@ -2496,7 +2934,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2511,7 +2950,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 73
+        "y": 89
       },
       "id": 44,
       "options": {
@@ -2526,8 +2965,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_max_master_request_latencies{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "max(node_response_result_data_Node_info_Metrics_max_master_request_latencies{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Request Latency",
           "refId": "A"
@@ -2575,7 +3018,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2590,7 +3034,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 81
+        "y": 97
       },
       "id": 46,
       "options": {
@@ -2605,8 +3049,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_Delta{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_Delta{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Delta",
           "refId": "A"
@@ -2654,7 +3102,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2669,7 +3118,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 81
+        "y": 97
       },
       "id": 48,
       "options": {
@@ -2684,55 +3133,83 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_0{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_0{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Request 0",
           "refId": "A"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_1{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_1{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 1",
           "refId": "B"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_2{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_2{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 2",
           "refId": "C"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_3{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_3{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 3",
           "refId": "D"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_4{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_4{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 4",
           "refId": "E"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_5{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_5{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 5",
           "refId": "F"
         },
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_ordered_request_durations_6{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_6{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "Request 6",
@@ -2781,7 +3258,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2821,7 +3299,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 81
+        "y": 97
       },
       "id": 50,
       "options": {
@@ -2836,8 +3314,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_avg_backup_throughput{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "avg(node_response_result_data_Node_info_Metrics_avg_backup_throughput{job=\"tick\", network=\"[[network]]\"})",
           "interval": "",
           "legendFormat": "Avg backup throughup",
           "refId": "A"
@@ -2885,7 +3367,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2925,7 +3408,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 89
+        "y": 105
       },
       "id": 52,
       "options": {
@@ -2940,8 +3423,12 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "exemplar": true,
-          "expr": "node_response_result_data_Node_info_Metrics_master_throughput_ratio{job=\"tick\", name=\"[[node]]\"}",
+          "expr": "node_response_result_data_Node_info_Metrics_master_throughput_ratio{job=\"tick\", network=\"[[network]]\"}",
           "interval": "",
           "legendFormat": "Master throughput ratio",
           "refId": "A"
@@ -2969,7 +3456,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2984,7 +3472,7 @@
         "h": 2,
         "w": 3,
         "x": 8,
-        "y": 89
+        "y": 105
       },
       "id": 90,
       "options": {
@@ -3049,7 +3537,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3064,7 +3553,7 @@
         "h": 2,
         "w": 3,
         "x": 12,
-        "y": 89
+        "y": 105
       },
       "id": 92,
       "options": {
@@ -3127,7 +3616,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3142,7 +3632,7 @@
         "h": 2,
         "w": 3,
         "x": 15,
-        "y": 89
+        "y": 105
       },
       "id": 82,
       "options": {
@@ -3206,7 +3696,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3221,7 +3712,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 89
+        "y": 105
       },
       "id": 84,
       "options": {
@@ -3285,7 +3776,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3300,7 +3792,7 @@
         "h": 2,
         "w": 3,
         "x": 21,
-        "y": 89
+        "y": 105
       },
       "id": 88,
       "options": {
@@ -3363,7 +3855,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3378,7 +3871,7 @@
         "h": 2,
         "w": 6,
         "x": 8,
-        "y": 91
+        "y": 107
       },
       "id": 86,
       "options": {
@@ -3441,7 +3934,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3456,7 +3950,7 @@
         "h": 3,
         "w": 9,
         "x": 15,
-        "y": 92
+        "y": 108
       },
       "id": 98,
       "options": {
@@ -3519,7 +4013,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3534,7 +4029,7 @@
         "h": 3,
         "w": 7,
         "x": 8,
-        "y": 93
+        "y": 109
       },
       "id": 100,
       "options": {
@@ -3597,7 +4092,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3612,7 +4108,7 @@
         "h": 2,
         "w": 7,
         "x": 15,
-        "y": 95
+        "y": 111
       },
       "id": 96,
       "options": {
@@ -3665,9 +4161,9 @@
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "Sovrin Builder Net",
-          "value": "Sovrin Builder Net"
+          "selected": true,
+          "text": "Sovrin Staging Net",
+          "value": "Sovrin Staging Net"
         },
         "definition": "label_values(network)",
         "description": "Select a node.",
@@ -3693,13 +4189,13 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Top Layer Dashboard",
   "uid": "IBGWryqGb",
-  "version": 3,
+  "version": 1,
   "weekStart": ""
 }
