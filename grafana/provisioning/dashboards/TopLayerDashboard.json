@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1642803812134,
+  "iteration": 1643238013412,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -38,13 +38,10 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
-          }
+          },
+          "unit": "none"
         },
         "overrides": []
       },
@@ -56,9 +53,6 @@
       },
       "id": 104,
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -67,7 +61,9 @@
           "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
       },
       "pluginVersion": "8.3.4",
       "targets": [
@@ -77,7 +73,9 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": false,
-          "expr": "node_status_ok{job=\"tick\", network=\"[[network]]\"}",
+          "expr": "(node_status_errors{job=\"tick\", network=\"[[network]]\"} == bool 0)+2 and (node_status_errors{job=\"tick\", network=\"[[network]]\"} ==0)+2",
+          "format": "time_series",
+          "hide": false,
           "instant": true,
           "interval": "",
           "legendFormat": "{{name}}",
@@ -85,7 +83,7 @@
         }
       ],
       "title": "Panel Title",
-      "type": "stat"
+      "type": "gauge"
     },
     {
       "fieldConfig": {
@@ -291,6 +289,7 @@
             }
           },
           "mappings": [],
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -306,7 +305,53 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Reachable Nodes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total Nodes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Write Failure Threshhold"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -333,17 +378,6 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "min(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Total Nodes",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "exemplar": true,
           "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"})",
           "hide": false,
           "interval": "",
@@ -356,8 +390,19 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
+          "expr": "min(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"})",
+          "interval": "",
+          "legendFormat": "Total Nodes",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "exemplar": true,
           "expr": "max(node_response_result_data_Pool_info_Unreachable_nodes_count{job=\"tick\", network=\"[[network]]\"})",
-          "hide": false,
+          "hide": true,
           "interval": "",
           "legendFormat": "Unreachable Nodes",
           "refId": "C"
@@ -4161,15 +4206,15 @@
     "list": [
       {
         "current": {
-          "selected": true,
-          "text": "Sovrin Staging Net",
-          "value": "Sovrin Staging Net"
+          "selected": false,
+          "text": "Sovrin Builder Net",
+          "value": "Sovrin Builder Net"
         },
         "definition": "label_values(network)",
-        "description": "Select a node.",
+        "description": "Select a network.",
         "hide": 0,
         "includeAll": false,
-        "label": "network",
+        "label": "Network",
         "multi": false,
         "name": "network",
         "options": [],
