@@ -21,11 +21,15 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1643238013412,
+  "iteration": 1644439796138,
   "links": [],
   "liveNow": false,
   "panels": [
     {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P35862FFA6F3BFED8"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -65,20 +69,72 @@
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P35862FFA6F3BFED8"
           },
-          "exemplar": false,
-          "expr": "(node_status_errors{job=\"tick\", network=\"[[network]]\"} == bool 0)+2 and (node_status_errors{job=\"tick\", network=\"[[network]]\"} ==0)+2",
-          "format": "time_series",
-          "hide": false,
-          "instant": true,
-          "interval": "",
-          "legendFormat": "{{name}}",
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    if r._measurement == \"node\" and r._field == \"status_errors\" and r.network == \"${network}\" >= 1 then \"error\"\r\n    else r._measurment == \"node\" and r._field == \"status_errors\" and r.network == \"${network}\" == 0 && \r\n    r._measurement == \"node\" and r._field == \"status_warnings\" and r.network == \"${network}\" >= 1 then \"warning\"\r\n    else \"Good\"\r\n  )\r\n  |> yield()",
+          "refId": "A"
+        }
+      ],
+      "title": "Panel Title",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P35862FFA6F3BFED8"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 105,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "8.3.6",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P35862FFA6F3BFED8"
+          },
+          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) => \r\n     r._measurement == \"node\" and \r\n     r._field == \"response_result_data_Pool_info_Reachable_nodes_count\" and \r\n     r.network == \"${network}\"\r\n     )\r\n\r\n  |> map(fn: (r) => ({\r\n    r with\r\n    Test:\r\n    if r._value >= 2 then \"Yes\"\r\n    else \"no\"\r\n  })\r\n  )\r\n\r\n\r\n",
           "refId": "A"
         }
       ],
@@ -148,7 +204,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -864,7 +920,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_sovrin\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -942,7 +998,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_indy-node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -2582,7 +2638,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Quorums\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3530,7 +3586,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Read_only\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3611,7 +3667,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Suspicious_nodes\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3690,7 +3746,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_ok\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3770,7 +3826,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_Mode\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3850,7 +3906,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Hardware_HDD_used_by_node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3929,7 +3985,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_BLS_key\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4008,7 +4064,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_verkey\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4087,7 +4143,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_did\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4166,7 +4222,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Software_OS_version\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4207,8 +4263,8 @@
       {
         "current": {
           "selected": false,
-          "text": "Sovrin Builder Net",
-          "value": "Sovrin Builder Net"
+          "text": "Sovrin Staging Net",
+          "value": "Sovrin Staging Net"
         },
         "definition": "label_values(network)",
         "description": "Select a network.",
