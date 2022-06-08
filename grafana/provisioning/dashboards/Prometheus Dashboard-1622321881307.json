@@ -21,7 +21,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1643238010229,
+  "iteration": 1644446560115,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -89,7 +89,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -198,7 +198,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -331,7 +331,7 @@
           }
         ]
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -437,7 +437,7 @@
           }
         ]
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -554,7 +554,6 @@
             }
           },
           "mappings": [],
-          "noValue": "0",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -724,7 +723,6 @@
             }
           },
           "mappings": [],
-          "noValue": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -814,7 +812,6 @@
             }
           },
           "mappings": [],
-          "noValue": "null",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1104,7 +1101,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -1186,7 +1183,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -2830,7 +2827,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -3782,7 +3779,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -3867,7 +3864,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -3950,7 +3947,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4034,7 +4031,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4118,7 +4115,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4201,7 +4198,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4284,7 +4281,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4367,7 +4364,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {
@@ -4450,7 +4447,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.4",
+      "pluginVersion": "8.3.6",
       "targets": [
         {
           "datasource": {

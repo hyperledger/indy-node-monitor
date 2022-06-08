@@ -3,7 +3,10 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
@@ -21,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "iteration": 1644439796138,
+  "iteration": 1654718633640,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -33,9 +36,29 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-RdYlGr"
           },
-          "mappings": [],
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "index": 1,
+                  "text": "Error"
+                },
+                "1": {
+                  "index": 0,
+                  "text": "Warning"
+                },
+                "3": {
+                  "index": 2,
+                  "text": "Good"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "max": 3,
+          "min": 0,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -62,86 +85,79 @@
           "calcs": [
             "lastNotNull"
           ],
-          "fields": "",
+          "fields": "/.*/",
           "values": false
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
         "text": {}
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
             "type": "influxdb",
             "uid": "P35862FFA6F3BFED8"
           },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    if r._measurement == \"node\" and r._field == \"status_errors\" and r.network == \"${network}\" >= 1 then \"error\"\r\n    else r._measurment == \"node\" and r._field == \"status_errors\" and r.network == \"${network}\" == 0 && \r\n    r._measurement == \"node\" and r._field == \"status_warnings\" and r.network == \"${network}\" >= 1 then \"warning\"\r\n    else \"Good\"\r\n  )\r\n  |> yield()",
+          "hide": false,
+          "query": "Warning = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) => \r\n     r._measurement == \"node\" and \r\n     r._field == \"status_warnings\" and \r\n     r.network == \"${network}\"\r\n     )\r\n\r\nError = from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_errors\" and \r\n    r.network == \"${network}\" \r\n  )\r\n\r\n  join(\r\n    tables: {status_warnings:Warning, status_errors:Error},\r\n    on: [\"_time\", \"_stop\", \"_start\", \"host\", \"name\", \"url\", \"network\", \"_measurement\"],\r\n)\r\n\r\n  |> map(fn: (r) => ({r with\r\n    Final: if r._value_status_errors >= 1 then\r\n      0\r\n    else if r._value_status_warnings >= 1 then\r\n      1\r\n    else 3\r\n    })\r\n    )",
           "refId": "A"
         }
       ],
-      "title": "Panel Title",
+      "title": "Warnings and Errors Status",
+      "transformations": [
+        {
+          "id": "reduce",
+          "options": {
+            "includeTimeField": false,
+            "labelsToFields": true,
+            "mode": "seriesToRows",
+            "reducers": [
+              "lastNotNull"
+            ]
+          }
+        },
+        {
+          "id": "filterByValue",
+          "options": {
+            "filters": [
+              {
+                "config": {
+                  "id": "equal",
+                  "options": {
+                    "value": "Final"
+                  }
+                },
+                "fieldName": "Field"
+              }
+            ],
+            "match": "any",
+            "type": "include"
+          }
+        },
+        {
+          "id": "rowsToFields",
+          "options": {
+            "mappings": [
+              {
+                "fieldName": "name",
+                "handlerKey": "displayName"
+              },
+              {
+                "fieldName": "Last *",
+                "handlerKey": "field.value"
+              }
+            ]
+          }
+        }
+      ],
       "type": "gauge"
     },
     {
       "datasource": {
-        "type": "influxdb",
-        "uid": "P35862FFA6F3BFED8"
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
       },
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
-      },
-      "id": 105,
-      "options": {
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showThresholdLabels": false,
-        "showThresholdMarkers": true,
-        "text": {}
-      },
-      "pluginVersion": "8.3.6",
-      "targets": [
-        {
-          "datasource": {
-            "type": "influxdb",
-            "uid": "P35862FFA6F3BFED8"
-          },
-          "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) => \r\n     r._measurement == \"node\" and \r\n     r._field == \"response_result_data_Pool_info_Reachable_nodes_count\" and \r\n     r.network == \"${network}\"\r\n     )\r\n\r\n  |> map(fn: (r) => ({\r\n    r with\r\n    Test:\r\n    if r._value >= 2 then \"Yes\"\r\n    else \"no\"\r\n  })\r\n  )\r\n\r\n\r\n",
-          "refId": "A"
-        }
-      ],
-      "title": "Panel Title",
-      "type": "gauge"
-    },
-    {
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -151,7 +167,8 @@
           "custom": {
             "align": "center",
             "displayMode": "color-text",
-            "filterable": false
+            "filterable": false,
+            "inspect": false
           },
           "mappings": [
             {
@@ -190,8 +207,8 @@
       "gridPos": {
         "h": 8,
         "w": 5,
-        "x": 0,
-        "y": 8
+        "x": 16,
+        "y": 0
       },
       "id": 102,
       "options": {
@@ -204,7 +221,7 @@
         },
         "showHeader": true
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "datasource": {
@@ -299,11 +316,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 8
       },
       "id": 60,
       "panels": [],
@@ -311,6 +332,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -413,7 +438,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 9
       },
       "id": 4,
       "options": {
@@ -423,7 +448,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -434,7 +460,7 @@
             "uid": "PBFA97CFB590B2093"
           },
           "exemplar": true,
-          "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"})",
+          "expr": "round(avg(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"}))",
           "hide": false,
           "interval": "",
           "legendFormat": "Reachable Nodes",
@@ -481,6 +507,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -562,7 +592,7 @@
         "h": 7,
         "w": 7,
         "x": 0,
-        "y": 25
+        "y": 17
       },
       "id": 2,
       "options": {
@@ -572,7 +602,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -597,6 +628,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -652,7 +687,7 @@
         "h": 7,
         "w": 7,
         "x": 7,
-        "y": 25
+        "y": 17
       },
       "id": 6,
       "options": {
@@ -662,7 +697,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -683,6 +719,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -739,7 +779,7 @@
         "h": 7,
         "w": 5,
         "x": 14,
-        "y": 25
+        "y": 17
       },
       "id": 8,
       "options": {
@@ -749,7 +789,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -771,6 +812,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -827,7 +872,7 @@
         "h": 7,
         "w": 5,
         "x": 19,
-        "y": 25
+        "y": 17
       },
       "id": 9,
       "options": {
@@ -837,7 +882,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -861,11 +907,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 24
       },
       "id": 77,
       "panels": [],
@@ -884,7 +934,8 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text"
+            "displayMode": "color-text",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -907,7 +958,7 @@
         "h": 2,
         "w": 3,
         "x": 0,
-        "y": 33
+        "y": 25
       },
       "id": 79,
       "options": {
@@ -920,7 +971,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_sovrin\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -962,7 +1013,8 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text"
+            "displayMode": "color-text",
+            "inspect": false
           },
           "mappings": [],
           "thresholds": {
@@ -985,7 +1037,7 @@
         "h": 2,
         "w": 3,
         "x": 3,
-        "y": 33
+        "y": 25
       },
       "id": 80,
       "options": {
@@ -998,7 +1050,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.5.5",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_software_indy-node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -1030,11 +1082,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 27
       },
       "id": 62,
       "panels": [],
@@ -1042,6 +1098,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1096,7 +1156,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 36
+        "y": 28
       },
       "id": 64,
       "options": {
@@ -1106,7 +1166,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -1126,6 +1187,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1180,7 +1245,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 36
+        "y": 28
       },
       "id": 66,
       "options": {
@@ -1190,7 +1255,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -1211,11 +1277,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 36
       },
       "id": 40,
       "panels": [],
@@ -1223,6 +1293,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1264,8 +1338,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1281,7 +1354,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 45
+        "y": 37
       },
       "id": 15,
       "options": {
@@ -1291,7 +1364,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1360,6 +1434,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1398,8 +1476,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1415,7 +1492,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 45
+        "y": 37
       },
       "id": 17,
       "options": {
@@ -1425,7 +1502,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1494,6 +1572,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1532,8 +1614,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1549,7 +1630,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 45
+        "y": 37
       },
       "id": 19,
       "options": {
@@ -1559,7 +1640,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1580,6 +1662,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1618,8 +1704,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1635,7 +1720,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 53
+        "y": 45
       },
       "id": 23,
       "options": {
@@ -1645,7 +1730,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1666,6 +1752,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1704,8 +1794,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1721,7 +1810,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 53
+        "y": 45
       },
       "id": 25,
       "options": {
@@ -1731,7 +1820,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1752,6 +1842,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1790,8 +1884,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1807,7 +1900,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 53
+        "y": 45
       },
       "id": 27,
       "options": {
@@ -1817,7 +1910,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1838,6 +1932,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1876,8 +1974,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1893,7 +1990,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 61
+        "y": 53
       },
       "id": 29,
       "options": {
@@ -1903,7 +2000,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -1924,6 +2022,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1962,8 +2064,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1979,7 +2080,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 61
+        "y": 53
       },
       "id": 30,
       "options": {
@@ -1989,7 +2090,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -2010,6 +2112,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2048,8 +2154,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2065,7 +2170,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 61
+        "y": 53
       },
       "id": 32,
       "options": {
@@ -2075,7 +2180,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -2096,6 +2202,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2134,8 +2244,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2151,7 +2260,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 69
+        "y": 61
       },
       "id": 34,
       "options": {
@@ -2161,7 +2270,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -2183,11 +2293,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 77
+        "y": 69
       },
       "id": 42,
       "panels": [],
@@ -2195,6 +2309,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2233,8 +2351,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2249,7 +2366,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 78
+        "y": 70
       },
       "id": 54,
       "options": {
@@ -2259,7 +2376,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -2279,6 +2397,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2317,8 +2439,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2333,7 +2454,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 78
+        "y": 70
       },
       "id": 56,
       "options": {
@@ -2343,7 +2464,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -2435,6 +2557,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2473,8 +2599,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2489,7 +2614,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 78
+        "y": 70
       },
       "id": 58,
       "options": {
@@ -2499,7 +2624,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -2609,8 +2735,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2625,7 +2750,7 @@
         "h": 2,
         "w": 22,
         "x": 0,
-        "y": 86
+        "y": 78
       },
       "id": 94,
       "options": {
@@ -2638,7 +2763,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Quorums\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -2671,11 +2796,15 @@
     },
     {
       "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 88
+        "y": 80
       },
       "id": 21,
       "panels": [],
@@ -2683,6 +2812,10 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2721,8 +2854,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2738,7 +2870,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 89
+        "y": 81
       },
       "id": 36,
       "options": {
@@ -2748,7 +2880,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.0",
@@ -2829,6 +2962,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -2867,8 +3004,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2883,7 +3019,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 89
+        "y": 81
       },
       "id": 38,
       "options": {
@@ -2893,7 +3029,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -2997,6 +3134,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3035,8 +3176,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3051,7 +3191,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 89
+        "y": 81
       },
       "id": 44,
       "options": {
@@ -3061,7 +3201,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -3081,6 +3222,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3119,8 +3264,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3135,7 +3279,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 97
+        "y": 89
       },
       "id": 46,
       "options": {
@@ -3145,7 +3289,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -3165,6 +3310,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3203,8 +3352,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3219,7 +3367,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 97
+        "y": 89
       },
       "id": 48,
       "options": {
@@ -3229,7 +3377,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -3321,6 +3470,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3359,8 +3512,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3400,7 +3552,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 97
+        "y": 89
       },
       "id": 50,
       "options": {
@@ -3410,7 +3562,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -3430,6 +3583,10 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -3468,8 +3625,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3509,7 +3665,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 105
+        "y": 97
       },
       "id": 52,
       "options": {
@@ -3519,7 +3675,8 @@
           "placement": "bottom"
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "targets": [
@@ -3557,8 +3714,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3573,7 +3729,7 @@
         "h": 2,
         "w": 3,
         "x": 8,
-        "y": 105
+        "y": 97
       },
       "id": 90,
       "options": {
@@ -3586,7 +3742,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Read_only\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3638,8 +3794,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3654,7 +3809,7 @@
         "h": 2,
         "w": 3,
         "x": 12,
-        "y": 105
+        "y": 97
       },
       "id": 92,
       "options": {
@@ -3667,7 +3822,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Pool_info_Suspicious_nodes\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3717,8 +3872,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3733,7 +3887,7 @@
         "h": 2,
         "w": 3,
         "x": 15,
-        "y": 105
+        "y": 97
       },
       "id": 82,
       "options": {
@@ -3746,7 +3900,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"status_ok\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3797,8 +3951,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3813,7 +3966,7 @@
         "h": 3,
         "w": 3,
         "x": 18,
-        "y": 105
+        "y": 97
       },
       "id": 84,
       "options": {
@@ -3826,7 +3979,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_Mode\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3877,8 +4030,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3893,7 +4045,7 @@
         "h": 2,
         "w": 3,
         "x": 21,
-        "y": 105
+        "y": 97
       },
       "id": 88,
       "options": {
@@ -3906,7 +4058,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Hardware_HDD_used_by_node\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -3956,8 +4108,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3972,7 +4123,7 @@
         "h": 2,
         "w": 6,
         "x": 8,
-        "y": 107
+        "y": 99
       },
       "id": 86,
       "options": {
@@ -3985,7 +4136,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_BLS_key\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4035,8 +4186,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4051,7 +4201,7 @@
         "h": 3,
         "w": 9,
         "x": 15,
-        "y": 108
+        "y": 100
       },
       "id": 98,
       "options": {
@@ -4064,7 +4214,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_verkey\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4114,8 +4264,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4130,7 +4279,7 @@
         "h": 3,
         "w": 7,
         "x": 8,
-        "y": 109
+        "y": 101
       },
       "id": 100,
       "options": {
@@ -4143,7 +4292,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Node_info_did\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4193,8 +4342,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4209,7 +4357,7 @@
         "h": 2,
         "w": 7,
         "x": 15,
-        "y": 111
+        "y": 103
       },
       "id": 96,
       "options": {
@@ -4222,7 +4370,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "8.3.6",
+      "pluginVersion": "8.4.1",
       "targets": [
         {
           "query": "from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"response_result_data_Software_OS_version\" and\r\n    r.name == \"${node}\"\r\n  )\r\n  |> yield()\r\n  ",
@@ -4254,17 +4402,21 @@
       "type": "table"
     }
   ],
-  "refresh": "5m",
-  "schemaVersion": 34,
+  "refresh": false,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
-          "text": "Sovrin Staging Net",
-          "value": "Sovrin Staging Net"
+          "selected": true,
+          "text": "Sovrin Builder Net",
+          "value": "Sovrin Builder Net"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "PBFA97CFB590B2093"
         },
         "definition": "label_values(network)",
         "description": "Select a network.",
@@ -4290,7 +4442,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
