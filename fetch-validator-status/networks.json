@@ -50,5 +50,9 @@
   "itn": {
     "name": "Indicio TestNet",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_testnet_genesis"
+  },
+  "cdn": {
+    "name": "CANdy-dev",
+    "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/dev/pool_transactions_genesis"
   }
 }
