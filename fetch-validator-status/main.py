@@ -24,6 +24,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose logging.")
     parser.add_argument("--web", action="store_true", help="Start API server.")
     parser.add_argument("--debug", action="store_true", help="Run in debug mode.")
+    parser.add_argument("--raw", action="store_true", help="Output the result as raw unformatted json with no whitespace.")
 
     monitor_plugins = PluginCollection('plugins')
     monitor_plugins.get_parse_args(parser)
@@ -74,4 +75,7 @@ if __name__ == "__main__":
         network = networks.resolve(args.net, args.genesis_url, args.genesis_path)
         node_info = FetchStatus(args.verbose, pool_collection)
         result = asyncio.get_event_loop().run_until_complete(node_info.fetch(network.id, monitor_plugins, args.nodes, ident))
-        print(json.dumps(result, indent=2))
+        if args.raw:
+            print(json.dumps(result, separators=(',', ':')))
+        else:
+            print(json.dumps(result, indent=2))
