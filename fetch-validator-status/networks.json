@@ -52,7 +52,15 @@
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_testnet_genesis"
   },
   "cdn": {
-    "name": "CANdy-dev",
+    "name": "CANdy Dev Network (CANdy-dev)",
     "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/dev/pool_transactions_genesis"
+  },
+  "ctn": {
+    "name": "CANdy Test Network (CANdy-test)",
+    "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
+  },
+  "cpn": {
+    "name": "CANdy Production Network (CANdy-prod)",
+    "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/prod/pool_transactions_genesis"
   }
 }
