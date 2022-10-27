@@ -2,6 +2,7 @@ import os
 import argparse
 from typing import Optional
 from fastapi import FastAPI, Header, HTTPException, Path, Query
+from fastapi.responses import PlainTextResponse
 from starlette.responses import RedirectResponse
 from util import (
     enable_verbose,
@@ -81,6 +82,13 @@ async def network(network: Network = Path(Network.sbn, example="sbn", descriptio
     monitor_plugins = set_plugin_parameters(status, alerts)
     ident = create_did(seed)
     result = await node_info.fetch(network_id=network.value, monitor_plugins=monitor_plugins, ident=ident)
+    return result
+
+@app.get("/networks/{network}/pool/transactions", response_class=PlainTextResponse)
+async def network(network: Network = Path(Network.sbn, example="sbn", description="The network code.")):
+    set_plugin_parameters()
+    pool, _ = await pool_collection.get_pool(network.value)
+    result = await pool.get_transactions()
     return result
 
 @app.get("/networks/{network}/{node}")
