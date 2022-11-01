@@ -10,7 +10,6 @@
 ````
 ---
 
-<br>
 
 ### List
 ````bash
@@ -18,7 +17,6 @@
 ````
 * Get a list of commands
 
-<br>
 
 ### Start
 ````bash
@@ -29,7 +27,6 @@ or
 * Spin up the Indy Node Monitoring Stack environment.
     > Optionally specify the service to spin up (dependencies will also be spun up).
 
-<br>
 
 ### Stop
 ````bash
@@ -40,7 +37,6 @@ or
 * Tear down the Indy Node Monitoring Stack environment.
     > Optionally specify the service to tear down.
 
-<br>
 
 ### Restart
 ````bash
@@ -49,7 +45,6 @@ or
 * Restart the Indy Node Monitoring Stack environment.
     > Optionally specify the service to restart.
 
-<br>
 
 ### Services
 ````bash
@@ -57,7 +52,6 @@ or
 ````
 * Get a list of the services that make up the Indy Node Monitoring Stack.
 
-<br>
 
 ### Logs
 ````bash
@@ -65,7 +59,6 @@ or
 ````
 * Stream the logs from a given container.
 
-<br>
 
 ### Shell
 ````bash
@@ -73,7 +66,6 @@ or
 ````
 * Open a shell on a given container.
 
-<br>
 
 ### Plugins
 ````bash
@@ -81,7 +73,6 @@ or
 ````
 * Install a Grafana plug-in on the Grafana container.
 
-<br>
 
 ### Clearing Data
 ````bash
@@ -90,7 +81,6 @@ or
 * Delete the data for a given service, or all services by default. 
     > This is useful to clear data from Prometheus and/or InfluxDB when making changes to how the data is collected.
 
-<br>
 
 ### Cleaning Environment
 ````bash
@@ -101,7 +91,6 @@ or
 
     > Deletes all containers images and prunes any dangling images.
 
-<br>
 
 ### Influx CLI Shell
 ````bash
@@ -109,7 +98,6 @@ or
 ````
 * Open a shell to the Influx CLI on the influxDB container.
 
-<br>
 
 ### Flux REPL Shell
 ````bash
@@ -117,7 +105,6 @@ or
 ````
 * Open a shell to the Flux REPL on the influxDB container.
 
-<br>
 
 ### Builds
 ````bash
@@ -126,7 +113,6 @@ or
 * Use for troubleshooting builds when making image configuration changes.
     > Builds container images based on the docker-compose configuration.
 
-<br>
 
 ### Parsing Test
 ````bash
@@ -137,18 +123,15 @@ or
 
 ---
 
-<br>
 
 ## Options:
 
-<br>
 
 ````bash
     -h
 ````
 * Print this help documentation.
 
-<br>
 
 ````bash
         --nightly
@@ -158,15 +141,8 @@ or
 
 
 <br>
-<br>
-<br>
 
 <!-- Installing Indy Node Monitoring Stack -->
-#
-
-<br>
-<br>
-<br>
 
 <!-- NOT FINISHED YET -->
 
@@ -179,8 +155,6 @@ Once you have the Indy Node Monitoring Stack on your system, right click the fol
 * Insert your seeds for each SBN, SSN, and SMN
 * Make sure to save the file before closing
 
-<br>
-<br>
 <br>
 
 <!-- Adding Dashboards to the stack -->
@@ -197,8 +171,6 @@ Once you have the Indy Node Monitoring Stack on your system, right click the fol
 * Place JSON file in this folder
 
 
-<br>
-<br>
 <br>
 
 
@@ -223,14 +195,12 @@ Once you have the Indy Node Monitoring Stack on your system, right click the fol
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Prometheus Query Example -->
 
 # Prometheus Query Example
-### Example
+#### Example
 ````promQL
     node_response_result_data_Pool_info_reachable_node_count
 ````
@@ -239,8 +209,6 @@ This is looking at the *"reachable node count"* under *"pool info"*, under *"dat
 > If you don't know your metric names, the metrics browser button helps you see the names of all metrics Prometheus can see. This is assuming the data source is working correctly.
 
 
-<br>
-<br>
 <br>
 
 
@@ -274,8 +242,6 @@ This is looking at the *"reachable node count"* under *"pool info"*, under *"dat
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Data Sources
@@ -284,13 +250,8 @@ This is looking at the *"reachable node count"* under *"pool info"*, under *"dat
 # Restful API
 
 TBD
-
-
-<br>
-<br>
-<br>
-
 -->
+
 
 <!-- Alerting -->
 
@@ -305,8 +266,6 @@ Most commonly a separate dashboard is created as the "Alerts Dashboard". A sapar
 The Alert Dashboard only requires the metric you want to trigger the alert and the threshold at which the metric triggers the alert.
 
 
-<br>
-<br>
 <br>
 
 
@@ -324,19 +283,16 @@ Variables call upon *key_tags* as values.
 
 * The _**label**_ is used as the name displayed in the drop-down list
 
-<br>
-<br>
 
-### Example
+
+#### Example 1
 ````
         label_values()
 ````
 >This is your base query for making filters. A *key_tag* goes in the brackets to call the values as your list of choices.
 
-<br>
-<br>
 
-### Example
+#### Example 2
 ````
         label_values(name)
 ````
@@ -346,14 +302,12 @@ This creates a label value for *"name"* which will make a list of every node nam
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Cascading Filters-->
 
 # Cascading Filters
-### Example
+#### Example
 ````
         label_values(node_response_result_data_Pool_info_Reachable_nodes_count{name="[[node]]"}, network)
 ````
@@ -377,14 +331,12 @@ The end result, when we select a node from our first filter, the second filter w
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Filters in Prom queries-->
 
 # Filters in Prometheus queries
-### Example
+#### Example
 ````
         example_metric{job="tick"}
 ````
@@ -394,14 +346,13 @@ We filter our data by job, which in our case is *"tick"*
 
 
 <br>
-<br>
-<br>
+
 
 
 <!-- Grafana variables in Prom queries-->
 
 # Implimenting Grafana variables in Prometheus queries
-### Example
+#### Example
 ````
         example_metric{name="[[node]]"}
 ````
@@ -412,14 +363,12 @@ As a result, when filtered using the Grafana drop-down, only metric values assoc
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Grafana variables in InfluxDB queries-->
 
 # Implimenting Grafana variables in InfluxDB (flux) queries
-### Example
+#### Example
 ````
         from(bucket: v.defaultBucket)
             |> range(start: v.timeRangeStart, stop: v.timeRangeStop)
@@ -455,15 +404,12 @@ As a result, when filtered using the Grafana drop-down, only metric values assoc
 
 
 <br>
-<br>
-<br>
 
 
 <!-- Troubleshooting -->
 # Troublshooting
 
-<br>
 
-## Dashboard showing no data
+### Dashboard showing no data
 > The monitoring stack doesn't always start up properly, as a result the dashboards might not be populated. Running the restart command in the monitoring stack should fix the issue.
 
