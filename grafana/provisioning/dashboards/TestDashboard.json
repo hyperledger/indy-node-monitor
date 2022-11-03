@@ -3,25 +3,36 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "id": 1,
-  "iteration": 1622325676534,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -30,6 +41,15 @@
       },
       "id": 4,
       "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
+          "refId": "A"
+        }
+      ],
       "title": "Row title",
       "type": "row"
     },
@@ -38,7 +58,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
       "fieldConfig": {
         "defaults": {
           "unit": "short"
@@ -71,7 +94,7 @@
         "alertThreshold": false
       },
       "percentage": false,
-      "pluginVersion": "8.0.1",
+      "pluginVersion": "9.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -82,6 +105,10 @@
       "targets": [
         {
           "alias": "Total Nodes",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
           "groupBy": [
             {
               "params": [
@@ -125,6 +152,10 @@
         },
         {
           "alias": "Reachable Nodes",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
           "groupBy": [
             {
               "params": [
@@ -169,6 +200,10 @@
         },
         {
           "alias": "f_value",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
           "groupBy": [
             {
               "params": [
@@ -213,6 +248,10 @@
         },
         {
           "alias": "Unreachable Nodes",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
           "groupBy": [
             {
               "params": [
@@ -257,9 +296,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Node Connectivity",
       "tooltip": {
         "shared": true,
@@ -269,33 +306,24 @@
       "transparent": true,
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -306,7 +334,10 @@
         "rgba(237, 129, 40, 0.89)",
         "rgba(50, 172, 45, 0.97)"
       ],
-      "datasource": null,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "PBFA97CFB590B2093"
+      },
       "decimals": 0,
       "esMetric": "Count",
       "gridPos": {
@@ -337,6 +368,10 @@
       },
       "targets": [
         {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "PBFA97CFB590B2093"
+          },
           "groupBy": [
             {
               "params": [
@@ -373,8 +408,6 @@
         }
       ],
       "thresholds": "0,10",
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Panel Title",
       "type": "grafana-worldmap-panel",
       "unitPlural": "",
@@ -386,7 +419,10 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
       "fill": 1,
       "fillGradient": 5,
       "gridPos": {
@@ -413,7 +449,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "8.0.1",
+      "pluginVersion": "9.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -424,6 +460,10 @@
       "targets": [
         {
           "alias": "Txns per Second",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
           "groupBy": [
             {
               "params": [
@@ -467,9 +507,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read Txns per Second (Avg)",
       "tooltip": {
         "shared": true,
@@ -478,9 +516,7 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
@@ -488,35 +524,33 @@
         {
           "$$hashKey": "object:418",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "$$hashKey": "object:419",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
-      "datasource": "InfluxDB-Flux",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P35862FFA6F3BFED8"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -573,16 +607,22 @@
         "legend": {
           "calcs": [],
           "displayMode": "list",
-          "placement": "bottom"
+          "placement": "bottom",
+          "showLegend": true
         },
         "tooltip": {
-          "mode": "single"
+          "mode": "single",
+          "sort": "none"
         }
       },
       "pluginVersion": "8.0.1",
       "targets": [
         {
           "alias": "Txns per Second",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P35862FFA6F3BFED8"
+          },
           "groupBy": [
             {
               "params": [
@@ -626,29 +666,28 @@
           ]
         }
       ],
-      "timeFrom": null,
-      "timeShift": null,
       "title": "Write Txns per Second (Avg)",
       "type": "timeseries"
     }
   ],
   "refresh": false,
-  "schemaVersion": 30,
+  "schemaVersion": 37,
   "style": "dark",
   "tags": [],
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
           "selected": false,
           "text": "Absa",
           "value": "Absa"
         },
-        "datasource": "InfluxDB",
+        "datasource": {
+          "type": "influxdb",
+          "uid": "P951FEA4DE68E13C5"
+        },
         "definition": "show tag values on telegraf with key = \"name\"",
         "description": "Select a node.",
-        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": "Node",
@@ -673,7 +712,8 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Influx Dashboard",
+  "title": "Test Dashboard",
   "uid": "wuu-CJqGz",
-  "version": 3
+  "version": 1,
+  "weekStart": ""
 }
