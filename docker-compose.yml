@@ -1,0 +1,150 @@
+version: '3'
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  node-monitor-net:
+
+services:
+  indy-node-monitor:
+    build:
+      context: ./fetch-validator-status
+      dockerfile: ./Dockerfile
+    image: indy-node-monitor
+    volumes:
+      # Mounts for indy-node-monitor configuration
+      - ./fetch-validator-status/plugins/:/home/indy/plugins/
+      - ./fetch-validator-status/conf/:/home/indy/conf/
+      - ./fetch-validator-status/logs/:/home/indy/logs/
+    ports:
+      - "8080:8080"
+    networks:
+      - node-monitor-net
+    command: >
+      --web --verbose
+  
+  telegraf:
+    # Full tag list: https://hub.docker.com/r/library/telegraf/tags/
+    build:
+      context: ./images/telegraf/
+      dockerfile: ./${TYPE}/Dockerfile
+      args:
+        TELEGRAF_TAG: ${TELEGRAF_TAG}
+    image: telegraf
+    env_file:
+      - ${TELEGRAF_ENV}
+    # Telegraf requires network access to:
+    # - InfluxDB
+    # - Indy-Node-Monitor
+    links:
+      - influxdb
+      - indy-node-monitor
+    volumes:
+      # Mount for telegraf configuration
+      - ./telegraf/:/etc/telegraf/
+    depends_on:
+      - influxdb
+      - indy-node-monitor
+    ports:
+      # The WebUI for Chronograf is served on port 8888
+      - "9273:9273"
+    networks:
+      - node-monitor-net
+  
+  influxdb:
+    # Full tag list: https://hub.docker.com/r/library/influxdb/tags/
+    build:
+      context: ./images/influxdb/
+      dockerfile: ./${TYPE}/Dockerfile
+      args:
+        INFLUXDB_TAG: ${INFLUXDB_TAG}
+    image: influxdb
+    volumes:
+      # Mount for influxdb data directory
+      - ./influxdb/data:/var/lib/influxdb
+      # Mount for influxdb configuration
+      - ./influxdb/config/:/etc/influxdb/
+    ports:
+      # The API for InfluxDB is served on port 8086
+      - "8086:8086"
+      - "8082:8082"
+      # UDP Port
+      - "8089:8089/udp"
+    networks:
+      - node-monitor-net
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    links:
+      - telegraf
+      - alertmanager
+    depends_on:
+    - telegraf
+    networks:
+      - node-monitor-net
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure
+
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - "./alertmanager/:/etc/alertmanager/"
+    networks:
+      - node-monitor-net
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure
+
+  grafana:
+    build:
+      context: ./images/grafana/
+      dockerfile: ./Dockerfile
+      args:
+        GRAFANA_TAG: ${GRAFANA_TAG}
+    image: grafana
+    depends_on:
+      - prometheus
+      - influxdb
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    env_file:
+      - ${GRAFANA_ENV}
+    networks:
+      - node-monitor-net
+    links:
+      - influxdb
+      - prometheus
+    user: "472"
+    # deploy:
+    #   placement:
+    #     constraints:
+    #       - node.role==manager
+    #   restart_policy:
+    #     condition: on-failure

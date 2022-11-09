@@ -64,6 +64,10 @@ See [readme](metrics/README.md)
 
 See [readme](alerts/README.md)
 
+## Generate Network Upgrade Schedule
+
+See [readme](generate_upgrade_schedule/README.md)
+
 ## Example
 
 See [readme](Example/README.md)

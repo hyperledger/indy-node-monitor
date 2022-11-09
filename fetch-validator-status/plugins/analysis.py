@@ -50,11 +50,11 @@ class main(plugin_collection.Plugin):
                 entry["status"]["info"] = len(info)
                 entry["info"] = info
             # Errors / Warnings
+            entry["status"]["errors"] = len(errors)
             if len(errors) > 0:
-                entry["status"]["errors"] = len(errors)
                 entry["errors"] = errors
+            entry["status"]["warnings"] = len(warnings)
             if len(warnings) > 0:
-                entry["status"]["warnings"] = len(warnings)
                 entry["warnings"] = warnings
             # Full Response
             if jsval:

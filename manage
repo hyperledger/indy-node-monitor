@@ -1,0 +1,642 @@
+#!/bin/bash
+export MSYS_NO_PATHCONV=1
+export DOCKERHOST=${APPLICATION_URL-$(docker run --rm --net=host eclipse/che-ip)}
+SCRIPT_HOME="$(cd "$(dirname "$0")" && pwd)"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-indy-node-monitor-stack}"
+export APP_NAME="Indy Node Monitoring Stack" 
+set -e
+
+# =================================================================================================================
+# Usage:
+# -----------------------------------------------------------------------------------------------------------------
+usage() {
+  cat <<-EOF
+
+Usage:
+  $0 [options] [command] [args]
+
+Commands:
+  up|start [service]      - Spin up the ${APP_NAME} environment.
+                            Optionally specify the service to spin up (dependencies will also be spun up).
+  down|stop [service]     - Tear down the ${APP_NAME} environment.
+                            Optionally specify the service to tear down.
+  restart [service]       - Restart the ${APP_NAME} environment.
+                            Optionally specify the service to restart.
+  list-services           - Get a list the services that make up the ${APP_NAME}.
+  logs <service>          - Stream the logs from a given container.
+  shell <service>         - Open a shell on a given container.
+  install-plugin          - Install a Grafana plug-in on the Grafana container.
+                            You must restart the ${APP_NAME} environment for it to be loaded.
+
+  delete-data [service]   - Delete the data for a given service, or all services by default.
+                            Useful to clear data from Prometheus and/or InfluxDB when making changes to how the data is collected.
+  clean                   - Cleans up all environment resources.
+                            Deletes data from all services.
+                            Deletes all containers images and prunes any dangling images.
+  influx-cli              - Open a shell to the Influx CLI on the influxdb container
+  flux-repl               - Open a shell to the Flux REPL on the influxdb container
+  build [service]         - Use for troubleshooting builds when making image configuration changes.
+                            Builds container images based on the docker-compose configuration.
+  sed-test                - Run a 'sed' parsing test on your machine.  Helps diagnose issues with the version
+                            of 'sed on some machines.
+
+Options:
+  -h                      - Print this help documentation.
+  --nightly               - Build/Use 'nightly' Influx images, 'latest' images are built/used by default.
+                            Works with the up|start and restart commands.
+EOF
+  exit 1
+}
+# -----------------------------------------------------------------------------------------------------------------
+# Functions:
+# -----------------------------------------------------------------------------------------------------------------
+function toLower() {
+  (
+    echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+  )
+}
+
+function echoBlue (){
+  (
+    _msg=${1}
+    _blue='\e[34m'
+    _nc='\e[0m' # No Color
+    echo -e "${_blue}${_msg}${_nc}" >&2
+  )
+}
+
+function echoGreen (){
+  (
+    _msg=${1}
+    _blue='\e[32m'
+    _nc='\e[0m' # No Color
+    echo -e "${_blue}${_msg}${_nc}" >&2
+  )
+}
+
+function echoYellow (){
+  (
+  _msg=${1}
+  _yellow='\e[33m'
+  _nc='\e[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}" >&2
+  )
+}
+
+function echoError (){
+  (
+    _msg=${1}
+    _red='\e[31m'
+    _nc='\e[0m' # No Color
+    echo -e "${_red}${_msg}${_nc}" >&2
+  )
+}
+
+function printAndWait() {
+  (
+    _msg=${@}
+    if [ ! -z "${_msg}" ]; then
+      echoYellow "\n${_msg}"
+    fi
+    read -n1 -s -r -p $'Press any key to continue ...' key
+    echo -e \\n
+    return 0
+  )
+}
+
+function promptForConfirmation(){
+  (
+    _msg=${@}
+    echoYellow "\n${_msg}"
+    read -n1 -s -r -p $'\e[33mWould you like to continue?\e[0m  Press \'Y\' to continue, or any other key to exit ...\n' key
+    if [[ $(toLower ${key}) == 'y' ]]; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+function functionExists() {
+  (
+    if [ ! -z ${1} ] && type ${1} &>/dev/null; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+function isInstalled() {
+  (
+    if [ -x "$(command -v ${@})" ]; then
+      return 0
+    else
+      return 1
+    fi
+  )
+}
+
+function openInBrowser(){
+  (
+    unset openBrowserCmd
+    if [[ "$OSTYPE" == "msys" ]]; then
+      openBrowserCmd='cmd "/c start ${url}"'
+    elif [ $(uname) == "Darwin" ]; then
+      openBrowserCmd='open ${url}'
+    elif [ $(uname) == "Linux" ]; then
+      openBrowserCmd='xdg-open ${url}'
+    fi
+
+    if [ ! -z "${openBrowserCmd}" ]; then
+      for url in ${@}; do
+        echoBlue "\nOpening ${url} in your default browser ..."
+        eval ${openBrowserCmd}
+      done
+    else
+      echoYellow "Unable to detect browser start command. Please browser to the following application URLs:"
+      for url in ${@}; do
+        echo "  - ${url}"
+      done
+    fi
+  )
+}
+
+function logs() {
+  (
+    if [ ! -z "${@}" ] && isService ${@}; then
+      echoBlue "Following container logs for ${@} ..."
+      ${DOCKER_COMPOSE_EXE} logs -f ${@}
+    fi
+  )
+}
+
+function openShell() {
+  (
+    if [ ! -z "${@}" ] && isService ${@}; then
+      echoBlue "Connecting remote shell to ${@} (type 'exit' to exit) ..."
+      ${DOCKER_COMPOSE_EXE} exec ${@} /bin/bash
+    fi
+  )
+}
+
+function installPlugin() {
+  (
+    echoGreen "Installing Grafana plugin; ${@} ... "
+    ${DOCKER_COMPOSE_EXE} exec grafana grafana-cli plugins install  ${@}
+  )
+}
+
+function readEnvFile(){
+  (
+    envFile=${1}
+    if [ -f ${envFile} ]; then
+      # Remove blank lines ...
+      filters="/^[[:blank:]]*$/d;"
+      # Remove full line comments ...
+      filters+="/^[[:blank:]]*#/d;"
+      # Remove any comments from the end of a line ...
+      filters+="s/#.*//;"
+      # Remove leading whitespace ...
+      filters+="s/^ *//;"
+      # Remove trailing whitespace ...
+      filters+="s/ *$//;"
+      _value=$(${SED_EXE} "${filters}" ${envFile})
+    fi
+    echo "${_value}"
+  )
+}
+
+function loadEnvVariables(){
+  for envTag in ${@}; do
+    for item in $(readEnvFile ".env-${envTag}"); do
+      export "${item}"
+    done
+  done
+}
+
+function deleteData(){
+  (
+    deleteList=${@:-influxdb prometheus grafana}
+    unset influxdb_data
+    unset prometheus_data
+    unset grafana_data
+    unset delete_msg
+    for item in ${deleteList}; do
+      case ${item} in
+        influxdb)
+          influxdb_data=1 ;;
+        prometheus)
+          prometheus_data=1 ;;
+        grafana)
+          grafana_data=1 ;;
+        *)
+          influxdb_data=1
+          prometheus_data=1
+          grafana_data=1
+          ;;
+      esac
+      delete_msg+=" ${item}"
+    done
+    msg_start=$(echo ${delete_msg} | awk '{$NF="";sub(/[ \t]+$/,"")}1')
+    msg_end=$(echo ${delete_msg} | awk '{print $(NF)}')
+    delete_msg="${msg_start}${msg_start:+ and }${msg_end}"
+
+    if promptForConfirmation "If you continue all ${delete_msg} data will be deleted and reprovisioned from scratch next time you start the monitor.
+If you want to save any of your work, ensure you export it and update your provisioning configurations before continuing.\n"; then
+
+      if [ ! -z ${influxdb_data} ]; then
+        echo "Deleting all InfluxDB data..."
+        rm -rf influxdb/data
+      fi
+      if [ ! -z ${prometheus_data} ]; then
+        echo "Deleting all Prometheus data..."
+        $(docker volume rm indy-node-monitor-stack_prometheus_data -f >/dev/null 2>&1)
+      fi
+      if [ ! -z ${grafana_data} ]; then
+        echo "Deleting all Grafana data..."
+        $(docker volume rm indy-node-monitor-stack_grafana_data -f >/dev/null 2>&1)
+      fi
+    fi
+  )
+}
+
+function getServices(){
+  (
+    ymlFile=${1}
+    unset services
+    if [ -f ${ymlFile} ]; then
+      services="$(${YQ_EXE} eval '.services | keys | .[]' ${ymlFile})"
+    fi
+    echo "${services}"
+  )
+}
+
+function getImages(){
+  (
+    ymlFile=${1}
+    unset images
+    if [ -f ${ymlFile} ]; then
+      image="$(${YQ_EXE} eval '.services[].image' ${ymlFile})"
+    fi
+    echo "${image}"
+  )
+}
+
+function contains(){
+  (
+    local _item
+    _find=${1}
+    shift
+    for _item in ${@}; do [[ "${_item}" == "${_find}" ]] && return 0; done
+    return 1
+  )
+}
+
+function isService(){
+  (
+    serviceName=${1}
+    if contains "${serviceName}" "${_services[@]}"; then
+      return 0
+    else
+      echoYellow "No such service: ${serviceName}"
+      listServices
+      return 1
+    fi
+  )
+}
+
+function listServices(){
+  (
+    echoBlue "Available Services:"
+    for service in ${_services}; do
+      echoBlue " - ${service}"
+    done
+  )
+}
+
+function build(){
+  (
+    echoGreen "\nBuilding ${@} ...\n"
+    ${DOCKER_COMPOSE_EXE} up --build --no-start ${@}
+  )
+}
+
+function up(){
+  (
+    echoGreen "\nStarting up the ${APP_NAME} ...\n"
+    ${DOCKER_COMPOSE_EXE} up -d --build ${@}
+    sleep 3
+    case "${1}" in
+      indy-node-monitor)
+        openInBrowser "http://localhost:8080"
+        ;;
+      *)
+        openInBrowser "http://localhost:3000"
+        ;;
+    esac
+  )
+}
+
+function down(){
+  (
+    echoGreen "\nStopping the ${APP_NAME} ...\n"
+    ${DOCKER_COMPOSE_EXE} down ${@}
+  )
+}
+
+function restart(){
+  (
+    echoGreen "\nRestarting the ${APP_NAME} ...\n"
+    down ${@}
+    up ${@}
+  )
+}
+
+function clean(){
+  (
+    down
+    deleteData
+    echoGreen "\nRemoving project images ...\n"
+    ${DOCKER_EXE} image remove --force ${_images} 2>/dev/null
+    ${DOCKER_EXE} image prune --force > /dev/null 2>&1
+  )
+}
+
+function openInfluxCli(){
+  (
+    echoBlue "Opening the influx cli (type 'exit' to exit) ..."
+    ${DOCKER_COMPOSE_EXE} exec influxdb /usr/bin/influx
+  )
+}
+
+function openFluxRepl(){
+  (
+    echoBlue "Opening the flux REPL (press Ctrl-D to exit) ..."
+    ${DOCKER_COMPOSE_EXE} exec influxdb /usr/bin/influx -type flux
+  )
+}
+
+function writeEnvSeeds(){
+  (
+  cat <<-EOF > .env-seeds
+# =======================================================
+# Network Monitor Seeds:
+#   - Leave blank if you do not have a
+#     Network Monitor DID registered on the Network
+#   - This file is ignored by Git
+#
+# Format:
+#   <Network_ID>_SEED=<Your_Seed>
+# -------------------------------------------------------
+SBN_SEED=
+SSN_SEED=
+SMN_SEED=
+# =======================================================
+EOF
+  )
+}
+
+function sedTest(){
+  (
+    sedTestFile=sed-test.txt
+    testPhrase='This is the test Phrase.'
+    cat <<-EOF > ${sedTestFile}
+# ===========================================================
+# This is a file to test parsing with 'sed' on your machine.
+#   - All of the blank lines, comments, and leading and 
+#     trailing whitespace should be stripped out of this 
+#     file and you should only be left with the 
+#     test phrase wrapped in single quotes:
+#
+#     '${testPhrase}'
+#
+# -----------------------------------------------------------
+ # This line should be removed, it's a comment
+
+# The leading and trailing whitespace around the test
+# phrase should be removed too.
+  ${testPhrase}  # This comment should be removed
+
+# ===========================================================
+EOF
+
+    result="'$(readEnvFile ${sedTestFile})'"
+    echoBlue "\nTest Results for 'sed':"
+    if [[ ${result} == "'${testPhrase}'"  ]]; then
+      echoGreen "  - Pass"
+      rm -rf ${sedTestFile}
+    else
+      echoError "  - Fail"
+
+      echoBlue "\n==================================================================================="
+      echoBlue "# Result of parsing the file using 'sed':"
+      echoBlue "-----------------------------------------------------------------------------------"
+      echo ${result}
+      echoBlue "===================================================================================\n"
+
+      echoBlue "==================================================================================="
+      echoBlue "# Original test file:"
+      echoBlue "-----------------------------------------------------------------------------------"
+      cat ${sedTestFile}
+      echoBlue "==================================================================================="
+
+      rm -rf ${sedTestFile}
+      printAndWait "Please review the results and then,"
+
+      echoBlue "================================================================================================================================================================="
+      echoBlue "# Special instructions for MAC Setup:"
+      echoBlue "-----------------------------------------------------------------------------------------------------------------------------------------------------------------"
+    cat <<-EOF
+These scripts use 'sed' and regular expression processing.  The default version of 'sed' on MAC does support some of the processing.
+Details can be found here; 
+[Differences between sed on Mac OSX and other "standard" sed?](https://unix.stackexchange.com/questions/13711/differences-between-sed-on-mac-osx-and-other-standard-sed)
+
+Please install 'gnu-sed'.
+
+Using [Homebrew](https://brew.sh):
+'''
+brew install gnu-sed
+'''
+
+Then update your path and prepend '/usr/local/opt/gnu-sed/libexec/gnubin:' to your existing path so that the system defaults to using 'sed' rather than 'gsed'.
+Append this line to your '~\.bashrc' file:
+'''
+[[ ":\$PATH:" != *"/usr/local/opt/gnu-sed/libexec/gnubin:"* ]] && export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:\$PATH"
+'''
+
+Also make sure 'usr/local/bin' is at a higher priority on your **PATH** than 'usr/bin'.  You can do this by making sure 'usr/local/bin' is to the left of 'usr/bin', 
+preceding it in the **PATH** string.  This will ensure that packages installed by Homebrew override system binaries; in this case 'sed'.
+Append this line to your '~\.bashrc' file:
+'''
+[[ ":\$PATH:" != *"/usr/local/bin:"* ]] && export PATH="/usr/local/bin:\$PATH"
+'''
+
+'brew doctor' can help diagnose such issues.
+EOF
+      echoBlue "================================================================================================================================================================="
+    fi
+  )
+}
+# -----------------------------------------------------------------------------------------------------------------
+# Check for dependancies
+# -----------------------------------------------------------------------------------------------------------------
+DOCKER_EXE="docker"
+if ! isInstalled ${DOCKER_EXE}; then
+  echoYellow "${DOCKER_EXE} is not installed."
+  exit 1
+fi
+
+DOCKER_COMPOSE_EXE="${DOCKER_EXE} compose"
+if ! isInstalled ${DOCKER_COMPOSE_EXE}; then
+  echoYellow "${DOCKER_COMPOSE_EXE} is not installed."
+  exit 1
+fi
+
+SED_EXE=sed
+if ! isInstalled ${SED_EXE}; then
+  echoYellow "The ${SED_EXE} executable is required and was not found on your path."
+
+  cat <<-EOF
+  The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
+  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+
+  Windows:
+    - chocolatey install sed
+  MAC:
+    - brew install gnu-sed
+EOF
+  exit 1
+fi
+
+YQ_EXE=yq
+if ! isInstalled ${YQ_EXE}; then
+  echoYellow "The ${YQ_EXE} executable is required and was not found on your path."
+
+  cat <<-EOF
+  The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
+  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+
+  Windows:
+    - chocolatey install ${YQ_EXE}
+  MAC:
+    - brew install ${YQ_EXE}
+EOF
+  exit 1
+fi
+# -----------------------------------------------------------------------------------------------------------------
+# Initialization:
+# -----------------------------------------------------------------------------------------------------------------
+_envTags="default"
+_imageTag="latest"
+while getopts ":h-:" FLAG; do
+  case $FLAG in
+    h ) usage ;;
+    \? ) #unrecognized option - show help
+      echoError "\nInvalid script option: -${OPTARG}"
+      usage
+      ;;
+    - )
+      case ${OPTARG} in
+        "nightly"*)
+          _imageTag="nightlies"
+          ;;
+      esac
+  esac
+done
+shift $((OPTIND-1))
+_envTags+=" ${_imageTag}"
+
+# Create the directories expected by the docker-compose project ...
+INFLUX_DB_DIR="./influxdb/data"
+if [ -d "${INFLUX_DB_DIR}" ]; then
+  mkdir -p "${INFLUX_DB_DIR}"
+fi
+
+NODE_MONITOR_CONF="./fetch-validator-status/conf"
+if [ -d "${NODE_MONITOR_CONF}" ]; then
+  mkdir -p "${NODE_MONITOR_CONF}"
+fi
+
+NODE_MONITOR_LOGS="./fetch-validator-status/logs"
+if [ -d "${NODE_MONITOR_LOGS}" ]; then
+  mkdir -p "${NODE_MONITOR_LOGS}"
+fi
+
+# Load network monitor seeds if the '.env-seeds' file is found.
+# The file is ignored by Git so seeds don't end up in source control.
+if [ -f ".env-seeds" ]; then
+  _envTags+=" seeds"
+else
+  echoYellow "\nNo '.env-seeds' file was found.  \
+This file is used to inject your network monitor seeds into Telegaf so it can make privileged queries to the Indy Node Monitor web service.  \
+This file is ignored by git so it does not accidentally make its way into source control.  \
+If you do not supply a set of network monitor seeds Telegaf will only be able to make unprivileged queries to the Indy Node Monitor.  \
+The responses to unprivileged queries only allow node monitoring at a very high level, i.e. up/down.\n\n\
+To make privileged queries, add you seeds to the generated file and run './manage restart'."
+  if promptForConfirmation "Would you like to create a template '.env-seeds' file now?"; then
+    writeEnvSeeds
+  fi
+fi
+
+# Get the list of services ...
+_services=$(getServices "./docker-compose.yml")
+_images=$(getImages "./docker-compose.yml")
+# =================================================================================================================
+
+# =================================================================================================================
+# Main Script:
+# -----------------------------------------------------------------------------------------------------------------
+pushd ${SCRIPT_HOME} >/dev/null
+COMMAND=$(toLower ${1})
+shift || COMMAND=usage
+
+loadEnvVariables "${_envTags}"
+
+case "${COMMAND}" in
+  start|up)
+    up ${@}
+    ;;
+  stop|down)
+    down ${@}
+    ;;
+  restart)
+    restart ${@}
+    ;;
+  logs)
+    logs ${@}
+    ;;
+  shell)
+    openShell ${@}
+    ;;
+  install-plugin)
+    installPlugin ${@}
+    ;;
+  delete-data)
+    deleteData ${@}
+    ;;
+  clean)
+    clean ${@}
+    ;;
+  influx-cli)
+    openInfluxCli ${@}
+    ;;
+  flux-repl)
+    openFluxRepl ${@}
+    ;;
+  build)
+    build ${@}
+    ;;
+  sed-test)
+    sedTest ${@}
+    ;;
+  list-services)
+    listServices ${@}
+    ;;
+  *)
+    usage
+    ;;
+esac
+
+popd >/dev/null
+# -----------------------------------------------------------------------------------------------------------------

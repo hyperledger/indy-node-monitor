@@ -1,0 +1,98 @@
+# Datasource settings can be queried from Grafana:
+# http://localhost:3000/api/datasources
+
+# config file version
+apiVersion: 1
+
+# list of datasources that should be deleted from the database
+deleteDatasources:
+  - name: Prometheus
+    orgId: 1
+  - name: InfluxDB
+    orgId: 1
+
+# List of datasources to insert/update depending whats available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+- name: Prometheus
+  # <string, required> datasource type. Required
+  type: prometheus
+  # <string, required> access mode. direct or proxy. Required
+  access: proxy
+  # <int> org id. will default to orgId 1 if not specified
+  orgId: 1
+  # <string> url
+  url: http://prometheus:9090
+  # <string> database password, if used
+  password:
+  # <string> database user, if used
+  user:
+  # <string> database name, if used
+  database:
+  # <bool> enable/disable basic auth
+  basicAuth: false
+  # <string> basic auth username, if used
+  basicAuthUser:
+  # <string> basic auth password, if used
+  basicAuthPassword:
+  # <bool> enable/disable with credentials headers
+  withCredentials:
+  # <bool> mark as default datasource. Max one per org
+  isDefault: true
+  # <map> fields that will be converted to json and stored in json_data
+  jsonData:
+     graphiteVersion: "1.1"
+     tlsAuth: false
+     tlsAuthWithCACert: false
+  # <string> json object of data that will be encrypted.
+  secureJsonData:
+    tlsCACert: "..."
+    tlsClientCert: "..."
+    tlsClientKey: "..."
+  version: 1
+  # <bool> allow users to edit datasources from the UI.
+  editable: true
+
+- name: InfluxDB
+  type: influxdb
+  typeName: InfluxDB
+  typeLogoUrl: public/app/plugins/datasource/influxdb/img/influxdb_logo.svg
+  access: proxy
+  orgId: 1
+  url: http://influxdb:8086
+  password: ''
+  user: ''
+  database: telegraf
+  basicAuth: false
+  isDefault: false
+  # jsonData:
+  #   defaultBucket: telegraf
+  #   httpMode: POST
+  #   organization: InfluxDB
+  #   timeInterval: ''
+  #   tlsSkipVerify: false
+  #   version: InfluxQL
+  readOnly: false
+
+  # https://docs.influxdata.com/influxdb/v2.0/tools/repl/
+  # https://grafana.com/docs/grafana/latest/administration/provisioning/
+- name: InfluxDB-Flux
+  type: influxdb
+  typeName: InfluxDB
+  typeLogoUrl: public/app/plugins/datasource/influxdb/img/influxdb_logo.svg
+  access: proxy
+  orgId: 1
+  url: http://influxdb:8086
+  password: ''
+  user: ''
+  database:
+  basicAuth: false
+  isDefault: false
+  jsonData:
+    defaultBucket: telegraf/autogen
+    httpMode: POST
+    organization: example-org
+    version: Flux
+  secureJsonData:
+    token: ${INFLUX_DB_FLUX_TOKEN}
+  readOnly: false
