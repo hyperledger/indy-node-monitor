@@ -327,7 +327,14 @@ function up(){
     echoGreen "\nStarting up the ${APP_NAME} ...\n"
     ${DOCKER_COMPOSE_EXE} up -d --build ${@}
     sleep 3
-    openInBrowser "http://localhost:3000"
+    case "${1}" in
+      indy-node-monitor)
+        openInBrowser "http://localhost:8080"
+        ;;
+      *)
+        openInBrowser "http://localhost:3000"
+        ;;
+    esac
   )
 }
 

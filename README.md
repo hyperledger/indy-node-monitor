@@ -1,20 +1,37 @@
 # Indy Node Monitor
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Lifecycle:Maturing](https://img.shields.io/badge/Lifecycle-Maturing-007EC6)](https://github.com/bcgov/repomountie/blob/master/doc/lifecycle-badges.md)
 
-Indy Node Monitor is a set of tools for monitoring the status of an Indy Ledger by querying the validator information of the nodes of the ledger. Based on that, data can be generated data suitable for:
+Indy Node Monitor is a set of tools for monitoring the status of an Indy Ledger by querying the validator information of the nodes on the ledger.  These tools are integrated into a full monitoring stack including the following components:
 
-* visualization on a dashboard
-* tracking trends about the status of nodes and the overall ledger
-* tracking read and write uptimes
-* tracking ledger usage such as number of transactions on the ledger
-* driving notifications of node outages
+- Indy Node Monitor (Fetch Validator Status)
+- Telegraf
+- Prometheus and/or InfluxDB
+- Alert Manager
+- Grafana
 
-The repo has basic tools to collect and format data and tools for using that data in different ways.
+This allows you to:
+- Visualize the node and network data on dashboards.
+- Track trends about the status of nodes and the overall ledger.
+- Track read and write uptimes.
+- Tracking ledger usage such as number of transactions on the ledger.
+- Drive notifications of node outages.
 
-Contributions are welcome of tools that consume the collected data to enable easy ways to monitor an Indy network, such as configurations of visualization dashboards that can be deployed by many users. For example, an ELK stack or Splunk configuration that receives validator info and presents it in a ledger dashboard. Or an interface to [Pager Duty](https://www.pagerduty.com/) to enable node outage notifications.
+The stack is easily managed and spun up in docker using the included `./manage` script. Starting the stack is as easy as:
+```
+./manage build
+./manage start
+```
+
+A browser window to the Grafana instance should launch automatically.  The login username is `admin` and the password `foobar`.  Once logged in you are able to browse the various (auto-provisioned) dashboards which will begin to populate after a few minutes.  *Please note:- In order to collect detailed data from the network to populate many of the graphs you will require a privileged DID (NETWORK_MONITOR at minimum) on the ledger and you will need to configure the monitoring stack with the seed(s).*
+
+For more information about the commands available in the `./manage` script refer to the [command list](docs/README.md#command-list)
+
+For more infomration on how to setup and use the monitoring stack refer to this [readme](docs/README.md#setting-up-the-monitoring-stack)
 
 ## Fetch Validator Status
 
-This is a simple tool that can be used to retrieve "validator-info"&mdash;detailed status data about an Indy node (aka "validator)&mdash;from all the nodes in a network. The results are returned as a JSON array with a record per validator.
+This simple tool is the heart of the Indy Node Monitor.  It is used to retrieve "validator-info"&mdash;detailed status data about an Indy node (aka "validator")&mdash;from all the nodes in a network. The results are returned as a JSON array with a record per validator, and the data can be manipulated and formatted through the use of plugins.  Fetch validator status can be used as a stand-alone command line tool or through the Indy Node Monitor REST API which is used by the monitoring stack.  The Indy Node Monitor REST API can be spun up easily by running `./manage start indy-node-monitor`, and a browser window will automatically launch to display the API documents and interface.
 
 For more details see the Fetch Validator Status [readme](fetch-validator-status/README.md)
 
