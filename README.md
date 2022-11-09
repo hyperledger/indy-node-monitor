@@ -18,6 +18,10 @@ This is a simple tool that can be used to retrieve "validator-info"&mdash;detail
 
 For more details see the Fetch Validator Status [readme](fetch-validator-status/README.md)
 
+## How to contribute to the monitoring stack
+
+For more details on how to contribute follow the link to this [readme](docs/README.md)
+
 ## Contributions
 
 Pull requests are welcome! Please read our [contributions guide](CONTRIBUTING.md) and submit your PRs. We enforce developer certificate of origin (DCO) commit signing. See guidance [here](https://github.com/apps/dco).
