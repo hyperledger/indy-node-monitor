@@ -1,0 +1,8 @@
+apiVersion: v2
+name: indy-monitoring-stack
+description: A Helm chart for the indy-node-monitoring stack
+type: application
+version: 0.0.2
+
+# This is the version number of the indy-node-monitor release version (https://github.com/hyperledger/indy-node-monitor/releases/tag/v0.4.0).
+appVersion: "v0.4.0"

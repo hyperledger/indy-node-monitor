@@ -1,0 +1,11 @@
+---
+{{- with .Values.alertmanager }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}-configmap"
+data:
+{{ ($.Files.Glob "config/alertmanager/config.yml").AsConfig | indent 2 }}
+
+{{- end }}
