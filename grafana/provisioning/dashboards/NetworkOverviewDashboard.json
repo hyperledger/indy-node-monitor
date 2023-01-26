@@ -42,7 +42,7 @@
             {
               "targetBlank": true,
               "title": "",
-              "url": "/d/IBGWryqGa/drill-down-dashboard?orgId=1&var-node=${__field.name}&var-network=${network}"
+              "url": "/d/IBGWryqGa/node-detail?orgId=1&var-node=${__field.name}&var-network=${network}"
             }
           ],
           "mappings": [
@@ -4145,7 +4145,7 @@
       "type": "row"
     }
   ],
-  "refresh": false,
+  "refresh": "5m",
   "schemaVersion": 37,
   "style": "dark",
   "tags": [],
@@ -4190,7 +4190,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Top Layer Dashboard",
+  "title": "Network Overview",
   "uid": "IBGWryqGb",
   "version": 1,
   "weekStart": ""
