@@ -17,7 +17,7 @@
 
 ## Becoming a Maintainer
 
-The Aries Cloud Agent community welcomes contributions. Contributors may progress to become a
+The Indy Agent community welcomes contributions. Contributors may progress to become a
 maintainer. To become a maintainer the following steps occur, roughly in order.
 
 - 5 significant changes have been authored by the proposed maintainer and
