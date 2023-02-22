@@ -7,7 +7,7 @@
 | Name             | Github           | LFID             |
 | ---------------- | ---------------- | ---------------- |
 | Stephen Curran   | swcurran         | swcurran         |
-| Wade Barnes | WadeBarnes  |            |
+| Wade Barnes | WadeBarnes  | WadeBarnes  |
 
 ## Emeritus Maintainers
 
