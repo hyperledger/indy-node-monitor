@@ -1,0 +1,195 @@
+{
+    "apiVersion": 1,
+    "groups": [
+        {
+            "orgId": 1,
+            "name": "Alerting",
+            "folder": "Alerts",
+            "interval": "60s",
+            "rules": [
+                {
+                    "id": 3,
+                    "uid": "0dkOBI0Vz",
+                    "orgID": 1,
+                    "folderUID": "tMVPxmv4k",
+                    "ruleGroup": "Alerting",
+                    "title": "Write failure warning",
+                    "condition": "E",
+                    "data": [
+                        {
+                            "refId": "A",
+                            "queryType": "",
+                            "relativeTimeRange": {
+                                "from": 300,
+                                "to": 0
+                            },
+                            "datasourceUid": "PBFA97CFB590B2093",
+                            "model": {
+                                "datasource": {
+                                    "type": "prometheus",
+                                    "uid": "PBFA97CFB590B2093"
+                                },
+                                "editorMode": "code",
+                                "exemplar": true,
+                                "expr": "max(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"Sovrin Builder Net\"} - node_response_result_data_Pool_info_f_value{job=\"tick\", network=\"Sovrin Builder Net\"})",
+                                "interval": "",
+                                "intervalMs": 15000,
+                                "legendFormat": "Write Failure",
+                                "maxDataPoints": 43200,
+                                "range": true,
+                                "refId": "A"
+                            }
+                        },
+                        {
+                            "refId": "B",
+                            "queryType": "",
+                            "relativeTimeRange": {
+                                "from": 300,
+                                "to": 0
+                            },
+                            "datasourceUid": "PBFA97CFB590B2093",
+                            "model": {
+                                "datasource": {
+                                    "type": "prometheus",
+                                    "uid": "PBFA97CFB590B2093"
+                                },
+                                "editorMode": "code",
+                                "exemplar": true,
+                                "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"Sovrin Builder Net\"})",
+                                "hide": false,
+                                "interval": "",
+                                "intervalMs": 15000,
+                                "legendFormat": "Reachable",
+                                "maxDataPoints": 43200,
+                                "range": true,
+                                "refId": "B"
+                            }
+                        },
+                        {
+                            "refId": "C",
+                            "queryType": "",
+                            "relativeTimeRange": {
+                                "from": 300,
+                                "to": 0
+                            },
+                            "datasourceUid": "PBFA97CFB590B2093",
+                            "model": {
+                                "datasource": {
+                                    "type": "prometheus",
+                                    "uid": "PBFA97CFB590B2093"
+                                },
+                                "editorMode": "code",
+                                "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"Sovrin Builder Net\"}) - max(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"Sovrin Builder Net\"} - node_response_result_data_Pool_info_f_value{job=\"tick\", network=\"Sovrin Builder Net\"})",
+                                "hide": false,
+                                "interval": "",
+                                "intervalMs": 15000,
+                                "legendFormat": "Warning Trigger",
+                                "maxDataPoints": 43200,
+                                "range": true,
+                                "refId": "C"
+                            }
+                        },
+                        {
+                            "refId": "D",
+                            "queryType": "",
+                            "relativeTimeRange": {
+                                "from": 0,
+                                "to": 0
+                            },
+                            "datasourceUid": "-100",
+                            "model": {
+                                "conditions": [
+                                    {
+                                        "evaluator": {
+                                            "params": [],
+                                            "type": "gt"
+                                        },
+                                        "operator": {
+                                            "type": "and"
+                                        },
+                                        "query": {
+                                            "params": [
+                                                "D"
+                                            ]
+                                        },
+                                        "reducer": {
+                                            "params": [],
+                                            "type": "last"
+                                        },
+                                        "type": "query"
+                                    }
+                                ],
+                                "datasource": {
+                                    "type": "__expr__",
+                                    "uid": "-100"
+                                },
+                                "expression": "C",
+                                "hide": false,
+                                "intervalMs": 1000,
+                                "maxDataPoints": 43200,
+                                "reducer": "last",
+                                "refId": "D",
+                                "type": "reduce"
+                            }
+                        },
+                        {
+                            "refId": "E",
+                            "queryType": "",
+                            "relativeTimeRange": {
+                                "from": 0,
+                                "to": 0
+                            },
+                            "datasourceUid": "-100",
+                            "model": {
+                                "conditions": [
+                                    {
+                                        "evaluator": {
+                                            "params": [
+                                                1
+                                            ],
+                                            "type": "lt"
+                                        },
+                                        "operator": {
+                                            "type": "and"
+                                        },
+                                        "query": {
+                                            "params": [
+                                                "E"
+                                            ]
+                                        },
+                                        "reducer": {
+                                            "params": [],
+                                            "type": "last"
+                                        },
+                                        "type": "query"
+                                    }
+                                ],
+                                "datasource": {
+                                    "type": "__expr__",
+                                    "uid": "-100"
+                                },
+                                "expression": "D",
+                                "hide": false,
+                                "intervalMs": 1000,
+                                "maxDataPoints": 43200,
+                                "refId": "E",
+                                "type": "threshold"
+                            }
+                        }
+                    ],
+                    "updated": "2023-01-31T21:34:40Z",
+                    "noDataState": "NoData",
+                    "execErrState": "Error",
+                    "for": "15m",
+                    "annotations": {
+                        "__dashboardUid__": "pPcqoSfnk",
+                        "__panelId__": "2"
+                    },
+                    "labels": {
+                        "severity": "warning"
+                    }
+                }
+            ]
+        }
+    ]
+}
