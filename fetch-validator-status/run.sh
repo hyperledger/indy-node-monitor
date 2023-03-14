@@ -91,13 +91,19 @@ else
   fi
 fi
 
+if [[ "$@" == *"--web"* ]]; then
+  export DOCKER_PUBLISH="--publish 8080:8080"
+else
+  export DOCKER_PUBLISH=""
+fi
+
 docker build -t $program_name . > /dev/null 2>&1
 
 cmd="${terminalEmu} docker run --rm ${DOCKER_INTERACTIVE} \
   -e "GENESIS_PATH=${GENESIS_PATH}" \
   -e "GENESIS_URL=${GENESIS_URL}" \
   -e "SEED=${SEED}" \
-  --publish 8080:8080"
+  ${DOCKER_PUBLISH}"
 
 # Dynamically mount teh 'conf' directory if it exists.
 if [ -d "./conf" ]; then
