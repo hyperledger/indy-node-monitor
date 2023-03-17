@@ -32,6 +32,8 @@ pool_collection = None
 node_info = None
 
 Network: NetworkEnum = Networks.get_NetworkEnum()
+example_network_enum = list(Network)[0]
+example_network_name = str(list(Network)[0]).split(".")[-1]
 
 def set_plugin_parameters(status: bool = False, alerts: bool = False):
     # Store args and monitor_plugins for lazy loading.
@@ -75,7 +77,7 @@ async def networks():
     return data
 
 @app.get("/networks/{network}")
-async def network(network: Network = Path(Network.sbn, example="sbn", description="The network code."),
+async def network(network: Network = Path(example_network_enum, example=example_network_name, description="The network code."),
                   status: bool = Query(False, description="Filter results to status only."), 
                   alerts: bool = Query(False, description="Filter results to alerts only."),
                   seed: Optional[str] = Header(None, description="Your network monitor seed.")):
@@ -85,14 +87,14 @@ async def network(network: Network = Path(Network.sbn, example="sbn", descriptio
     return result
 
 @app.get("/networks/{network}/pool/transactions", response_class=PlainTextResponse)
-async def network(network: Network = Path(Network.sbn, example="sbn", description="The network code.")):
+async def network(network: Network = Path(example_network_enum, example=example_network_name, description="The network code.")):
     set_plugin_parameters()
     pool, _ = await pool_collection.get_pool(network.value)
     result = await pool.get_transactions()
     return result
 
 @app.get("/networks/{network}/{node}")
-async def node(network: Network = Path(Network.sbn, example="sbn", description="The network code."),
+async def node(network: Network = Path(example_network_enum, example=example_network_name, description="The network code."),
                node: str = Path(..., example="FoundationBuilder", description="The node name."),
                status: bool = Query(False, description="Filter results to status only."), 
                alerts: bool = Query(False, description="Filter results to alerts only."),
