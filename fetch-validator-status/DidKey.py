@@ -19,6 +19,8 @@ class DidKey:
     def seed_as_bytes(self):
         if not self.seed or isinstance(self.seed, bytes):
             return self.seed
+        if len(self.seed) == 64:
+            return bytes.fromhex(self.seed)
         if len(self.seed) != 32:
             return base64.b64decode(self.seed)
         return self.seed.encode("ascii")
