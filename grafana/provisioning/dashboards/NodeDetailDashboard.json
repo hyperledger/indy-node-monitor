@@ -486,7 +486,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -574,7 +574,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -663,7 +663,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -751,7 +751,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -838,7 +838,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -954,7 +954,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1067,7 +1067,7 @@
         "showHeader": false,
         "sortBy": []
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1195,7 +1195,7 @@
           }
         ]
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1308,7 +1308,7 @@
           }
         ]
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1452,7 +1452,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1539,7 +1539,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1626,7 +1626,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1739,7 +1739,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1826,7 +1826,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -1913,7 +1913,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.4.3",
+      "pluginVersion": "9.4.7",
       "targets": [
         {
           "datasource": {
@@ -2795,8 +2795,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2892,8 +2891,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -2989,8 +2987,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3086,8 +3083,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3252,8 +3248,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3349,8 +3344,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3469,8 +3463,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3648,8 +3641,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3768,8 +3760,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -3863,8 +3854,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4030,8 +4020,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4209,8 +4198,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4402,8 +4390,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4581,8 +4568,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4678,8 +4664,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4773,8 +4758,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4870,8 +4854,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -4954,8 +4937,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -5020,7 +5002,7 @@
       "type": "table"
     }
   ],
-  "refresh": "5m",
+  "refresh": "1m",
   "revision": 1,
   "schemaVersion": 38,
   "style": "dark",
@@ -5030,24 +5012,24 @@
       {
         "allValue": "*",
         "current": {
-          "selected": false,
-          "text": "Axuall",
-          "value": "Axuall"
+          "selected": true,
+          "text": "Sovrin Main Net",
+          "value": "Sovrin Main Net"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "PBFA97CFB590B2093"
         },
-        "definition": "label_values(name)",
-        "description": "Select a node.",
+        "definition": "label_values(network)",
+        "description": "Select a network.",
         "hide": 0,
         "includeAll": false,
-        "label": "Node",
+        "label": "Network",
         "multi": false,
-        "name": "node",
+        "name": "network",
         "options": [],
         "query": {
-          "query": "label_values(name)",
+          "query": "label_values(network)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
@@ -5062,24 +5044,24 @@
       {
         "allValue": "*",
         "current": {
-          "selected": false,
-          "text": "Sovrin Builder Net",
-          "value": "Sovrin Builder Net"
+          "selected": true,
+          "text": "Stuard",
+          "value": "Stuard"
         },
         "datasource": {
           "type": "prometheus",
           "uid": "PBFA97CFB590B2093"
         },
-        "definition": "label_values(node_response_result_data_Pool_info_Reachable_nodes_count{name=\"[[node]]\"}, network)",
-        "description": "Select a network.",
+        "definition": "label_values(node_response_result_data_Pool_info_Reachable_nodes_count{network=\"[[network]]\"}, name)",
+        "description": "Select a node.",
         "hide": 0,
         "includeAll": false,
-        "label": "Network",
+        "label": "Node",
         "multi": false,
-        "name": "network",
+        "name": "node",
         "options": [],
         "query": {
-          "query": "label_values(node_response_result_data_Pool_info_Reachable_nodes_count{name=\"[[node]]\"}, network)",
+          "query": "label_values(node_response_result_data_Pool_info_Reachable_nodes_count{network=\"[[network]]\"}, name)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
