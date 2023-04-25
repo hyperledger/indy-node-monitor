@@ -499,12 +499,14 @@ if ! isInstalled ${SED_EXE}; then
 
   cat <<-EOF
   The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
-  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+  or [Chocolatey](https://chocolatey.org/) (Windows) or [GitHub](https://github.com/mirror/sed) (Linux).  For more information visit https://www.gnu.org/software/sed/
 
   Windows:
     - chocolatey install sed
   MAC:
     - brew install gnu-sed
+  Debian/Ubuntu:
+    - sudo apt-get install sed
 EOF
   exit 1
 fi
@@ -515,12 +517,14 @@ if ! isInstalled ${YQ_EXE}; then
 
   cat <<-EOF
   The recommended approach to installing the required package(s) is to use either [Homebrew](https://brew.sh/) (MAC)
-  or [Chocolatey](https://chocolatey.org/) (Windows).  For more information visit https://mikefarah.github.io/yq/
+  or [Chocolatey](https://chocolatey.org/) (Windows) or [GitHub](https://github.com/mikefarah/yq/) (Linux).  For more information visit https://mikefarah.github.io/yq/
 
   Windows:
     - chocolatey install ${YQ_EXE}
   MAC:
     - brew install ${YQ_EXE}
+  Linux(x86_64):
+    - wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
 EOF
   exit 1
 fi

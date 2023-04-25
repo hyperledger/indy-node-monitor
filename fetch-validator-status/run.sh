@@ -60,6 +60,8 @@ if ! isInstalled ${JQ_EXE}; then
     - chocolatey install ${JQ_EXE}
   MAC:
     - brew install ${JQ_EXE}
+  Debian/Ubuntu:
+    - sudo apt-get install ${JQ_EXE}
 EOF
   exit 1
 fi
