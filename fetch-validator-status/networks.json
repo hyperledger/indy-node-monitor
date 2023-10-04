@@ -1,66 +1,82 @@
 {
   "sbn": {
     "name": "Sovrin Builder Net",
+    "indyNamespace": "sovrin:builder",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_builder_genesis"
   },
   "ssn": {
     "name": "Sovrin Staging Net",
+    "indyNamespace": "sovrin:test",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_sandbox_genesis"
   },
   "smn": {
     "name": "Sovrin Main Net",
+    "indyNamespace": "sovrin",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_live_genesis"
   },
   "vn": {
     "name": "Local von-network",
+    "indyNamespace": "local:dev-docker",
     "genesisUrl": "http://host.docker.internal:9000/genesis"
   },
   "vn-linux": {
     "name": "Linux Local von-network",
+    "indyNamespace": "local:dev-linux",
     "genesisUrl": "http://localhost:9000/genesis"
   },
   "bcd": {
     "name": "BCovrin Dev",
+    "indyNamespace": "bcovrin:dev",
     "genesisUrl": "http://dev.bcovrin.vonx.io/genesis"
   },
   "bct": {
     "name": "BCovrin Test",
+    "indyNamespace": "bcovrin:test",
     "genesisUrl": "http://test.bcovrin.vonx.io/genesis"
   },
   "bcp": {
     "name": "BCovrin",
+    "indyNamespace": "bcovrin",
     "genesisUrl": "http://prod.bcovrin.vonx.io/genesis"
   },
   "gld": {
     "name": "GreenLight Dev Ledger",
+    "indyNamespace": "bcovrin:dev.greenlight",
     "genesisUrl": "http://dev.greenlight.bcovrin.vonx.io/genesis"
   },
   "gl": {
     "name": "GreenLight Ledger",
+    "indyNamespace": "bcovrin:greenlight",
     "genesisUrl": "http://greenlight.bcovrin.vonx.io/genesis"
   },
   "imn": {
     "name": "Indicio MainNet",
+    "indyNamespace": "indicio",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_mainnet_genesis"
   },
   "idn": {
     "name": "Indicio DemoNet",
+    "indyNamespace": "indicio:demo",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_demonet_genesis"
   },
   "itn": {
     "name": "Indicio TestNet",
+    "indyNamespace": "indicio:test",
     "genesisUrl": "https://raw.githubusercontent.com/Indicio-tech/indicio-network/main/genesis_files/pool_transactions_testnet_genesis"
   },
   "cdn": {
     "name": "CANdy Dev Network (CANdy-dev)",
+    "indyNamespace": "candy:dev",
     "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/dev/pool_transactions_genesis"
   },
   "ctn": {
     "name": "CANdy Test Network (CANdy-test)",
+    "indyNamespace": "candy:test",
     "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis"
   },
   "cpn": {
     "name": "CANdy Production Network (CANdy-prod)",
+    "indyNamespace": "candy",
     "genesisUrl": "https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/prod/pool_transactions_genesis"
   }
 }
