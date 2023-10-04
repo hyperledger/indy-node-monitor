@@ -6,7 +6,7 @@
   },
   "ssn": {
     "name": "Sovrin Staging Net",
-    "indyNamespace": "sovring:staging",
+    "indyNamespace": "sovrin:test",
     "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_sandbox_genesis"
   },
   "smn": {
