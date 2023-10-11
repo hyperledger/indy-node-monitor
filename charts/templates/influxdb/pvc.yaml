@@ -1,0 +1,14 @@
+---
+{{- with .Values.influxdb }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}-pvc"
+spec:
+  accessModes: 
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .data_volume }}
+{{- end }}

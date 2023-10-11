@@ -1,0 +1,46 @@
+---
+namespace: indy-monitoring-stack
+
+ingress:
+  active: true
+
+indy_node_monitor:
+  name: indy-node-monitor
+  port: 8080
+  repository: idlaborg/indy-node-monitor
+  tag: "0.4.2"
+
+alertmanager:
+  name: alertmanager
+  port: 9093
+  repository: prom/alertmanager
+  tag: v0.24.0
+
+prometheus:
+  name: prometheus
+  port: 9090
+  repository: prom/prometheus
+  tag: v2.34.0
+  data_volume: 20Gi
+
+influxdb:
+  name: influxdb
+  port_8082: 8082
+  port_api: 8086
+  port_udp: 8089
+  repository: influxdb
+  tag: "1.8"
+  data_volume: 20Gi
+
+telegraf:
+  name: telegraf
+  port: 9273
+  repository: telegraf
+  tag: 1.22-alpine
+
+grafana:
+  name: grafana
+  port: 3000
+  repository: grafana/grafana
+  tag: "8.4.4"
+  data_volume: 1Gi

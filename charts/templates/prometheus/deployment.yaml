@@ -1,0 +1,56 @@
+---
+{{- with .Values.prometheus }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port }}
+          command: 
+            - "prometheus"
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.path=/prometheus"
+            - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+            - "--web.console.templates=/usr/share/prometheus/consoles"
+          volumeMounts:
+            - name: "{{ .name }}-data"
+              mountPath: "/prometheus"
+            - name: "{{ .name }}-config"
+              mountPath: "/etc/prometheus/prometheus.yml"
+              subPath: prometheus.yml
+            - name: "{{ .name }}-alert"
+              mountPath: "/etc/prometheus/alert.rules"
+              subPath: alert.rules
+      volumes:
+        - name: "{{ .name }}-data"
+          persistentVolumeClaim:
+            claimName: "{{ .name }}-pvc"
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: prometheus.yml
+                path: prometheus.yml
+        - name: "{{ .name }}-alert"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: alert.rules
+                path: alert.rules
+{{- end }}

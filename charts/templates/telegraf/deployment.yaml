@@ -1,0 +1,51 @@
+---
+{{- with .Values.telegraf }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port }}
+          env:
+            - name: INFLUX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key:  INFLUX_TOKEN
+          {{- range $.Values.inputs }}
+            - name: "{{ .short_name | upper }}_SEED"
+              valueFrom:
+                secretKeyRef:
+                  name: seeds
+                  key: "{{ .short_name | upper }}_SEED"
+          {{- end }}
+            - name: HOSTNAME
+              value: {{ .name }}
+          volumeMounts:
+            - name: "{{ .name }}-config"
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+      volumes:
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: telegraf.conf
+                path: telegraf.conf
+{{- end }}
