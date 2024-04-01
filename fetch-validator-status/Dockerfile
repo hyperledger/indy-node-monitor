@@ -61,5 +61,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 ADD networks.json .
 ADD *.py ./
+ADD plugins ./plugins
 
 ENTRYPOINT ["bash", "-c", "python main.py $@", "--"]
