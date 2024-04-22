@@ -39,7 +39,7 @@ WORKDIR $HOME
 # - In order to drop the root user, we have to make some directories writable
 #   to the root group as OpenShift default security model is to run the container
 #   under random UID.
-RUN usermod -a -G 0 indy
+RUN usermod -a -G root $user
 
 # Create standard directories to allow volume mounting and set permissions
 # Note: PIP_NO_CACHE_DIR environment variable should be cleared to allow caching
@@ -49,8 +49,8 @@ RUN mkdir -p \
 
 # The root group needs access the directories under $HOME for the container to function in OpenShift.
 # Also ensure the permissions on the python 'site-packages' folder are set correctly.
-RUN chown -R indy:root $HOME && \
-    chmod -R ug+rw $HOME && \
+RUN chown -R $user:root $HOME && \
+    chmod -R ug+rw $HOME $HOME/log && \
     chmod +rx $(python -m site --user-site)
 
 USER $user
