@@ -1,0 +1,80 @@
+---
+{{- with .Values.grafana }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port }}
+          env:
+            - name: GF_USERS_ALLOW_SIGN_UP
+              value: "false"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key:  GF_SECURITY_ADMIN_PASSWORD
+            - name: INFLUX_DB_FLUX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: INFLUX_DB_FLUX_TOKEN
+          volumeMounts:
+            - name: "{{ .name }}-data"
+              mountPath: "/var/lib/grafana"
+            - name: "{{ .name }}-datasource"
+              mountPath: "/etc/grafana/provisioning/datasources/datasource.yml"
+              subPath: datasource.yml
+            - name: "{{ .name }}-dashboard"
+              mountPath: "/etc/grafana/provisioning/dashboards/dashboard.yml"
+              subPath: dashboard.yml
+            {{- range $path, $bytes  := $.Files.Glob "config/grafana/dashboards/**" }}
+            {{- with $file := split "/" $path }}
+            - name: {{ $file._3 | replace ".json" "" | lower }}-dashboard
+              mountPath: "/etc/grafana/provisioning/dashboards/{{ $file._3 }}"
+              subPath: "{{ $file._3 }}"
+            {{- end }}
+            {{- end }}
+      volumes:
+        - name: "{{ .name }}-data"
+          persistentVolumeClaim:
+            claimName: "{{ .name }}-pvc"
+        - name: "{{ .name }}-datasource"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: datasource.yml
+                path: datasource.yml
+        - name: "{{ .name }}-dashboard"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: dashboard.yml
+                path: dashboard.yml
+        {{- range $path, $bytes  := $.Files.Glob "config/grafana/dashboards/**" }}
+        {{- with $file := split "/" $path }}
+        - name: {{ $file._3 | replace ".json" "" | lower }}-dashboard
+          configMap:
+            name: "{{ $.Values.grafana.name }}-configmap"
+            items:
+              - key: "{{ $file._3 }}"
+                path: "{{ $file._3 }}"
+        {{- end }}
+        {{- end }}
+{{- end }}

@@ -1,0 +1,24 @@
+---
+{{- with .Values.influxdb }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}"
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - name: "8082"
+      protocol: TCP
+      port: {{ .port_8082 }}
+      targetPort: {{ .port_8082 }}
+    - name: api
+      protocol: TCP
+      port: {{ .port_api }}
+      targetPort: {{ .port_api }}
+    - name: udp
+      protocol: UDP
+      port: {{ .port_udp }}
+      targetPort: {{ .port_udp }}
+{{- end }}
