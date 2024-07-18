@@ -78,7 +78,7 @@ async def networks():
 
 @app.get("/networks/{network}")
 async def network(network: Network = Path(path=example_network_enum, example=example_network_name, description="The network code."),
-                  status: bool = Query(False, description="Filter results to status only."), 
+                  status: bool = Query(False, description="Filter results to status only."),
                   alerts: bool = Query(False, description="Filter results to alerts only."),
                   seed: Optional[str] = Header(None, description="Your network monitor seed.")):
     monitor_plugins = set_plugin_parameters(status, alerts)
@@ -93,10 +93,18 @@ async def network(network: Network = Path(path=example_network_enum, example=exa
     result = await pool.get_transactions()
     return result
 
+@app.get("/networks/{network}/pool/verifiers")
+async def network(network: Network = Path(path=example_network_enum, example=example_network_name, description="The network code.")):
+    set_plugin_parameters()
+    pool, _ = await pool_collection.get_pool(network.value)
+    await pool.refresh()
+    result = await pool.get_verifiers()
+    return result
+
 @app.get("/networks/{network}/{node}")
 async def node(network: Network = Path(path=example_network_enum, example=example_network_name, description="The network code."),
                node: str = Path(..., example="FoundationBuilder", description="The node name."),
-               status: bool = Query(False, description="Filter results to status only."), 
+               status: bool = Query(False, description="Filter results to status only."),
                alerts: bool = Query(False, description="Filter results to alerts only."),
                seed: Optional[str] = Header(None, description="Your network monitor seed.")):
     monitor_plugins = set_plugin_parameters(status, alerts)
