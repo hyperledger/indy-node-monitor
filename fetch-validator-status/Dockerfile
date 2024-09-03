@@ -45,12 +45,13 @@ RUN usermod -a -G root $user
 # Note: PIP_NO_CACHE_DIR environment variable should be cleared to allow caching
 RUN mkdir -p \
     $HOME/log \
+    $HOME/cache \
     $(python -m site --user-site)
 
 # The root group needs access the directories under $HOME for the container to function in OpenShift.
 # Also ensure the permissions on the python 'site-packages' folder are set correctly.
 RUN chown -R $user:root $HOME && \
-    chmod -R ug+rw $HOME $HOME/log && \
+    chmod -R ug+rw $HOME $HOME/log $HOME/cache && \
     chmod +rx $(python -m site --user-site)
 
 USER $user

@@ -59,7 +59,7 @@ class Networks(object, metaclass=Singleton):
 
     def resolve(self, network_id: str = None, genesis_url: str = None, genesis_path: str = None):
         network_name = None
-        genesis_path_base = f"{self.__get_script_dir()}/"
+        genesis_path_base = f"{self.__get_script_dir()}/cache/"
 
         if network_id and network_id in self.ids:
             log("Connecting to '{0}' ...".format(self.networks[network_id]["name"]))
