@@ -17,7 +17,9 @@ services:
       # Mounts for indy-node-monitor configuration
       - ./fetch-validator-status/plugins/:/home/indy/plugins/
       - ./fetch-validator-status/conf/:/home/indy/conf/
-      - ./fetch-validator-status/logs/:/home/indy/logs/
+      - ./fetch-validator-status/log/:/home/indy/log/
+      - ./fetch-validator-status/cache/:/home/indy/cache/
+
     ports:
       - "8080:8080"
     networks:
