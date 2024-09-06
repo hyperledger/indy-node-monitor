@@ -1,0 +1,49 @@
+---
+{{- with .Values.influxdb }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port_8082 }}
+            - containerPort: {{ .port_api }}
+            - containerPort: {{ .port_udp }}
+          env:
+            - name: INFLUX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key:  INFLUX_TOKEN
+          volumeMounts:
+            - name: "{{ .name }}-data"
+              mountPath: "/var/lib/influxdb"
+            - name: "{{ .name }}-config"
+              mountPath: "/etc/influxdb/influxdb.conf"
+              subPath: influxdb.conf
+      volumes:
+        - name: "{{ .name }}-data"
+          persistentVolumeClaim:
+            claimName: "{{ .name }}-pvc"
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: influxdb.conf
+                path: influxdb.conf
+{{- end }}
