@@ -18,9 +18,11 @@ jobs:
       - name: Log in to GitHub Container Registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
+      - name: Extract version from Git tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
       - name: Build the Docker image
-        run: docker build -t ghcr.io/${{ github.actor }}/REPOSITORY_NAME:${{ github.sha }} .
+        run: docker build -t ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}/indy-node-monitor:${{ env.VERSION }} .
 
       - name: Push the Docker image
-        run: docker push ghcr.io/${{ github.actor }}/REPOSITORY_NAME:${{ github.sha }}
-
+        run: docker push ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}/indy-node-monitor:${{ env.VERSION }}
