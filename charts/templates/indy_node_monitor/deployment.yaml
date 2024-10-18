@@ -1,0 +1,60 @@
+---
+{{- with .Values.indy_node_monitor }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ $.Values.ecr.registry }}/{{ .repository }}:{{ .tag }}"
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: {{ .requests_mem }}
+              cpu: {{ .requests_cpu }}
+            limits:
+              memory: {{ .limits_mem }}
+              cpu: {{ .limits_cpu }}
+          ports:
+            - containerPort: {{ .port }}
+          command:
+            - "python"
+            - "main.py"
+            - "--web"
+            - "--verbose"
+          volumeMounts:
+            - name: "{{ .name }}-log"
+              mountPath: "{{ .home }}/log"          
+            - name: "{{ .name }}-cache"
+              mountPath: "{{ .home }}/cache"          
+            - name: "{{ .name }}-config"
+              mountPath: "{{ .home }}/networks.json"
+              subPath: networks.json
+      volumes:
+        - name: "{{ .name }}-log"
+          persistentVolumeClaim:
+            claimName: "{{ .name }}-pvc"
+        - name: "{{ .name }}-cache"
+          emptyDir: {}  
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: networks.json
+                path: networks.json
+      imagePullSecrets:
+        - name: ecr-docker-secret                
+{{- end }}

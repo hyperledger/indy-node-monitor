@@ -1,0 +1,297 @@
+  apiVersion: 1
+  groups:
+    - orgId: 1
+      name: indy-1m
+      folder: 'Indy monitoring'
+      interval: 1m
+      rules:
+        - uid: edydj68szkyrkc
+          title: Node Connectivity
+          condition: E
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: P951FEA4DE68E13C5
+              model:
+                adhocFilters: []
+                alias: Write Failure
+                datasource:
+                    type: influxdb
+                    uid: P951FEA4DE68E13C5
+                groupBy:
+                    - params:
+                        - $__interval
+                      type: time
+                    - params:
+                        - "null"
+                      type: fill
+                intervalMs: 1000
+                limit: ""
+                maxDataPoints: 43200
+                measurement: ""
+                orderByTime: ASC
+                policy: default
+                query: SELECT max("response_result_data_Pool_info_Total_nodes_count") - last("response_result_data_Pool_info_f_value") FROM "node" WHERE ("network" =~ /^Sovrin Builder Net$/) AND $timeFilter GROUP BY time(1s) fill(previous)
+                rawQuery: true
+                rawSql: ""
+                refId: A
+                resultFormat: Write Failure
+                select:
+                    - - params:
+                            - value
+                        type: field
+                      - params: []
+                        type: mean
+                slimit: ""
+                tags: []
+                tz: ""
+            - refId: B
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: P951FEA4DE68E13C5
+              model:
+                adhocFilters: []
+                alias: Reachable
+                datasource:
+                    type: influxdb
+                    uid: P951FEA4DE68E13C5
+                groupBy:
+                    - params:
+                        - $__interval
+                      type: time
+                    - params:
+                        - "null"
+                      type: fill
+                intervalMs: 1000
+                limit: ""
+                maxDataPoints: 43200
+                measurement: ""
+                orderByTime: ASC
+                policy: default
+                query: SELECT min("response_result_data_Pool_info_Reachable_nodes_count") FROM "node" WHERE ("network" =~ /^Sovrin Builder Net$/ ) AND $timeFilter GROUP BY time(1s) fill(previous)
+                rawQuery: true
+                rawSql: ""
+                refId: B
+                resultFormat: Write Failure
+                select:
+                    - - params:
+                            - value
+                        type: field
+                      - params: []
+                        type: mean
+                slimit: ""
+                tags: []
+                tz: ""
+            - refId: C
+              relativeTimeRange:
+                from: 300
+                to: 0
+              datasourceUid: P951FEA4DE68E13C5
+              model:
+                adhocFilters: []
+                alias: Warning Trigger
+                datasource:
+                    type: influxdb
+                    uid: P951FEA4DE68E13C5
+                groupBy:
+                    - params:
+                        - $__interval
+                      type: time
+                    - params:
+                        - "null"
+                      type: fill
+                intervalMs: 1000
+                limit: ""
+                maxDataPoints: 43200
+                measurement: ""
+                orderByTime: ASC
+                policy: default
+                query: SELECT min("response_result_data_Pool_info_Reachable_nodes_count") -  max("response_result_data_Pool_info_f_value") - last("response_result_data_Pool_info_f_value") FROM "node" WHERE ("network" =~ /^Sovrin Builder Net$/) AND $timeFilter GROUP BY time(1s) fill(previous)
+                rawQuery: true
+                rawSql: ""
+                refId: C
+                resultFormat: Write Failure
+                select:
+                    - - params:
+                            - value
+                        type: field
+                      - params: []
+                        type: mean
+                slimit: ""
+                tags: []
+                tz: ""
+            - refId: D
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - D
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: C
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: D
+                type: reduce
+            - refId: E
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 1
+                        type: lt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - E
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: D
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: E
+                type: threshold
+          dashboardUid: pPcqoSfn3
+          panelId: 2
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: pPcqoSfn3
+            __panelId__: "2"
+            summary: We have a Connectivity issue
+          labels: {}
+          isPaused: false
+          notification_settings:
+            receiver: grafana-default-email
+        - uid: ddydm47flc3y8d
+          title: Error Warning
+          condition: C
+          data:
+            - refId: A
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: P951FEA4DE68E13C5
+              model:
+                alias: Status Error
+                datasource:
+                    type: influxdb
+                    uid: P951FEA4DE68E13C5
+                groupBy:
+                    - params:
+                        - $__interval
+                      type: time
+                    - params:
+                        - "null"
+                      type: fill
+                hide: false
+                intervalMs: 1000
+                maxDataPoints: 43200
+                measurement: ""
+                orderByTime: ASC
+                policy: default
+                query: SELECT max("status_errors") FROM "node" WHERE ("network" =~ /^Sovrin Builder Net$/) AND $timeFilter GROUP BY time(1s) fill(previous)
+                rawQuery: true
+                rawSql: ""                
+                refId: A
+                resultFormat: time_series
+                select:
+                    - - params:
+                            - value
+                        type: field
+                      - params: []
+                        type: mean
+                slimit: ""
+                tags: []
+            - refId: B
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params: []
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - B
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: A
+                intervalMs: 1000
+                maxDataPoints: 43200
+                reducer: last
+                refId: B
+                type: reduce
+            - refId: C
+              relativeTimeRange:
+                from: 600
+                to: 0
+              datasourceUid: __expr__
+              model:
+                conditions:
+                    - evaluator:
+                        params:
+                            - 0
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                            - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                datasource:
+                    type: __expr__
+                    uid: __expr__
+                expression: B
+                intervalMs: 1000
+                maxDataPoints: 43200
+                refId: C
+                type: threshold
+          dashboardUid: pPcqoSfn3
+          panelId: 4
+          noDataState: NoData
+          execErrState: Error
+          for: 1m
+          annotations:
+            __dashboardUid__: pPcqoSfn3
+            __panelId__: "4"          
+            summary: We have a status error
+          labels: {}
+          isPaused: false
+          notification_settings:
+            receiver: grafana-default-email

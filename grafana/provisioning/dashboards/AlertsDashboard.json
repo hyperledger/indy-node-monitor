@@ -29,8 +29,9 @@
   "panels": [
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -38,11 +39,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -51,6 +54,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -87,7 +91,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
         "x": 0,
         "y": 0
@@ -107,43 +111,133 @@
       },
       "targets": [
         {
+          "alias": "Write Failure",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "max(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"} - node_response_result_data_Pool_info_f_value{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Write Failure",
-          "range": true,
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT max(\"response_result_data_Pool_info_Total_nodes_count\") - last(\"response_result_data_Pool_info_f_value\") FROM \"node\" WHERE (\"network\" =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "Write Failure",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         },
         {
+          "alias": "Reachable",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Reachable",
-          "range": true,
-          "refId": "B"
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT min(\"response_result_data_Pool_info_Reachable_nodes_count\") FROM \"node\" WHERE (\"network\" =~ /^$network$/ ) AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "Write Failure",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         },
         {
+          "alias": "Warning Trigger",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "editorMode": "code",
-          "expr": "min(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"}) - max(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"} - node_response_result_data_Pool_info_f_value{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "legendFormat": "Warning Trigger",
-          "range": true,
-          "refId": "C"
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT min(\"response_result_data_Pool_info_Reachable_nodes_count\") -  max(\"response_result_data_Pool_info_Total_nodes_count\") - last(\"response_result_data_Pool_info_f_value\") FROM \"node\" WHERE (\"network\" =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(previous)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "Write Failure",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": []
         }
       ],
       "title": "Node Connectivity",
@@ -151,8 +245,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -160,11 +255,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 0,
             "gradientMode": "none",
@@ -173,6 +270,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -228,18 +326,60 @@
       "pluginVersion": "9.3.6",
       "targets": [
         {
+          "alias": "{{tag_name}}",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "editorMode": "code",
-          "expr": "node_status_errors{job=\"tick\", network=\"[[network]]\"}",
-          "legendFormat": "{{label_name}}",
-          "range": true,
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "name::tag"
+              ],
+              "type": "tag"
+            },
+            {
+              "params": [
+                "previous"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status_errors"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "last"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
-      "title": "WIP",
+      "title": "Node errors",
       "transformations": [
         {
           "id": "labelsToFields",
@@ -255,22 +395,21 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 37,
-  "style": "dark",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
           "selected": false,
-          "text": "Sovrin Builder Net",
-          "value": "Sovrin Builder Net"
+          "text": "QC-Net-beta",
+          "value": "QC-Net-beta"
         },
         "datasource": {
-          "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "type": "influxdb",
+          "uid": "P951FEA4DE68E13C5"
         },
-        "definition": "label_values(network)",
+        "definition": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"network\" ",
         "description": "Select a Network.",
         "hide": 0,
         "includeAll": false,
@@ -279,8 +418,8 @@
         "name": "network",
         "options": [],
         "query": {
-          "query": "label_values(network)",
-          "refId": "StandardVariableQuery"
+          "query": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"network\" ",
+          "refId": "InfluxVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -297,7 +436,7 @@
   "timepicker": {},
   "timezone": "",
   "title": "Alerts Dashboard",
-  "uid": "pPcqoSfnk",
+  "uid": "pPcqoSfn3",
   "version": 1,
   "weekStart": ""
 }

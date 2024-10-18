@@ -1,0 +1,51 @@
+{{- if and (eq .Values.alertmanager.enable true) (.Values.alertmanager.port) }}
+---
+{{- with .Values.alertmanager }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ $.Values.ecr.registry }}/{{ .repository }}:{{ .tag }}"
+          resources:
+            requests:
+              memory: {{ .requests_mem }}
+              cpu: {{ .requests_cpu }}
+            limits:
+              memory: {{ .limits_mem }}
+              cpu: {{ .limits_cpu }}          
+          ports:
+            - containerPort: {{ .port }}
+          command:
+            - "alertmanager"
+            - "--config.file=/etc/alertmanager/config.yml"
+            - "--storage.path=/alertmanager"
+          volumeMounts:
+            - mountPath: /etc/alertmanager/config.yml
+              name: "{{ .name }}-config"
+              subPath: config.yml
+      volumes:
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: config.yml
+                path: config.yml
+      imagePullSecrets:
+        - name: ecr-docker-secret
+{{- end }}
+{{- end }}

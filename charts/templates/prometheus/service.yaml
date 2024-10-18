@@ -1,0 +1,17 @@
+{{- if and (eq .Values.prometheus.enable true) (.Values.prometheus.port) }}
+---
+{{- with .Values.prometheus }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}"
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .port }}
+{{- end }}
+{{- end }}

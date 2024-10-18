@@ -1,0 +1,43 @@
+---
+namespace: "inc-indy-node-monitor"
+ingress:
+  active: false
+  domain: "dev.identite.pes.qc"
+  cert_manager: 
+    active: false
+    issuer: letsencrypt-staging
+  endpoints:
+    grafana: "grafana"
+    influxdb: ""
+    prometheus: ""
+    alertmanager: ""
+    indy_node_monitor: ""
+
+route:
+  active: true
+  domain: "dev.identite.pes.qc"
+  endpoints:
+    grafana: "grafana"
+    influxdb: ""
+    prometheus: ""
+    alertmanager: ""
+    indy_node_monitor: ""
+
+# Here's an example for inputs, replace with the networks you want to monitor.
+inputs:
+  - name: QC-Net-beta
+    short_name: qcb
+    genesisUrl: https://raw.githubusercontent.com/MCN-ING/candy-registre/main/env/beta/pool_transactions_genesis
+    network_monitor_seed: MBkoqteRjceo4rxaBkqCKoc3MGpERKZs
+  - name: CANdy Dev Network (CANdy-dev)
+    short_name: cdn
+    genesisUrl: https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/dev/pool_transactions_genesis
+    network_monitor_seed: 01234567890123456789012345678901
+  - name: CANdy Test Network (CANdy-test)
+    short_name: ctn
+    genesisUrl: https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/test/pool_transactions_genesis
+    network_monitor_seed: aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpP
+  - name: CANdy Production Network (CANdy-prod)
+    short_name: cpn
+    genesisUrl: https://raw.githubusercontent.com/ICCS-ISAC/dtrust-reconu/main/CANdy/prod/pool_transactions_genesis
+    network_monitor_seed:

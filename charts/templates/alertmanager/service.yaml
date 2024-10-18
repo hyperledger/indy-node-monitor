@@ -1,0 +1,17 @@
+{{- if and (eq .Values.alertmanager.enable true) (.Values.alertmanager.port) }}
+---
+{{- with .Values.alertmanager }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}"
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - protocol: TCP
+      port: {{ .port }}
+      targetPort: {{ .port }}
+{{- end }}
+{{- end }}

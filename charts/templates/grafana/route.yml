@@ -1,0 +1,19 @@
+{{- if and (eq .Values.route.active true) (.Values.route.endpoints.grafana) }}
+---
+{{- with .Values.grafana }}
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}-route
+spec:
+  host: "{{ $.Values.route.endpoints.grafana }}.{{ $.Values.route.domain }}"
+  to:
+    kind: Service
+    name: {{ .name }}
+  port:
+    targetPort:  {{ .port }}
+  tls:
+    termination: edge
+{{- end }}
+{{- end }}

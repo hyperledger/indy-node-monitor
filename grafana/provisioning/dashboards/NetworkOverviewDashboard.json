@@ -24,6 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
+  "id": 10,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -86,8 +87,9 @@
         "y": 0
       },
       "id": 104,
-      "links": [],
       "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -98,9 +100,10 @@
         },
         "showThresholdLabels": false,
         "showThresholdMarkers": true,
+        "sizing": "auto",
         "text": {}
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -194,8 +197,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average Node Connectivity",
       "fieldConfig": {
@@ -204,11 +208,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "opacity",
@@ -217,6 +223,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -320,60 +327,206 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Reachable Nodes",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "round(avg(node_response_result_data_Pool_info_Reachable_nodes_count{job=\"tick\", network=\"[[network]]\"}))",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Pool_info_Total_nodes_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
+        },
+        {
+          "alias": "Total Nodes",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Reachable Nodes",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Pool_info_Total_nodes_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "min"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Unreachable Nodes",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "min(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Total Nodes",
-          "refId": "A"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "exemplar": true,
-          "expr": "max(node_response_result_data_Pool_info_Unreachable_nodes_count{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": true,
-          "interval": "",
-          "legendFormat": "Unreachable Nodes",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Pool_info_Unreachable_nodes_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Write Failure Threshhold",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "max(node_response_result_data_Pool_info_Total_nodes_count{job=\"tick\", network=\"[[network]]\"} - node_response_result_data_Pool_info_f_value{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Write Failure Threshhold",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT max(\"response_result_data_Pool_info_Total_nodes_count\") - max(\"response_result_data_Pool_info_f_value\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Pool_info_Total_nodes_count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
-      "transformations": [],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Status Errors",
       "fieldConfig": {
@@ -382,11 +535,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -395,6 +550,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -452,24 +608,55 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Errors",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "max(node_status_errors{job=\"tick\", network=\"[[network]]\"})",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "Errors",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$interval"
+              ],
+              "type": "time"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "autogen",
+          "query": " from(bucket: v.defaultBucket)\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn:(r) =>\r\n    r._measurement == \"node\" and \r\n    r._field == \"node_status_errors\" and\r\n    r.network == \"${network}\"\r\n  )\r\n  |> yield()",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status_errors"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Status Warnings",
       "fieldConfig": {
@@ -478,11 +665,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -491,6 +680,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -548,17 +738,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Warnings",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "max(node_status_warnings{job=\"tick\", network=\"[[network]]\"})",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "Warnings",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "status_warnings"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "max"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "type": "timeseries"
@@ -566,8 +790,8 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "gridPos": {
         "h": 1,
@@ -582,8 +806,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -592,11 +817,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 50,
             "gradientMode": "opacity",
@@ -605,6 +832,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -626,7 +854,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -685,28 +914,63 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txns per Second",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": false,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_average_per_second_read_transactions{job=\"tick\", network=\"[[network]]\"})",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "Txns per Second",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_average-per-second_read-transactions\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_average-per-second_read-transactions"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Read Txns per Second",
-      "transformations": [],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -715,11 +979,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -728,6 +994,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -749,7 +1016,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -783,15 +1051,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txns per Second",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_average_per_second_write_transactions{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txns per Second",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_average-per-second_write-transactions"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Write Txns per Second",
@@ -800,8 +1104,8 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "gridPos": {
         "h": 1,
@@ -816,8 +1120,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -826,11 +1131,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -839,6 +1146,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -860,7 +1168,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -892,15 +1201,51 @@
       },
       "targets": [
         {
+          "alias": "Request timeouts",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Requests_timeouts_Ordering_phase_req_timeouts{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Request timeouts",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Requests_timeouts_Ordering_phase_req_timeouts"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Ordering Phase Req Timeouts",
@@ -908,8 +1253,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -918,11 +1264,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -931,6 +1279,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -952,7 +1301,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -984,15 +1334,51 @@
       },
       "targets": [
         {
+          "alias": "Request timeouts",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Requests_timeouts_Propagates_phase_req_timeouts{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Request timeouts",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Requests_timeouts_Propagates_phase_req_timeouts"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Propagates Phase Req Timeouts",
@@ -1001,8 +1387,8 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "gridPos": {
         "h": 1,
@@ -1017,8 +1403,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1027,11 +1414,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1040,6 +1429,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineStyle": {
               "fill": "solid"
@@ -1064,7 +1454,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1074,7 +1465,32 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "__systemRef": "hideSeriesFrom",
+            "matcher": {
+              "id": "byNames",
+              "options": {
+                "mode": "exclude",
+                "names": [
+                  "Ledger 3"
+                ],
+                "prefix": "All except:",
+                "readOnly": true
+              }
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom",
+                "value": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": true
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 6,
@@ -1098,63 +1514,201 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Ledger 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_0_Count{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Ledger 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Uncommitted_ledger_txns_0_Count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_1_Count{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Uncommitted_ledger_txns_1_Count\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Uncommitted_ledger_txns_1_Count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_2_Count{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Uncommitted_ledger_txns_1_Count\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Uncommitted_ledger_txns_2_Count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_3_Count{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "ledger 3",
-          "refId": "D"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
-          },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Uncommitted_ledger_txns_1001_Count{job=\"tick\", network=\"[[network]]\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 1001",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Uncommitted_ledger_txns_1_Count\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Uncommitted_ledger_txns_3_Count"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Uncommitted Ledger Txns",
@@ -1162,8 +1716,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1172,11 +1727,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1185,6 +1742,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1206,7 +1764,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1240,15 +1799,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txn Count",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_ledger{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txn Count",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_transaction-count_ledger"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Ledger Txn Count",
@@ -1256,8 +1851,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1266,11 +1862,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1279,6 +1877,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1300,7 +1899,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1334,15 +1934,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txn Count",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_audit{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txn Count",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_transaction-count_audit"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Audit Txn Count",
@@ -1350,8 +1986,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1360,11 +1997,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1373,6 +2012,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1394,7 +2034,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1428,15 +2069,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txn Count",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_config{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txn Count",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_transaction-count_config"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Config Txn Count",
@@ -1444,8 +2121,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1454,11 +2132,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1467,6 +2147,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1488,7 +2169,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1522,15 +2204,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txn Count",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_pool{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txn Count",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_transaction-count_pool"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Pool Txn Count",
@@ -1538,8 +2256,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1548,11 +2267,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1561,6 +2282,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1582,7 +2304,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1616,15 +2339,53 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Txn Count",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_transaction_count_1001{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Txn Count",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_transaction-count_1001\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_transaction-count_pool"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "1001 Txn Count",
@@ -1632,8 +2393,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1642,11 +2404,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1655,6 +2419,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1676,7 +2441,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1710,63 +2476,251 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Ledger 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Ledger 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 3",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Ledger 1001",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1001{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Ledger 1001",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_1001\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Catchup_status_Number_txns_in_catchup_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Catchup Txn Count",
@@ -1787,8 +2741,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1797,11 +2752,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1810,6 +2767,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1831,7 +2789,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1865,15 +2824,53 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Throughput",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_master_throughput{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Throughput",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_master throughput\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_master throughput"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Master Throughput",
@@ -1881,8 +2878,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -1891,11 +2889,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -1904,6 +2904,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1925,7 +2926,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1982,17 +2984,51 @@
       },
       "targets": [
         {
+          "alias": "Master throughput ratio",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_master_throughput_ratio{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Master throughput ratio",
-          "range": true,
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_master throughput ratio"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Master Throughput Ratio",
@@ -2000,8 +3036,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2010,11 +3047,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2023,6 +3062,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2044,7 +3084,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2076,87 +3117,351 @@
       },
       "targets": [
         {
+          "alias": "Throughput 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_0{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Throughput 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 3",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 4",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_4{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 4",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_4\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 5",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_5{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 5",
-          "refId": "F"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_5\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Throughput 6",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_throughput_6{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Throughput 6",
-          "refId": "G"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_throughput_6\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_throughput_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Throughput",
@@ -2164,8 +3469,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2174,11 +3480,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2187,6 +3495,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2208,7 +3517,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2265,15 +3575,51 @@
       },
       "targets": [
         {
+          "alias": "Avg backup throughup",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_avg_backup_throughput{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Avg backup throughup",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_avg backup throughput"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Avg Backup Throughput",
@@ -2281,8 +3627,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2291,11 +3638,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2304,6 +3653,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2325,7 +3675,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2357,15 +3708,53 @@
       },
       "targets": [
         {
+          "alias": "Request Latency",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "max(node_response_result_data_Node_info_Metrics_max_master_request_latencies{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Request Latency",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_max master request latencies\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": false,
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_max master request latencies"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Max Master Req. Latencies",
@@ -2373,8 +3762,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2383,11 +3773,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2396,6 +3788,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2417,7 +3810,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2451,75 +3845,351 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Avg Req. Latencies 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_0{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Avg Req. Latencies 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Avg Req. Latencies 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Avg Req. Latencies 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 3",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Avg Req. Latencies 4",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_4{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 4",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_4\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Avg Req. Latencies 5",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_client_avg_request_latencies_5{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Avg Req. Latencies 5",
-          "refId": "F"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_5\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
+        },
+        {
+          "alias": "Avg Req. Latencies 6",
+          "datasource": {
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
+          },
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "hide": false,
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_client avg request latencies_6\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_client avg request latencies_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Client Avg Request Latencies",
@@ -2527,8 +4197,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2537,11 +4208,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2550,6 +4223,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2571,7 +4245,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2603,87 +4278,351 @@
       },
       "targets": [
         {
+          "alias": "Request 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_0{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Request 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 3",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 4",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_4{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 4",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_4\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 5",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_5{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 5",
-          "refId": "F"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_5\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Request 6",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_durations_6{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Request 6",
-          "refId": "G"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request durations_6\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request durations_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Ordered Request Durations",
@@ -2691,8 +4630,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2701,11 +4641,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2714,6 +4656,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2735,7 +4678,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2767,99 +4711,399 @@
       },
       "targets": [
         {
+          "alias": "Total Requests",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_total_requests{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Total Requests",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_total requests"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_0{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 0",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 1",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 2",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 3",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 4",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_4{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 4",
-          "refId": "F"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_4\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 5",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_ordered_request_counts_5{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 5",
-          "refId": "G"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_5\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Count 6",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_node_response_result_data_Node_info_Metrics_ordered_request_counts_6{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Count 6",
-          "refId": "H"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_ordered request counts_6\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "H",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_ordered request counts_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Request Counts",
@@ -2867,8 +5111,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -2877,11 +5122,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -2890,6 +5137,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -2911,7 +5159,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2943,87 +5192,351 @@
       },
       "targets": [
         {
+          "alias": "Instance 0",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_0{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Instance 0",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 1",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_1{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 1",
-          "refId": "B"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_1\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "B",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 2",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_2{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 2",
-          "refId": "C"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_2\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "C",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 3",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_3{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 3",
-          "refId": "D"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_3\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "D",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 4",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_4{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 4",
-          "refId": "E"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_4\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "E",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 5",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_5{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 5",
-          "refId": "F"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_5\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "F",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         },
         {
+          "alias": "Instance 6",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_instances_started_6{job=\"tick\", network=\"[[network]]\"})",
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
           "hide": false,
-          "interval": "",
-          "legendFormat": "Instance 6",
-          "refId": "G"
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "query": "SELECT mean(\"response_result_data_Node_info_Metrics_instances started_6\") FROM \"node\" WHERE (\"network\"::tag =~ /^$network$/) AND $timeFilter GROUP BY time($__interval) fill(null)",
+          "rawQuery": true,
+          "refId": "G",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_instances started_0"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Instances Started",
@@ -3031,8 +5544,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -3041,11 +5555,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -3054,6 +5570,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3075,7 +5592,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3109,15 +5627,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Replicas",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Count_of_replicas{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Replicas",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Count_of_replicas"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Replica Count",
@@ -3125,8 +5679,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -3135,11 +5690,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -3148,6 +5705,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3169,7 +5727,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3201,15 +5760,51 @@
       },
       "targets": [
         {
+          "alias": "Lambda",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_Lambda{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Lambda",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_Lambda"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Lambda",
@@ -3217,8 +5812,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -3227,11 +5823,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -3240,6 +5838,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3261,7 +5860,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3295,15 +5895,51 @@
       "pluginVersion": "8.0.0",
       "targets": [
         {
+          "alias": "Omega",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_Omega{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Omega",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_Omega"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Omega",
@@ -3311,8 +5947,9 @@
     },
     {
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "default": false,
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "description": "Network Average",
       "fieldConfig": {
@@ -3321,11 +5958,13 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
+            "barWidthFactor": 0.6,
             "drawStyle": "line",
             "fillOpacity": 10,
             "gradientMode": "none",
@@ -3334,6 +5973,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -3355,7 +5995,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3387,15 +6028,51 @@
       },
       "targets": [
         {
+          "alias": "Delta",
           "datasource": {
-            "type": "prometheus",
-            "uid": "PBFA97CFB590B2093"
+            "type": "influxdb",
+            "uid": "P951FEA4DE68E13C5"
           },
-          "exemplar": true,
-          "expr": "avg(node_response_result_data_Node_info_Metrics_Delta{job=\"tick\", network=\"[[network]]\"})",
-          "interval": "",
-          "legendFormat": "Delta",
-          "refId": "A"
+          "groupBy": [
+            {
+              "params": [
+                "$__interval"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "null"
+              ],
+              "type": "fill"
+            }
+          ],
+          "measurement": "node",
+          "orderByTime": "ASC",
+          "policy": "default",
+          "refId": "A",
+          "resultFormat": "time_series",
+          "select": [
+            [
+              {
+                "params": [
+                  "response_result_data_Node_info_Metrics_Delta"
+                ],
+                "type": "field"
+              },
+              {
+                "params": [],
+                "type": "mean"
+              }
+            ]
+          ],
+          "tags": [
+            {
+              "key": "network::tag",
+              "operator": "=~",
+              "value": "/^$network$/"
+            }
+          ]
         }
       ],
       "title": "Delta Response",
@@ -3404,8 +6081,8 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "gridPos": {
         "h": 1,
@@ -3430,7 +6107,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "inspect": false
           },
           "mappings": [],
@@ -3438,7 +6117,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3457,7 +6137,9 @@
       },
       "id": 90,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3466,7 +6148,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3515,7 +6197,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "inspect": false
           },
           "mappings": [],
@@ -3523,7 +6207,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3542,7 +6227,9 @@
       },
       "id": 84,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3551,7 +6238,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3600,7 +6287,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -3610,7 +6299,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3629,7 +6319,9 @@
       },
       "id": 92,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3638,7 +6330,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3687,7 +6379,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "filterable": false,
             "inspect": false
           },
@@ -3696,7 +6390,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3715,7 +6410,9 @@
       },
       "id": 88,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3724,7 +6421,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3764,8 +6461,8 @@
     {
       "collapsed": false,
       "datasource": {
-        "type": "prometheus",
-        "uid": "PBFA97CFB590B2093"
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
       },
       "gridPos": {
         "h": 1,
@@ -3790,7 +6487,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "inspect": false
           },
           "mappings": [],
@@ -3798,7 +6497,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3817,7 +6517,9 @@
       },
       "id": 79,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3826,7 +6528,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3875,7 +6577,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "inspect": false
           },
           "mappings": [],
@@ -3883,7 +6587,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3902,7 +6607,9 @@
       },
       "id": 80,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3911,7 +6618,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -3960,7 +6667,9 @@
           },
           "custom": {
             "align": "center",
-            "displayMode": "color-text",
+            "cellOptions": {
+              "type": "color-text"
+            },
             "inspect": false
           },
           "mappings": [],
@@ -3968,7 +6677,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -3987,7 +6697,9 @@
       },
       "id": 96,
       "options": {
+        "cellHeight": "sm",
         "footer": {
+          "countRows": false,
           "fields": "",
           "reducer": [
             "sum"
@@ -3996,7 +6708,7 @@
         },
         "showHeader": false
       },
-      "pluginVersion": "9.3.2",
+      "pluginVersion": "11.2.0",
       "targets": [
         {
           "datasource": {
@@ -4145,23 +6857,22 @@
       "type": "row"
     }
   ],
-  "refresh": "5m",
-  "schemaVersion": 37,
-  "style": "dark",
+  "refresh": "",
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": [
       {
         "current": {
           "selected": true,
-          "text": "Sovrin Staging Net",
-          "value": "Sovrin Staging Net"
+          "text": "QC-Net-beta",
+          "value": "QC-Net-beta"
         },
         "datasource": {
-          "type": "prometheus",
-          "uid": "PBFA97CFB590B2093"
+          "type": "influxdb",
+          "uid": "P951FEA4DE68E13C5"
         },
-        "definition": "label_values(network)",
+        "definition": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"network\" ",
         "description": "Select a network.",
         "hide": 0,
         "includeAll": false,
@@ -4170,8 +6881,8 @@
         "name": "network",
         "options": [],
         "query": {
-          "query": "label_values(network)",
-          "refId": "StandardVariableQuery"
+          "query": "SHOW TAG VALUES FROM \"node\" WITH KEY = \"network\" ",
+          "refId": "InfluxVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -4185,13 +6896,13 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Network Overview",
-  "uid": "IBGWryqGb",
-  "version": 1,
+  "uid": "IBGWryqGG",
+  "version": 2,
   "weekStart": ""
 }

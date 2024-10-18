@@ -1,0 +1,96 @@
+---
+namespace: inc-indy-node-monitor
+
+# Ressources global au namespace 
+resourceQuota:
+  cpuRequests: "4"
+  memoryRequests: "8Gi"
+  cpuLimits: "8"
+  memoryLimits: "16Gi"
+  pods: "10"
+  services: "10"
+  pvc: "10"
+
+ingress:
+  active: false
+
+route:
+  active: false
+
+grafana:
+  name: grafana
+  port: 3000
+  repository: <your registry>/grafana
+  tag: "11.2.0"
+  requests_mem: "1Gi"
+  requests_cpu: "500m"
+  limits_mem: "2Gi"
+  limits_cpu: "1"
+  data_volume: 1Gi
+
+indy_node_monitor:
+  name: indy-node-monitor
+  port: 8080
+  home: /fetch-validator-status
+  repository: <your registry>/indy-node-monitor
+  tag: "0.4.3.2"
+  requests_mem: "48Mi"
+  requests_cpu: "250m"
+  limits_mem: "256Mi"
+  limits_cpu: "1"
+  data_volume: 1Gi
+
+influxdb:
+  name: influxdb
+  port_8082: 8082
+  port_api: 8086
+  port_udp: 8089
+  repository: <your registry>/influxdb
+  tag: "1.8"
+  requests_mem: "1Gi"
+  requests_cpu: "500m"
+  limits_mem: "2Gi"
+  limits_cpu: "1"
+  data_volume: 20Gi
+
+telegraf:
+  name: telegraf
+  port: 9273
+  repository: <your registry>/telegraf
+  tag: 1.32-alpine
+  requests_mem: "128Mi"
+  requests_cpu: "100m"
+  limits_mem: "256Mi"
+  limits_cpu: "250m"
+  aws_cloudwatch_enable: false
+  aws_cloudwatch_region: <your AWS region>
+  aws_cloudwatch_namespace: <your AWS cloudwatch metrics namespace>
+
+alertmanager:
+  name: alertmanager
+  enable: false
+  port: 9093
+  repository: <your registry>/alertmanager
+  tag: v0.24.0
+  requests_mem: "128Mi"
+  requests_cpu: "100m"
+  limits_mem: "256Mi"
+  limits_cpu: "250m"  
+
+prometheus:
+  name: prometheus
+  enable: false
+  port: 9090
+  repository: <your registry>/prometheus
+  tag: v2.34.0
+  requests_mem: "1Gi"
+  requests_cpu: "500m"
+  limits_mem: "2Gi"
+  limits_cpu: "1"
+  data_volume: 20Gi
+
+ecr:
+  registry: "<your registry dns name>"
+  frequency: "10h"
+  generatedSecretName: "ecr-docker-secret"
+  region: "ca-central-1"

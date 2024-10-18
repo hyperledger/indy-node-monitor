@@ -1,0 +1,8 @@
+*********************************************************
+The deployment has completed successfully!
+
+To retrieve the Grafana generated password, run the following command:
+
+kubectl get secret credentials -n inc-indy-node-monitor -o jsonpath="{.data.GF_SECURITY_ADMIN_PASSWORD}" | base64 --decode; echo
+
+*********************************************************
