@@ -5,24 +5,48 @@ on:
     branches:
       - main
     paths:
-      - 'fetch-validator-status/**'  # Build only if their are changes in thos directory
+      - 'fetch-validator-status/**'  # Build only if their are changes in this directory
+  
+  workflow_dispatch:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "This is the tag version number use to build and publish the container.  Don't include the v like this 2.4.6, if you dont provide a version we will get the latest tag version from the repo"
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout repository main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
 
-      - name: Log in to GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Extract latest version from Git tag, excludind the v.
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1` | cut -c2-)
+          echo "LATEST_TAG=$LATEST_TAG" >> $GITHUB_ENV
+          echo "LATEST_TAG=$LATEST_TAG"
 
-      - name: Extract version from Git tag
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Checkout repository specific tag
+        uses: actions/checkout@v4
+        with:
+          ref: v${{ inputs.ref || env.LATEST_TAG }}
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase username
+        run: echo "USERNAME=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
 
       - name: Build the Docker image
-        run: docker build -t ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}/indy-node-monitor:${{ env.VERSION }} .
+        run: docker build -t ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG  }} ./fetch-validator-status/
 
       - name: Push the Docker image
-        run: docker push ghcr.io/${{ github.actor }}/${{ github.event.repository.name }}/indy-node-monitor:${{ env.VERSION }}
+        run: docker push ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG }}
