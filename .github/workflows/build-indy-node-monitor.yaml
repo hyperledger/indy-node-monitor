@@ -72,8 +72,6 @@ jobs:
 
       - name: Build the Docker image
         run: docker build -t ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG  }} ./fetch-validator-status/
-        run: docker build -t ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG  }} ./fetch-validator-status/
 
       - name: Push the Docker image
-        run: docker push ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG }}
         run: docker push ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{ inputs.ref || env.LATEST_TAG }}
