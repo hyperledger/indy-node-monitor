@@ -8,3 +8,4 @@ gunicorn
 
 base58
 indy-vdr
+h11>=0.16.0 # not directly required, pinned by Snyk to avoid a vulnerability
