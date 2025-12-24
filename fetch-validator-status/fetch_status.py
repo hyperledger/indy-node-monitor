@@ -34,7 +34,7 @@ class FetchStatus(object, metaclass=Singleton):
             from_nodes = nodes.split(",")
 
         try:
-            # Introduced in https://github.com/hyperledger/indy-vdr/commit/ce0e7c42491904e0d563f104eddc2386a52282f7
+            # Introduced in https://github.com/hyperledger-indy/indy-vdr/commit/ce0e7c42491904e0d563f104eddc2386a52282f7
             log("Getting list of verifiers ...")
             verifiers = await pool.get_verifiers()
         except AttributeError:

@@ -1,6 +1,6 @@
 # Fetch Validator Status
 
-This folder contains a simple Python script that uses [indy-vdr](https://github.com/hyperledger/indy-vdr) to execute a "validator-info" call to an Indy network. The validator info transaction script returns a great deal of information about the accessed ledger. An example of the JSON data returned by the call for an individual node is provided [below](#example-validator-info).
+This folder contains a simple Python script that uses [indy-vdr](https://github.com/hyperledger-indy/indy-vdr) to execute a "validator-info" call to an Indy network. The validator info transaction script returns a great deal of information about the accessed ledger. An example of the JSON data returned by the call for an individual node is provided [below](#example-validator-info).
 
 The call can only be made by an entity with a suitably authorized DID on the ledger. For example, on the Sovrin MainNet, only Stewards and some within the Sovrin Foundation has that access.
 
