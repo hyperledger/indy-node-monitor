@@ -25,6 +25,9 @@ LABEL summary="$SUMMARY" \
       version="$tag_version" \
       maintainer=""
 
+# Make sure debian system is up to date
+RUN apt update && apt upgrade -y && apt-get clean
+
 # Add local binaries and aliases to path
 ENV PATH="$HOME/.local/bin:$PATH"
 
