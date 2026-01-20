@@ -1,0 +1,62 @@
+name: Publish Docker image
+
+on:
+  release:
+    types: [published]  # Triggers only when a new release is created
+
+  
+  workflow_dispatch:
+    inputs:
+      ref:
+        required: false
+        type: string
+        description: "This is the tag version, don't include the v like this 2.4.6, if you dont provide a version we will get the latest tag"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository main
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
+
+      - name: Display release information
+        run: |
+          echo "New release created!"
+          echo "Release tag: ${{ github.event.release.tag_name }}"
+          echo "Release name: ${{ github.event.release.name }}"
+          echo "Release body: ${{ github.event.release.body }}"
+
+
+      - name: Checkout repository specific tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.name }}    # Ex release name: v0.0.1
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set lowercase username
+        run: echo "USERNAME=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - name: Extract version without 'v'
+        run: echo "VERSION=${{ github.event.release.tag_name }}" | sed 's/^v//' >> $GITHUB_ENV
+
+      - name: Log in to the GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build the Docker image
+        run: docker build -t ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{  env.VERSION  }} ./fetch-validator-status/
+
+      - name: Push the Docker image
+        run: docker push ghcr.io/${{ env.USERNAME }}/${{ github.event.repository.name }}/indy-node-monitor:${{  env.VERSION }}
