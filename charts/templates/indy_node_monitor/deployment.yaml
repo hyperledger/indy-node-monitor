@@ -1,0 +1,41 @@
+---
+{{- with .Values.indy_node_monitor }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port }}
+          command:
+            - "python"
+            - "main.py"
+            - "--web"
+            - "--verbose"
+          volumeMounts:
+            - name: "{{ .name }}-config"
+              mountPath: /home/indy/networks.json
+              subPath: networks.json
+      volumes:
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: networks.json
+                path: networks.json
+{{- end }}

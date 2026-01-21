@@ -1,0 +1,12 @@
+---
+{{- with .Values.grafana }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ .name }}-configmap"
+data:
+{{ ($.Files.Glob "config/grafana/datasource.yml").AsConfig | indent 2 }}
+{{ ($.Files.Glob "config/grafana/dashboard.yml").AsConfig | indent 2 }}
+{{ ($.Files.Glob "config/grafana/dashboards/*").AsConfig | indent 2 }}
+
+{{- end }}

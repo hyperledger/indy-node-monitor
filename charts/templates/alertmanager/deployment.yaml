@@ -1,0 +1,40 @@
+---
+{{- with .Values.alertmanager }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+        - name: {{ .name }}
+          image: "{{ .repository }}:{{ .tag }}"
+          ports:
+            - containerPort: {{ .port }}
+          command:
+            - "alertmanager"
+            - "--config.file=/etc/alertmanager/config.yml"
+            - "--storage.path=/alertmanager"
+          volumeMounts:
+            - mountPath: /etc/alertmanager/config.yml
+              name: "{{ .name }}-config"
+              subPath: config.yml
+      volumes:
+        - name: "{{ .name }}-config"
+          configMap:
+            name: "{{ .name }}-configmap"
+            items:
+              - key: config.yml
+                path: config.yml
+{{- end }}

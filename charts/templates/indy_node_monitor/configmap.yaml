@@ -1,0 +1,22 @@
+---
+{{- with .Values.indy_node_monitor }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}-configmap"
+data:
+  networks.json: |
+    {
+    {{- range $.Values.inputs }}
+      "{{ .short_name }}": {
+        "name": "{{ .name }}",
+        "genesisUrl": "{{ .genesis_url }}"
+      },
+    {{- end }}
+      "sbn": {
+        "name": "Sovrin Builder Net",
+        "genesisUrl": "https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_builder_genesis"
+      }
+    }
+{{- end }}

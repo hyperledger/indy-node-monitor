@@ -1,0 +1,34 @@
+---
+namespace: "indy-monitoring-stack"
+ingress:
+  active: false
+  domain: ""
+  cert_manager: 
+    active: false
+    issuer: letsencrypt-staging
+  endpoints:
+    grafana: ""
+    influxdb: ""
+    prometheus: ""
+    alertmanager: ""
+    indy_node_monitor: ""
+
+# Here's an example for inputs, replace with the networks you want to monitor.
+inputs:
+  # - name: Sovrin Builder Net
+  #   short_name: sbn
+  #   genesis_url: https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_builder_genesis
+  #   network_monitor_seed: INSERT_REGISTERED_NETWORK_MONITOR_SEED_HERE
+  # - name: Sovrin Staging Net
+  #   short_name: ssn
+  #   genesis_url: https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_sandbox_genesis
+  #   network_monitor_seed: INSERT_REGISTERED_NETWORK_MONITOR_SEED_HERE
+  # - name: Sovrin Main Net
+  #   short_name: smn
+  #   genesis_url: https://raw.githubusercontent.com/sovrin-foundation/sovrin/stable/sovrin/pool_transactions_live_genesis
+  #   network_monitor_seed: INSERT_REGISTERED_NETWORK_MONITOR_SEED_HERE
+
+secrets:
+  GF_SECURITY_ADMIN_PASSWORD: CHANGEME
+  INFLUX_DB_FLUX_TOKEN: CHANGEME
+  INFLUX_TOKEN: CHANGEME

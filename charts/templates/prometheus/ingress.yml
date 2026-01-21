@@ -1,0 +1,34 @@
+{{- if and (eq .Values.ingress.active true) (.Values.ingress.endpoints.prometheus) }}
+---
+{{- with .Values.prometheus }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    {{- if and (eq $.Values.ingress.cert_manager.active true) ($.Values.ingress.endpoints.prometheus) }}
+    cert-manager.io/cluster-issuer: "{{ $.Values.ingress.cert_manager.issuer }}"
+    {{- end }}
+spec:
+  rules:
+  - host: "{{ $.Values.ingress.endpoints.prometheus }}.{{ $.Values.ingress.domain }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: "{{ .name }}"
+            port:
+              number: {{ .port }}
+        path: /
+        pathType: ImplementationSpecific
+  {{- if and (eq $.Values.ingress.cert_manager.active true) ($.Values.ingress.endpoints.prometheus) }}
+  tls:
+  - hosts:
+    - {{ $.Values.ingress.endpoints.prometheus }}.{{ $.Values.ingress.domain }}
+    secretName: {{ $.Values.namespace }}-tls
+  {{- end }}
+{{- end }}
+{{- end }}
